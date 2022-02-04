@@ -16,7 +16,7 @@ paths:
     get:
       summary: Returns a list of forest clients
       description: |
-        A method for retrieving the latest forest clients. The list can be limited to only forest client records that have changed since a particular date or time (in the case that the caller is refreshing a cache). Standard limit and offset params for paging.
+        A method for retrieving the latest forest clients. Standard limit and offset params for paging.
       operationId: queryForestClients
       parameters:
       - name: limit
@@ -35,22 +35,16 @@ paths:
         explode: true
         schema:
           type: integer
-      - name: cache_time
-        in: query
-        description: The timestamp at which to start looking for changed records
-        required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-          format: date-time
       responses:
         "200":
           description: search results matching criteria
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200'
+                type: array
+                items:
+                  $ref: '#/components/schemas/ForestClient'
+                x-content-type: application/json
         "400":
           description: Invalid request
           content:
@@ -108,29 +102,6 @@ components:
         id: "12345678"
         isActive: true
         typeCode: C
-    inline_response_200:
-      type: object
-      properties:
-        data:
-          type: array
-          description: A list of forest client representations
-          items:
-            $ref: '#/components/schemas/ForestClient'
-        cache_time:
-          type: string
-          description: The timestamp when the search was run (for caching)
-          format: date-time
-      example:
-        cache_time: 2000-01-23T04:56:07.000+00:00
-        data:
-        - clientName: Canfor
-          id: "12345678"
-          isActive: true
-          typeCode: C
-        - clientName: Canfor
-          id: "12345678"
-          isActive: true
-          typeCode: C
     inline_response_400:
       type: object
       properties:
