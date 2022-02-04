@@ -1,0 +1,145 @@
+openapi: 3.0.0
+info:
+  title: Forest Client API
+  description: This is a simple API to retrieve information about Forest Clients
+  contact:
+    email: c.gustafson@cgi.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/FS59/forest-client/1.0.0
+  description: SwaggerHub API Auto Mocking
+paths:
+  /forest-client:
+    get:
+      summary: Returns a list of forest clients
+      description: |
+        A method for retrieving the latest forest clients. The list can be limited to only forest client records that have changed since a particular date or time (in the case that the caller is refreshing a cache). Standard limit and offset params for paging.
+      operationId: queryForestClients
+      parameters:
+      - name: limit
+        in: query
+        description: Limits the number of forest clients on a page
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: offset
+        in: query
+        description: Specifies the page number of the forest clients to be displayed
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+      - name: cache_time
+        in: query
+        description: The timestamp at which to start looking for changed records
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: date-time
+      responses:
+        "200":
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+  /forest-client/{id}:
+    get:
+      description: Obtain information about a forest client based on ID
+      operationId: getForestClient
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Successfully returned a forest client
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForestClient'
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_400'
+components:
+  schemas:
+    ForestClient:
+      required:
+      - clientName
+      - id
+      - isActive
+      - typeCode
+      type: object
+      properties:
+        id:
+          type: string
+          example: "12345678"
+        clientName:
+          type: string
+          example: Canfor
+        typeCode:
+          type: string
+          example: C
+        isActive:
+          type: boolean
+      example:
+        clientName: Canfor
+        id: "12345678"
+        isActive: true
+        typeCode: C
+    inline_response_200:
+      type: object
+      properties:
+        data:
+          type: array
+          description: A list of forest client representations
+          items:
+            $ref: '#/components/schemas/ForestClient'
+        cache_time:
+          type: string
+          description: The timestamp when the search was run (for caching)
+          format: date-time
+      example:
+        cache_time: 2000-01-23T04:56:07.000+00:00
+        data:
+        - clientName: Canfor
+          id: "12345678"
+          isActive: true
+          typeCode: C
+        - clientName: Canfor
+          id: "12345678"
+          isActive: true
+          typeCode: C
+    inline_response_400:
+      type: object
+      properties:
+        message:
+          type: string
+  responses:
+    "400Error":
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/inline_response_400'
