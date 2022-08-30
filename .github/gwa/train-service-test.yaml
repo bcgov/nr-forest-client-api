@@ -1,0 +1,51 @@
+services:
+  - name: nrfc-test
+    host: nrfc-test-backend.d2723f-test.svc
+    tags: [ns.test-d2723f.test]
+    port: 80
+    protocol: http
+    retries: 0
+    routes:
+      - name: nrfc-test-route
+        tags: [ns.test-d2723f.test]
+        hosts:
+          - nrfc-test.api.gov.bc.ca
+        paths:
+          - /
+        methods:
+          - GET
+          - OPTIONS
+        strip_path: false
+        https_redirect_status_code: 426
+        path_handling: v0
+    plugins:
+      - name: key-auth
+        tags: [ns.test-d2723f.test]
+        protocols: [http, https]
+        config:
+          key_names: ["X-API-KEY"]
+          run_on_preflight: true
+          hide_credentials: true
+          key_in_body: false
+      - name: acl
+        tags: [ns.test-d2723f.test]
+        config:
+          hide_groups_header: true
+          allow: [4DE17C5E]
+      - name: cors
+        tags: [ns.test-d2723f.test]
+        config:
+          origins: ["*"]
+          methods: [GET, POST, PUT, DELETE, PATCH]
+          headers:
+            [
+              Connection,
+              Upgrade,
+              Cache-Control,
+              Access-Control-Allow-Headers,
+              Access-Control-Request-Headers,
+              X-API-KEY,
+              Keep-Alive,
+            ]
+          credentials: true
+          max_age: 3600

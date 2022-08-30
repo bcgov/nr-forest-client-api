@@ -1,0 +1,62 @@
+services:
+  - name: nrfc-prod
+    host: nrfc-prod-backend.d2723f-prod.svc
+    tags: [ns.nr-d2723f.prod]
+    port: 80
+    protocol: http
+    retries: 0
+    routes:
+      - name: nrfc-prod-swagger-route
+        tags: [ns.nr-d2723f.prod]
+        hosts:
+          - nrfc-prod.api.gov.bc.ca
+        paths:
+          - /api
+        methods:
+          - GET
+        strip_path: false
+        https_redirect_status_code: 426
+        path_handling: v0
+      - name: nrfc-prod-route
+        tags: [ns.nr-d2723f.prod]
+        hosts:
+          - nrfc-prod.api.gov.bc.ca
+        paths:
+          - /
+        methods:
+          - GET
+          - OPTIONS
+        strip_path: false
+        https_redirect_status_code: 426
+        path_handling: v0
+        plugins:
+          - name: key-auth
+            tags: [ns.nr-d2723f.prod]
+            protocols: [http, https]
+            config:
+              key_names: ["X-API-KEY"]
+              run_on_preflight: true
+              hide_credentials: true
+              key_in_body: false
+          - name: acl
+            tags: [ns.nr-d2723f.prod]
+            config:
+              hide_groups_header: true
+              allow: [74EF984C]
+          - name: cors
+            tags: [ns.nr-d2723f.prod]
+            config:
+              origins: ["*"]
+              methods: [GET, POST, PUT, DELETE, PATCH]
+              headers:
+                [
+                  Connection,
+                  Upgrade,
+                  Cache-Control,
+                  Access-Control-Allow-Headers,
+                  Access-Control-Request-Headers,
+                  X-API-KEY,
+                  Keep-Alive,
+                ]
+              credentials: true
+              max_age: 3600

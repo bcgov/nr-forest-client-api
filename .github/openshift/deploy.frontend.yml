@@ -1,0 +1,156 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: ${NAME}
+  annotations:
+    description: "Nr-Old-Growth"
+    tags: "nrfc"
+    iconClass: icon-js
+labels:
+  app: ${NAME}-${ZONE}
+  app.kubernetes.io/part-of: ${NAME}-${ZONE}
+parameters:
+  - name: NAME
+    description: Module name
+    value: nrfc
+  - name: COMPONENT
+    description: Component name
+    value: frontend
+  - name: ZONE
+    description: Deployment zone, e.g. pr-### or prod
+    required: true
+  - name: IMAGE_TAG
+    description: Image tag to use
+    value: latest
+  - name: DOMAIN
+    value: apps.silver.devops.gov.bc.ca
+  - name: CPU_LIMIT
+    value: 50m
+  - name: MEMORY_LIMIT
+    value: 0.5Gi
+  - name: CPU_REQUEST
+    value: 20m
+  - name: MEMORY_REQUEST
+    value: 0.2Gi
+  - name: REGISTRY
+    description: Container registry to import from (internal is image-registry.openshift-image-registry.svc:5000)
+    value: ghcr.io
+  - name: PROMOTE
+    description: Image (namespace/name:tag) to promote/import
+    value: bcgov/nr-old-growth:prod-frontend
+objects:
+  - apiVersion: v1
+    kind: ImageStream
+    metadata:
+      labels:
+        app: ${NAME}-${ZONE}
+      name: ${NAME}-${ZONE}-${COMPONENT}
+    spec:
+      lookupPolicy:
+        local: false
+      tags:
+        - name: ${IMAGE_TAG}
+          from:
+            kind: DockerImage
+            name: ${REGISTRY}/${PROMOTE}
+          referencePolicy:
+            type: Local
+  - apiVersion: v1
+    kind: DeploymentConfig
+    metadata:
+      labels:
+        app: ${NAME}-${ZONE}
+      name: ${NAME}-${ZONE}-${COMPONENT}
+    spec:
+      replicas: 1
+      triggers:
+        - type: ConfigChange
+        - type: ImageChange
+          imageChangeParams:
+            automatic: true
+            containerNames:
+              - ${NAME}
+            from:
+              kind: ImageStreamTag
+              name: ${NAME}-${ZONE}-${COMPONENT}:${IMAGE_TAG}
+      selector:
+        deploymentconfig: ${NAME}-${ZONE}-${COMPONENT}
+      strategy:
+        type: Rolling
+      template:
+        metadata:
+          labels:
+            app: ${NAME}-${ZONE}
+            deploymentconfig: ${NAME}-${ZONE}-${COMPONENT}
+        spec:
+          volumes:
+            - name: ${NAME}-${ZONE}-${COMPONENT}-config-volume
+              configMap:
+                name: ${NAME}-${ZONE}-${COMPONENT}
+          containers:
+            - image: ${NAME}-${ZONE}-${COMPONENT}:${IMAGE_TAG}
+              imagePullPolicy: Always
+              name: ${NAME}
+              volumeMounts:
+                - name: ${NAME}-${ZONE}-${COMPONENT}-config-volume
+                  mountPath: "/app/dist/config.js"
+                  subPath: config.js
+              ports:
+                - containerPort: 3000
+                  protocol: TCP
+              resources:
+                limits:
+                  cpu: ${CPU_LIMIT}
+                  memory: ${MEMORY_LIMIT}
+                requests:
+                  cpu: ${CPU_REQUEST}
+                  memory: ${MEMORY_REQUEST}
+              readinessProbe:
+                httpGet:
+                  path: /
+                  port: 3000
+                  scheme: HTTP
+                initialDelaySeconds: 15
+                periodSeconds: 30
+                timeoutSeconds: 1
+              livenessProbe:
+                successThreshold: 1
+                failureThreshold: 3
+                httpGet:
+                  path: /
+                  port: 3000
+                  scheme: HTTP
+                initialDelaySeconds: 15
+                periodSeconds: 30
+                timeoutSeconds: 5
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      labels:
+        app: ${NAME}-${ZONE}
+      name: ${NAME}-${ZONE}-${COMPONENT}
+    spec:
+      ports:
+        - name: 3000-tcp
+          protocol: TCP
+          port: 80
+          targetPort: 3000
+      selector:
+        deploymentconfig: ${NAME}-${ZONE}-${COMPONENT}
+  - apiVersion: route.openshift.io/v1
+    kind: Route
+    metadata:
+      labels:
+        app: ${NAME}-${ZONE}
+      name: ${NAME}-${ZONE}-${COMPONENT}
+    spec:
+      host: ${NAME}-${ZONE}-${COMPONENT}.${DOMAIN}
+      port:
+        targetPort: 3000-tcp
+      to:
+        kind: Service
+        name: ${NAME}-${ZONE}-${COMPONENT}
+        weight: 100
+      tls:
+        termination: edge
+        insecureEdgeTerminationPolicy: Redirect
