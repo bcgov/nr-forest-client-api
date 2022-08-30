@@ -13,7 +13,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  NAME: nrfc
+  NAME: nrfc-api
   NS: nr-d2723f
 
 concurrency:
@@ -119,12 +119,6 @@ jobs:
           oc login --token=${{ secrets.OC_TOKEN }} --server=${{ secrets.OC_SERVER }}
           oc project ${{ secrets.OC_NAMESPACE }}
 
-          # Create frontend config (Remove the old one if exists)
-          oc delete configmap ${{ env.NAME }}-${{ env.ZONE }}-frontend 2> /dev/null \
-            || true && echo "No existing frontend config"
-          oc create configmap ${{ env.NAME }}-${{ env.ZONE }}-frontend  \
-            --from-literal=config.js="const config = (() => { return { VITE_BACKEND_URL: 'https://${{ env.NAME }}-${{ env.ZONE }}.api.gov.bc.ca', VITE_X_API_KEY: '${{ secrets.GWA_X_API_KEY }}'}; })();"
-
           # Process and apply deployment templates
           oc process -f .github/openshift/deploy.backend.yml -p ZONE=${{ env.ZONE }} \
             -p PROMOTE=${{ github.repository }}:${{ env.ZONE }}-backend \
@@ -134,12 +128,9 @@ jobs:
             -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }} \
             -p ORACLEDB_HOST=${{ secrets.ORACLEDB_HOST }} \
             -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }} | oc apply -f -
-          oc process -f .github/openshift/deploy.frontend.yml -p ZONE=${{ env.ZONE }} \
-            -p PROMOTE=${{ github.repository }}:${{ env.ZONE }}-frontend | oc apply -f -
 
           # Follow any active rollouts (see deploymentconfigs)
           oc rollout status dc/${{ env.NAME }}-${{ env.ZONE }}-backend -w
-          oc rollout status dc/${{ env.NAME }}-${{ env.ZONE }}-frontend -w
 
           # Remove completed build runs, build pods and deployment pods
           for p in $(oc get po | grep "Completed" | awk '{print $1}')
@@ -193,23 +184,6 @@ jobs:
         uses: zaproxy/action-full-scan@v0.3.0
         with:
           target: https://${{ env.NAME }}-test-backend.apps.silver.devops.gov.bc.ca/
-          cmd_options: "-a"
-          allow_issue_writing: false
-          fail_action: false
-
-  zap-frontend:
-    name: Frontend Pen Tests
-    needs:
-      - deploy-test
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: ZAP Scan
-        uses: zaproxy/action-full-scan@v0.4.0
-        with:
-          target: https://${{ env.NAME }}-test-frontend.apps.silver.devops.gov.bc.ca/
           cmd_options: "-a"
           allow_issue_writing: false
           fail_action: false

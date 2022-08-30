@@ -5,7 +5,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  NAME: nrfc
+  NAME: nrfc-api
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -19,52 +19,6 @@ jobs:
     env:
       TRIGGERS: ('backend/')
       COMPONENT: backend
-      PREV: prod
-      ZONE: ${{ github.event.number }}
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Check and process modified files
-        id: check
-        run: |
-          # Fetch main to diff against
-          git fetch origin main:refs/remotes/origin/master
-          # Trigger build if diff matches any triggers
-          TRIGGERS=${{ env.TRIGGERS }}
-          while read -r check
-          do
-              for t in "${TRIGGERS[@]}"; do
-                  if [[ "${check}" =~ "${t}" ]]
-                  then
-                      # Output build=true for next steps
-                      echo "::set-output name=build::true"
-                      echo -e "${t}\n --> ${check}\n"
-                      exit 0
-                  fi
-              done
-          done < <(git diff origin/main --name-only)
-          echo "Container build not required"
-
-      - name: Recycle/retag Previous Images
-        if: steps.check.outputs.build != 'true'
-        uses: shrink/actions-docker-registry-tag@v2
-        with:
-          registry: ${{ env.REGISTRY }}
-          repository: ${{ github.repository }}
-          token: ${{ secrets.GHCR_TOKEN }}
-          target: ${{ env.PREV }}-${{ env.COMPONENT }}
-          tags: |
-            ${{ env.ZONE }}-${{ env.COMPONENT }}
-
-  check-frontend:
-    name: Check Frontend
-    outputs:
-      build: ${{ steps.check.outputs.build }}
-    env:
-      TRIGGERS: ('frontend/')
-      COMPONENT: frontend
       PREV: prod
       ZONE: ${{ github.event.number }}
     runs-on: ubuntu-22.04
@@ -158,59 +112,6 @@ jobs:
           # Clean previous image
           oc delete is ${{ env.NAME }}-${{ env.ZONE }}-${{ env.COMPONENT }} || true
 
-  build-frontend:
-    name: Frontend Image Build
-    env:
-      COMPONENT: frontend
-      ZONE: ${{ github.event.number }}
-    environment:
-      name: dev
-    runs-on: ubuntu-latest
-    needs:
-      - check-frontend
-    if: needs.check-frontend.outputs.build == 'true'
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Cache Docker layers
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
-      - name: Log in to the Container registry
-        uses: docker/login-action@v1
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_TOKEN }}
-
-      - name: Build and push Backend Docker image
-        uses: docker/build-push-action@v3.1.1
-        with:
-          context: ./frontend/
-          push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.ZONE }}-${{ env.COMPONENT }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Clear any previous OpenShift image
-        run: |
-          # Login to OpenShift and select project
-          oc login --token=${{ secrets.OC_TOKEN }} --server=${{ secrets.OC_SERVER }}
-          oc project ${{ secrets.OC_NAMESPACE }}
-          # Clean previous image
-          oc delete is ${{ env.NAME }}-${{ env.ZONE }}-${{ env.COMPONENT }} || true
-
   tests-backend:
     name: Backend Unit Tests
     runs-on: ubuntu-22.04
@@ -257,60 +158,12 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           lcov-file: ./backend/coverage/lcov.info
 
-  tests-frontend:
-    name: Frontend Unit Tests
-    runs-on: ubuntu-22.04
-    needs:
-      - check-frontend
-    if: needs.check-frontend.outputs.build == 'true'
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Get npm cache directory
-        id: npm-cache-dir-frontend
-        run: |
-          echo "::set-output name=dir::$(npm config get cache)"
-
-      - uses: actions/cache@v3
-        id: npm-cache-frontend # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
-        with:
-          path: ${{ steps.npm-cache-dir-frontend.outputs.dir }}
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      - name: Cache for test results
-        id: cache-frontend
-        uses: actions/cache@v3
-        with:
-          path: frontend/coverage
-          key: frontend-coverage-${{ github.run_number }}
-          restore-keys: |
-            frontend-coverage-
-
-      - name: Tests
-        run: |
-          cd frontend
-          npm ci
-          npm run test
-
-      - name: Report code coverage
-        uses: romeovs/lcov-reporter-action@v0.3.1
-        with:
-          title: Frontend coverage report
-          delete-old-comments: true
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          lcov-file: ./frontend/coverage/lcov.info
-
   sonarcloud:
     name: Static Analysis
     needs:
       - build-backend
-      - build-frontend
       - tests-backend
-      - tests-frontend
-    if: always() && (needs.build-backend.result == 'success' || needs.build-frontend.result == 'success')
+    if: always() && (needs.build-backend.result == 'success')
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
@@ -326,15 +179,6 @@ jobs:
           key: backend-coverage-${{ github.run_number }}
           restore-keys: |
             backend-coverage-
-
-      - name: Cache for frontend test results
-        id: cache-frontend
-        uses: actions/cache@v3
-        with:
-          path: frontend/coverage
-          key: frontend-coverage-${{ github.run_number }}
-          restore-keys: |
-            frontend-coverage-
 
     # - name: SonarCloud Scan
     #   uses: SonarSource/sonarcloud-github-action@master
@@ -356,10 +200,8 @@ jobs:
     name: DEV Deployment
     needs:
       - build-backend
-      - build-frontend
       - tests-backend
-      - tests-frontend
-    if: always() && (needs.build-backend.result == 'success' || needs.build-frontend.result == 'success')
+    if: always() && (needs.build-backend.result == 'success')
     runs-on: ubuntu-22.04
     timeout-minutes: 15
     environment:
@@ -375,12 +217,6 @@ jobs:
           oc login --token=${{ secrets.OC_TOKEN }} --server=${{ secrets.OC_SERVER }}
           oc project ${{ secrets.OC_NAMESPACE }}
 
-          # Create frontend config (Remove the old one if exists)
-          oc delete configmap ${{ env.NAME }}-${{ env.ZONE }}-frontend 2> /dev/null \
-            || true && echo "No existing frontend config"
-          oc create configmap ${{ env.NAME }}-${{ env.ZONE }}-frontend  \
-            --from-literal=config.js="const config = (() => { return { VITE_BACKEND_URL: 'https://${{ env.NAME }}-${{ env.ZONE }}-backend.apps.silver.devops.gov.bc.ca'}; })();"
-
           # Process and apply template  
           oc process -f .github/openshift/deploy.backend.yml -p ZONE=${{ env.ZONE }} \
             -p PROMOTE=${{ github.repository }}:${{ env.ZONE }}-backend \
@@ -391,19 +227,13 @@ jobs:
             -p ORACLEDB_HOST=${{ secrets.ORACLEDB_HOST }} \
             -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }} | oc apply -f -
 
-          # Process and apply template
-          oc process -f .github/openshift/deploy.frontend.yml -p ZONE=${{ env.ZONE }} \
-            -p PROMOTE=${{ github.repository }}:${{ env.ZONE }}-frontend | oc apply -f -
-
           # Follow any active rollouts (see deploymentconfigs)
           oc rollout status dc/${{ env.NAME }}-${{ env.ZONE }}-backend -w
-          oc rollout status dc/${{ env.NAME }}-${{ env.ZONE }}-frontend -w
 
       - name: Deployment Verification
         env:
           LINKS: (
             'https://${{ env.NAME }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}'
-            'https://${{ env.NAME }}-${{ github.event.number }}-frontend.${{ env.DOMAIN }}'
             )
         run: |
           LINKS=${{ env.LINKS }}
@@ -425,7 +255,6 @@ jobs:
           message: |
             DEV deployments have completed successfully!
             [Backend](https://${{ env.NAME }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}/) available
-            [Frontend](https://${{ env.NAME }}-${{ github.event.number }}-frontend.${{ env.DOMAIN }}/) available
 
   # # Uncomment to for development and troubleshooting
   # # https://docs.github.com/en/actions/learn-github-actions/contexts

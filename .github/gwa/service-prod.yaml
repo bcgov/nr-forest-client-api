@@ -1,15 +1,15 @@
 services:
-  - name: nrfc-prod
-    host: nrfc-prod-backend.d2723f-prod.svc
+  - name: nrfc-api-prod
+    host: nrfc-api-prod-backend.d2723f-prod.svc
     tags: [ns.nr-d2723f.prod]
     port: 80
     protocol: http
     retries: 0
     routes:
-      - name: nrfc-prod-swagger-route
+      - name: nrfc-api-prod-swagger-route
         tags: [ns.nr-d2723f.prod]
         hosts:
-          - nrfc-prod.api.gov.bc.ca
+          - nrfc-api-prod.api.gov.bc.ca
         paths:
           - /api
         methods:
@@ -17,10 +17,10 @@ services:
         strip_path: false
         https_redirect_status_code: 426
         path_handling: v0
-      - name: nrfc-prod-route
+      - name: nrfc-api-prod-route
         tags: [ns.nr-d2723f.prod]
         hosts:
-          - nrfc-prod.api.gov.bc.ca
+          - nrfc-api-prod.api.gov.bc.ca
         paths:
           - /
         methods:

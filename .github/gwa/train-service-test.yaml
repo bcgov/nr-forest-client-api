@@ -1,15 +1,15 @@
 services:
-  - name: nrfc-test
-    host: nrfc-test-backend.d2723f-test.svc
+  - name: nrfc-api-test
+    host: nrfc-api-test-backend.d2723f-test.svc
     tags: [ns.test-d2723f.test]
     port: 80
     protocol: http
     retries: 0
     routes:
-      - name: nrfc-test-route
+      - name: nrfc-api-test-route
         tags: [ns.test-d2723f.test]
         hosts:
-          - nrfc-test.api.gov.bc.ca
+          - nrfc-api-test.api.gov.bc.ca
         paths:
           - /
         methods:

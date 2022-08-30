@@ -13,7 +13,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  NAME: nrfc
+  NAME: nrfc-api
   NS: nr-d2723f
 
 concurrency:
@@ -119,12 +119,6 @@ jobs:
           oc login --token=${{ secrets.OC_TOKEN }} --server=${{ secrets.OC_SERVER }}
           oc project ${{ secrets.OC_NAMESPACE }}
 
-          # Create frontend config (Remove the old one if exists)
-          oc delete configmap ${{ env.NAME }}-${{ env.ZONE }}-frontend 2> /dev/null \
-            || true && echo "No existing frontend config"
-          oc create configmap ${{ env.NAME }}-${{ env.ZONE }}-frontend  \
-            --from-literal=config.js="const config = (() => { return { VITE_BACKEND_URL: 'https://${{ env.NAME }}-${{ env.ZONE }}.api.gov.bc.ca', VITE_X_API_KEY: '${{ secrets.GWA_X_API_KEY }}'}; })();"
-
           # Process and apply deployment templates
           oc process -f .github/openshift/deploy.backend.yml -p ZONE=${{ env.ZONE }} \
             -p PROMOTE=${{ github.repository }}:${{ env.ZONE }}-backend \
@@ -134,12 +128,9 @@ jobs:
             -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }} \
             -p ORACLEDB_HOST=${{ secrets.ORACLEDB_HOST }} \
             -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }} | oc apply -f -
-          oc process -f .github/openshift/deploy.frontend.yml -p ZONE=${{ env.ZONE }} \
-            -p PROMOTE=${{ github.repository }}:${{ env.ZONE }}-frontend | oc apply -f -
 
           # Follow any active rollouts (see deploymentconfigs)
           oc rollout status dc/${{ env.NAME }}-${{ env.ZONE }}-backend -w
-          oc rollout status dc/${{ env.NAME }}-${{ env.ZONE }}-frontend -w
 
           # Remove completed build runs, build pods and deployment pods
           for p in $(oc get po | grep "Completed" | awk '{print $1}')
@@ -160,23 +151,6 @@ jobs:
         uses: zaproxy/action-full-scan@v0.3.0
         with:
           target: https://${{ env.NAME }}-test-backend.apps.silver.devops.gov.bc.ca/
-          cmd_options: "-a"
-          allow_issue_writing: false
-          fail_action: false
-
-  zap-frontend:
-    name: Frontend Pen Tests
-    needs:
-      - deploy-test
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: ZAP Scan
-        uses: zaproxy/action-full-scan@v0.4.0
-        with:
-          target: https://${{ env.NAME }}-test-frontend.apps.silver.devops.gov.bc.ca/
           cmd_options: "-a"
           allow_issue_writing: false
           fail_action: false
@@ -211,7 +185,6 @@ jobs:
     name: Repository Report
     needs:
       - zap-backend
-      - zap-frontend
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
@@ -236,7 +209,6 @@ jobs:
     name: Backend Image Handling
     needs:
       - zap-backend
-      - zap-frontend
     outputs:
       build: ${{ steps.check.outputs.build }}
     env:
@@ -283,62 +255,10 @@ jobs:
           tags: |
             ${{ env.ZONE }}-${{ env.COMPONENT }}
 
-  image-frontend:
-    name: Frontend Image Handling
-    needs:
-      - zap-backend
-      - zap-frontend
-    outputs:
-      build: ${{ steps.check.outputs.build }}
-    env:
-      COMPONENT: frontend
-      PREV: test
-      ZONE: prod
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Check for image changes
-        id: check
-        run: |
-          # Vars
-          IMG_PREV="${{ env.REGISTRY }}/${{ github.repository }}:${{ env.PREV }}-${{ env.COMPONENT }}"
-          IMG_ZONE="${{ env.REGISTRY }}/${{ github.repository }}:${{ env.ZONE }}-${{ env.COMPONENT }}"
-
-          # Pull previous image; grab SHA
-          docker pull "${IMG_PREV}"
-          SHA_PREV=$(docker inspect -f '{{.Id}}' "${IMG_PREV}")
-
-          # Use blank SHA for promoted image, unless a real one exists instead
-          docker pull "${IMG_ZONE}" && \
-            SHA_ZONE=$(docker inspect -f '{{.Id}}' "${IMG_ZONE}") ||
-            SHA_ZONE=""
-
-          # Output SHAs
-          echo -e "\n${IMG_PREV}: ${SHA_PREV}"
-          echo -e "${IMG_ZONE}: ${SHA_ZONE}\n"
-
-          # If different, then trigger updates
-          if [[ "${SHA_PREV}" != "${SHA_ZONE}" ]]; then
-            echo "::set-output name=build::true"
-            echo "Image has changed"
-            exit 0
-          fi
-          echo "Image promotion not required"
-
-      - name: Promote Backend Image
-        if: steps.check.outputs.build == 'true'
-        uses: shrink/actions-docker-registry-tag@v2
-        with:
-          registry: ${{ env.REGISTRY }}
-          repository: ${{ github.repository }}
-          target: ${{ env.PREV }}-${{ env.COMPONENT }}
-          tags: |
-            ${{ env.ZONE }}-${{ env.COMPONENT }}
-
   deploy-prod:
     name: PROD Deployment
     needs:
       - image-backend
-      - image-frontend
       # - snyk
       - trivy-repo
     runs-on: ubuntu-22.04
@@ -358,34 +278,12 @@ jobs:
           oc project ${{ secrets.OC_NAMESPACE }}
           oc delete is/${{ env.NAME }}-${{ env.ZONE}}-${{ env.COMPONENT }} || true
 
-      - name: Remove any stale frontend images
-        if: needs.image-frontend.outputs.build == 'true'
-        env:
-          COMPONENT: frontend
-        run: |
-          # Login to OpenShift and select project
-          oc login --token=${{ secrets.OC_TOKEN }} --server=${{ secrets.OC_SERVER }}
-          oc project ${{ secrets.OC_NAMESPACE }}
-          oc delete is/${{ env.NAME }}-${{ env.ZONE}}-${{ env.COMPONENT }} || true
-
       - uses: actions/checkout@v2
       - name: Deploy
         run: |
           # Login to OpenShift and select project
           oc login --token=${{ secrets.OC_TOKEN }} --server=${{ secrets.OC_SERVER }}
           oc project ${{ secrets.OC_NAMESPACE }}
-
-          # Cancel db backup rollout if exists
-          if [ $(oc get dc -l app=backup-container -o name | wc -l) -gt 0 ]; then
-            oc rollout cancel dc/${{ env.NAME }}-${{ env.ZONE }}-dbbackup 2> /dev/null \
-              || true && echo "No rollout in progress"
-          fi
-
-          # Create frontend config (Remove the old one if exists)
-          oc delete configmap ${{ env.NAME }}-${{ env.ZONE }}-frontend 2> /dev/null \
-            || true && echo "No existing frontend config"
-          oc create configmap ${{ env.NAME }}-${{ env.ZONE }}-frontend  \
-            --from-literal=config.js="const config = (() => { return { VITE_BACKEND_URL: 'https://${{ env.NAME }}-${{ env.ZONE }}.api.gov.bc.ca', VITE_X_API_KEY: '${{ secrets.GWA_X_API_KEY }}'}; })();"
 
           # Process and apply deployment templates
           oc process -f .github/openshift/deploy.backend.yml -p ZONE=${{ env.ZONE }} \
@@ -396,25 +294,15 @@ jobs:
             -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }} \
             -p ORACLEDB_HOST=${{ secrets.ORACLEDB_HOST }} \
             -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }} | oc apply -f -
-          oc process -f .github/openshift/deploy.frontend.yml -p ZONE=${{ env.ZONE }} \
-            -p PROMOTE=${{ github.repository }}:${{ env.PREV }}-frontend | oc apply -f -
 
           # Follow any active rollouts (see deploymentconfigs)
           oc rollout status dc/${{ env.NAME }}-${{ env.ZONE }}-backend -w
-          oc rollout status dc/${{ env.NAME }}-${{ env.ZONE }}-frontend -w
 
           # Remove completed build runs, build pods and deployment pods
           for p in $(oc get po | grep "Completed" | awk '{print $1}')
           do
             oc delete po ${p}
           done
-
-          # Restart db backup rollout if exists
-          if [ $(oc get dc -l app=backup-container -o name | wc -l) -gt 0 ]; then
-            oc rollout latest dc/${{ env.NAME }}-${{ env.ZONE }}-dbbackup 2> /dev/null \
-              || true && echo "Rollout in progress"
-            oc logs -f dc/${{ env.NAME }}-${{ env.ZONE }}-dbbackup
-          fi
 
       - name: Promote Backend Image to PROD
         uses: shrink/actions-docker-registry-tag@v2
@@ -424,15 +312,6 @@ jobs:
           target: ${{ env.PREV }}-backend
           tags: |
             prod-backend
-
-      - name: Promote Frontend Image to PROD
-        uses: shrink/actions-docker-registry-tag@v2
-        with:
-          registry: ${{ env.REGISTRY }}
-          repository: ${{ github.repository }}
-          target: ${{ env.PREV }}-frontend
-          tags: |
-            prod-frontend
 
   publish-api:
     name: Publish Api

@@ -1,9 +1,9 @@
 # used for initialize the service.yaml file, update the parameters based on your service and your application
 
 export NS="nr-d2723f"
-export NAME="nrfc"
+export NAME="nrfc-api"
 export ZONE="test"
-export SERVICE="nrfc-test-backend"
+export SERVICE="nrfc-api-test-backend"
 export NAMESPACE="d2723f-test"
 
 echo "
