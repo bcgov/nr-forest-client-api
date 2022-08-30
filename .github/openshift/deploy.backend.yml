@@ -4,7 +4,7 @@ metadata:
   name: ${NAME}
   annotations:
     description: "Nr-Old-Growth"
-    tags: "nrfc"
+    tags: "nrfc-api"
     iconClass: icon-js
 labels:
   app: ${NAME}-${ZONE}
@@ -12,7 +12,7 @@ labels:
 parameters:
   - name: NAME
     description: Module name
-    value: nrfc
+    value: nrfc-api
   - name: COMPONENT
     description: Component name
     value: backend
