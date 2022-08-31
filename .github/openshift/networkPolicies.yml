@@ -42,7 +42,7 @@ objects:
     spec:
       podSelector:
         matchLabels:
-          app: nrfc-test
+          app: nrfc-api-test
       ingress:
         - from:
             - namespaceSelector:
