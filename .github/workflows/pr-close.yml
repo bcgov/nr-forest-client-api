@@ -46,7 +46,7 @@ jobs:
     environment:
       name: test
     runs-on: ubuntu-22.04
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
+    if: github.event.pull_request.merged == true
     steps:
       - name: Check for image changes
         id: check
