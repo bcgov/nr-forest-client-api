@@ -1,0 +1,13 @@
+apiVersion: ops.gov.bc.ca/v1alpha1
+kind: SysdigTeam
+metadata:
+  name: d2723f-sysdigteam
+  namespace: d2723f-tools
+spec:
+  team:
+    description: The Sysdig Team for Forest Client
+    users:
+      - name: mamartinezmejia@gmail.com
+        role: ROLE_TEAM_EDIT
+      - name: mcatherine1994@gmail.com
+        role: ROLE_TEAM_MANAGER
