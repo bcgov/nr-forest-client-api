@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ClientPublicViewModule } from './clientpublicview/clientPublicView.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { ClientModule } from './client/client.module';
 
 @Module({
   imports: [
@@ -14,7 +16,7 @@ import { ClientPublicViewModule } from './clientpublicview/clientPublicView.modu
       port: Number(process.env.ORACLEDB_PORT || 1521),
       serviceName: process.env.ORACLEDB_SERVICENAME,
       //NOTE: Uncomment this out when deploying to OS
-      connectString: `(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCPS)(HOST=nrcdb03.bcgov)(PORT=1543))) (CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=FORTMP1.nrs.bcgov)))`,
+      //connectString: `(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCPS)(HOST=nrcdb03.bcgov)(PORT=1543))) (CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=FORTMP1.nrs.bcgov)))`,
       database: process.env.ORACLEDB_DATABASE || 'oracle',
       username: process.env.ORACLEDB_USER || 'oracle',
       password: process.env.ORACLEDB_PASSWORD,
@@ -22,6 +24,8 @@ import { ClientPublicViewModule } from './clientpublicview/clientPublicView.modu
       synchronize: false, // This changes the DB schema to match changes to entities, which we might not want.
       //logging: true
     }),
+    ScheduleModule.forRoot(),
+    ClientModule,
     ClientPublicViewModule,
   ],
   controllers: [AppController],

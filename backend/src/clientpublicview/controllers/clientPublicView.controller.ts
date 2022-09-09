@@ -5,7 +5,7 @@ import { PageOptionsDto } from '../../pagination/dtos/page-option.dto';
 import { ClientPublicViewService } from '../services/clientPublicView.service';
 
 @ApiTags('Client View')
-@Controller('client')
+@Controller('client_view')
 export class ClientPublicViewController {
   constructor(
     private readonly clientPublicViewService: ClientPublicViewService,
