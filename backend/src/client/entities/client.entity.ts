@@ -35,7 +35,7 @@ export class ClientEntity extends BaseEntity {
   clientIdentification: string;
 
   @Column({ name: 'REGISTRY_COMPANY_TYPE_CODE' })
-  registryCompnayTypeCode: string;
+  registryCompanyTypeCode: string;
 
   @Column({ name: 'CORP_REGN_NMBR' })
   corpRegnNmbr: string;
