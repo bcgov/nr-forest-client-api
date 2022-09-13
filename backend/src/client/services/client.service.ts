@@ -15,7 +15,7 @@ export class ClientService {
 
   async findAll(): Promise<Client[]> {
     let findings: CodeDescr[] = [];
-    //let clientList: ClientEntity[] = [];
+    let clientList: ClientEntity[] = [];
 
     const queryBuilder = this.clientRepository
       .createQueryBuilder('FOREST_CLIENT')
@@ -24,58 +24,54 @@ export class ClientService {
       .andWhere("FOREST_CLIENT.CORP_REGN_NMBR IS NOT NULL")
       .orderBy('FOREST_CLIENT.CLIENT_NUMBER', 'ASC');
 
+    //clientList = await queryBuilder.getMany();
     const itemCount = await queryBuilder.getCount();
-    //console.log('ItemCount: ' + itemCount);
+    console.log('ItemCount: ' + itemCount);
 
     const take = 10;
     const numberOfPages = Math.ceil(itemCount/take);
 
-    //for (let page = 1; page <= numberOfPages; page++) {
-    for (let page = 1; page <= 10; page++) {
+    for (let page = 1; page <= numberOfPages; page++) {
       const skip = (page - 1) * take;
+      console.log('skip: ' + skip);
+      console.log('Page # ' + page);
 
-      queryBuilder
-        .skip(skip)
-        .take(take)
-        .getMany()
-        .then((clients) => {
-          
-          //console.log('Page # ' + page);
+      clientList = await queryBuilder.skip(skip).take(take).getMany();
 
-          for (let i = 0; i < clients.length; i++) {
-            let registryCompanyTypeCode = clients[i].registryCompanyTypeCode;
-            let clientId = !this.isEmptyOrHasSpaces(registryCompanyTypeCode) ? registryCompanyTypeCode : '';
-            clientId = clientId + clients[i].corpRegnNmbr;
-            //console.log(clientId);
+      clientList.forEach(
+        (client) => {
+          let registryCompanyTypeCode = client.registryCompanyTypeCode;
+          let clientId = !this.isEmptyOrHasSpaces(registryCompanyTypeCode) ? registryCompanyTypeCode : '';
+          clientId = clientId + client.corpRegnNmbr;
+          console.log(clientId);
 
-            //let test = axios
-            axios
+          axios
               .get(
-                'https://orgbook.gov.bc.ca/api/v4/search/topic?q=' + clientId,
+                'http://orgbook.gov.bc.ca/api/v4/search/topic?ordering=-score&q=' + clientId + '&inactive=any&latest=true&revoked=false'
+                //'https://orgbook.gov.bc.ca/api/v4/search/topic?q=' + clientId
               )
               .then((response) => {
                 let results = response.data.results;
                 let finding = new CodeDescr();
-
+                finding.text = clientId;
+                
                 if (results.length > 0) {
                   finding.code = 'F';
-                  finding.text = 'Client with ID ' + clientId + ' found';
+                  finding.active = !response.data.results[0].inactive ? 'Yes' : 'No';
                   findings.push(finding);
                 } 
                 else {
                   finding.code = 'NF';
-                  finding.text = 'Client with ID ' + clientId + ' not found';
                   findings.push(finding);
                 }
-                //return findings;
               })
               .catch((err) => {
                 console.error(err);
               });
-  
-            //console.log(test);
-          }
-        });
+
+        }
+      );
+
     }
 
     setTimeout(() => {
@@ -85,10 +81,15 @@ export class ClientService {
 
       console.log('Total of Clients Found = ' + foundClients + ' (' + ((foundClients / findings.length) * 100).toFixed(2) + '%)');
       console.log('Total of Clients Not Found = ' + notFoundClients + ' (' + ((notFoundClients / findings.length) * 100).toFixed(2) + '%)');
-      console.log(findings);
+      //console.log(JSON.stringify(findings));
+
+      const fs = require("fs"); 
+      const out = JSON.stringify(findings); 
+      const myConsole = new console.Console(fs.createWriteStream("./findings.json")); 
+      myConsole.log(out);
     }, 2000);
 
-    return queryBuilder.take(10).getMany();
+    return queryBuilder.take(1).getMany();
   }
 
   isEmptyOrHasSpaces(str) {
