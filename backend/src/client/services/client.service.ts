@@ -30,7 +30,8 @@ export class ClientService {
 
     const take = 10;
     const numberOfPages = Math.ceil(itemCount/take);
-
+    const timer = (ms: number) => new Promise(res => setTimeout(res, ms))
+    
     for (let page = 1; page <= numberOfPages; page++) {
       const skip = (page - 1) * take;
       console.log('skip: ' + skip);
@@ -53,16 +54,41 @@ export class ClientService {
               .then((response) => {
                 let results = response.data.results;
                 let finding = new CodeDescr();
-                finding.text = clientId;
+                finding.clientId = clientId;
+                finding.nameInClient = client.clientName;
                 
                 if (results.length > 0) {
-                  finding.code = 'F';
+                  finding.code = 'PF';
                   finding.active = !response.data.results[0].inactive ? 'Yes' : 'No';
+
+                  if (response.data.results[0].names.length > 0) {
+                    finding.nameInOrgBook = response.data.results[0].names[0].text;
+
+                    if (finding.nameInClient === finding.nameInOrgBook) {
+                      finding.code = 'F';
+                    }
+                  }
+
                   findings.push(finding);
                 } 
                 else {
-                  finding.code = 'NF';
-                  findings.push(finding);
+                  axios
+                  .get(
+                    'https://orgbook.gov.bc.ca/api/v3/search/autocomplete?q=' + encodeURI(client.clientName)
+                  )
+                  .then((response) => {
+                    let results = response.data.results;
+                    if (results.length > 0) {
+                      let clientName = response.data.results[0].value;
+                      finding.nameInOrgBook = clientName;
+                      finding.active = !response.data.results[0].inactive ? 'Yes' : 'No';
+                      finding.code = 'PF';
+                    }
+                    else {
+                      finding.code = 'NF';
+                    }
+                    findings.push(finding);
+                  });
                 }
               })
               .catch((err) => {
@@ -71,6 +97,8 @@ export class ClientService {
 
         }
       );
+
+      await timer(500);
 
     }
 

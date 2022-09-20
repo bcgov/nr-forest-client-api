@@ -1,5 +1,8 @@
 export class CodeDescr {
     code?: string;
-    text?: string;
+    clientId?: string;
     active?: string;
+    nameInClient?: string;
+    nameInOrgBook?: string;
+    nameEquals?: string;
 }
