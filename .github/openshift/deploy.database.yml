@@ -3,7 +3,7 @@ kind: Template
 metadata:
   name: ${NAME}
   annotations:
-    description: "Nr-Old-Growth"
+    description: "NR-Forest-Clinet-Api"
     tags: "nrfc-api"
     iconClass: icon-js
 labels:
