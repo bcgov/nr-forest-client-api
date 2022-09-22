@@ -62,7 +62,7 @@ export class ClientEntity extends BaseEntity {
   addOrgUnit: string;
 
   @Column({ name: 'UPDATE_TIMESTAMP' })
-  updateTimestamp: string;
+  updateTimestamp: Date;
 
   @Column({ name: 'UPDATE_USERID' })
   updateUserid: string;

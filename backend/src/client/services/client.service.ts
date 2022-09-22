@@ -56,6 +56,7 @@ export class ClientService {
                 let finding = new CodeDescr();
                 finding.clientId = clientId;
                 finding.nameInClient = client.clientName;
+                finding.updateTimestamp = client.updateTimestamp;
                 
                 if (results.length > 0) {
                   finding.code = 'PF';

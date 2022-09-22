@@ -5,4 +5,5 @@ export class CodeDescr {
     nameInClient?: string;
     nameInOrgBook?: string;
     nameEquals?: string;
+    updateTimestamp?: Date;
 }
