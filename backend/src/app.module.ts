@@ -5,7 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ClientPublicViewModule } from './clientpublicview/clientPublicView.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { ClientModule } from './client/client.module';
+import { ForestClientModule } from './forestclient/forestClient.module';
 
 @Module({
   imports: [
@@ -25,7 +25,7 @@ import { ClientModule } from './client/client.module';
       //logging: true
     }),
     ScheduleModule.forRoot(),
-    ClientModule,
+    ForestClientModule,
     ClientPublicViewModule,
   ],
   controllers: [AppController],

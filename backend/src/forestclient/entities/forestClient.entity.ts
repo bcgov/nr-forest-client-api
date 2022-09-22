@@ -6,7 +6,7 @@ import {
 } from 'typeorm';
 
 @Entity({ name: 'FOREST_CLIENT' })
-export class ClientEntity extends BaseEntity {
+export class ForestClientEntity extends BaseEntity {
   @PrimaryColumn({ name: 'CLIENT_NUMBER' })
   clientNumber: string;
 

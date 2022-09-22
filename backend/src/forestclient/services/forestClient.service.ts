@@ -3,21 +3,21 @@ import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
 import { CodeDescr } from 'src/core/CodeDescrType';
 import { Repository } from 'typeorm';
-import { ClientEntity } from '../entities/client.entity';
-import { Client } from '../entities/client.interface';
+import { ForestClientEntity } from '../entities/forestClient.entity';
+import { Client } from '../../common/client.interface';
 
 @Injectable()
-export class ClientService {
+export class ForestClientService {
   constructor(
-    @InjectRepository(ClientEntity)
-    private clientRepository: Repository<ClientEntity>,
+    @InjectRepository(ForestClientEntity)
+    private forestClientRepository: Repository<ForestClientEntity>,
   ) {}
 
   async findAll(): Promise<Client[]> {
     let findings: CodeDescr[] = [];
-    let clientList: ClientEntity[] = [];
+    let clientList: ForestClientEntity[] = [];
 
-    const queryBuilder = this.clientRepository
+    const queryBuilder = this.forestClientRepository
       .createQueryBuilder('FOREST_CLIENT')
       .where("FOREST_CLIENT.CLIENT_TYPE_CODE IN ('C', 'A')")
       .andWhere("FOREST_CLIENT.CLIENT_STATUS_CODE = 'ACT'")
