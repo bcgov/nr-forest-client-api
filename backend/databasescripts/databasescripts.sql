@@ -18,6 +18,7 @@ create table client (
 	client_type_code          	varchar(10)    	not null,
 	date_of_birth				date 			null,
 	comment						varchar(4000)	null,
+    valid_ind                   varchar(10)    	null,
 	create_timestamp  			timestamp      	default current_timestamp not null,
     update_timestamp  			timestamp      	default current_timestamp,
     create_user       			varchar(60)    	not null,
