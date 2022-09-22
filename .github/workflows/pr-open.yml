@@ -218,6 +218,7 @@ jobs:
           oc project ${{ secrets.OC_NAMESPACE }}
 
           # Process and apply template  
+          oc process -f .github/openshift/deploy.database.yml -p ZONE=${{ env.ZONE }} | oc apply -f -
           oc process -f .github/openshift/deploy.backend.yml -p ZONE=${{ env.ZONE }} \
             -p PROMOTE=${{ github.repository }}:${{ env.ZONE }}-backend \
             -p NODE_ENV='development' \
@@ -228,6 +229,8 @@ jobs:
             -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }} | oc apply -f -
 
           # Follow any active rollouts (see deploymentconfigs)
+          oc rollout status dc/${{ env.NAME }}-${{ env.ZONE }}-database -w
+          oc exec dc/${{ env.NAME }}-${{ env.ZONE }}-database -- psql -d ${{ env.NAME }} -U ${{ env.NAME }} -c "$(cat backend/src/databasescripts/databasescripts.sql)"
           oc rollout status dc/${{ env.NAME }}-${{ env.ZONE }}-backend -w
 
       - name: Deployment Verification
