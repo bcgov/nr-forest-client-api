@@ -4,7 +4,7 @@ import axios from 'axios';
 import { CodeDescr } from 'src/core/CodeDescrType';
 import { Repository } from 'typeorm';
 import { ForestClientEntity } from '../entities/forestClient.entity';
-import { Client } from '../../client/entities/client.interface';
+import { ForestClient } from '../entities/forestClient.interface';
 
 @Injectable()
 export class ForestClientService {
@@ -13,7 +13,7 @@ export class ForestClientService {
     private forestClientRepository: Repository<ForestClientEntity>,
   ) {}
 
-  async findAll(): Promise<Client[]> {
+  async findAll(): Promise<ForestClient[]> {
     let findings: CodeDescr[] = [];
     let clientList: ForestClientEntity[] = [];
 
@@ -29,9 +29,9 @@ export class ForestClientService {
     console.log('ItemCount: ' + itemCount);
 
     const take = 10;
-    const numberOfPages = Math.ceil(itemCount/take);
-    const timer = (ms: number) => new Promise(res => setTimeout(res, ms))
-    
+    const numberOfPages = Math.ceil(itemCount / take);
+    const timer = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
     for (let page = 1; page <= numberOfPages; page++) {
       const skip = (page - 1) * take;
       console.log('skip: ' + skip);
