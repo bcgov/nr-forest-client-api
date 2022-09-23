@@ -4,7 +4,7 @@ import axios from 'axios';
 import { CodeDescr } from 'src/core/CodeDescrType';
 import { Repository } from 'typeorm';
 import { ForestClientEntity } from '../entities/forestClient.entity';
-import { Client } from '../../common/client.interface';
+import { Client } from '../../client/entities/client.interface';
 
 @Injectable()
 export class ForestClientService {

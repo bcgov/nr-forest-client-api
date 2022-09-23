@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ClientModule } from './client/client.module';
 import { ClientPublicViewModule } from './clientpublicview/clientPublicView.module';
-import { ScheduleModule } from '@nestjs/schedule';
 import { ForestClientModule } from './forestclient/forestClient.module';
 
 @Module({
@@ -24,7 +25,20 @@ import { ForestClientModule } from './forestclient/forestClient.module';
       synchronize: false, // This changes the DB schema to match changes to entities, which we might not want.
       //logging: true
     }),
+    TypeOrmModule.forRoot({
+      name: 'postgresdb',
+      type: 'postgres',
+      host: process.env.POSTGRESQL_HOST || 'localhost',
+      port: 5432,
+      database: process.env.POSTGRESQL_DATABASE || 'postgres',
+      username: process.env.POSTGRESQL_USER || 'postgres',
+      password: process.env.POSTGRESQL_PASSWORD,
+      autoLoadEntities: true,
+      synchronize: false,
+      //logging: true
+    }),
     ScheduleModule.forRoot(),
+    ClientModule,
     ForestClientModule,
     ClientPublicViewModule,
   ],
