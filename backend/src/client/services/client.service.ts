@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Client } from 'src/client/entities/client.interface';
 import { ForestClient } from 'src/forestclient/entities/forestClient.interface';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { ClientEntity } from '../entities/client.entity';
 
 @Injectable()
@@ -12,14 +12,10 @@ export class ClientService {
   constructor(
     @InjectRepository(ClientEntity, 'postgresdb')
     private clientRepository: Repository<ClientEntity>,
-    
-    private dataSource: DataSource,
   ) {}
-  
+
   findAll(): Promise<Client[]> {
-    return this.clientRepository
-      .createQueryBuilder('client')
-      .getMany();
+    return this.clientRepository.createQueryBuilder('client').getMany();
   }
 
   //@Cron('*/15 * * * * *') //Runs every 15 seconds
@@ -32,13 +28,22 @@ export class ClientService {
 
   async postClient(clientFromOracleAsObj) {
     const forestClient: ForestClient = clientFromOracleAsObj.client;
-    
-    const client = new ClientEntity() ;
+
+    const registryCompanyTypeCode = clientFromOracleAsObj.registryCompanyTypeCode;
+    let incorporationNumber = !this.isEmptyOrHasSpacesOrUndefined(registryCompanyTypeCode) ? registryCompanyTypeCode : '';
+    incorporationNumber += clientFromOracleAsObj.corpRegnNmbr;
+
+    const client = new ClientEntity();
     client.clientNumberInOracle = forestClient.clientNumber;
     client.organizationName = forestClient.clientName;
     client.firstName = forestClient.legalFirstName;
     client.middleName = forestClient.legalMiddleName;
-    //client.incorporationNumber = 
+    client.incorporationNumber = incorporationNumber;
+    client.clientStatusCode = forestClient.clientStatusCode;
+    client.clientTypeCode = forestClient.clientTypeCode;
+    client.createUser = 'mariamar';
+    client.createTimestamp = new Date();
+
     this.clientRepository.save(client);
 
     /*client.clientStatusCode = clientFromOracle.clientStatusCode;
@@ -63,5 +68,9 @@ export class ClientService {
     finally {
       await queryRunner.release();
     }*/
+  }
+
+  isEmptyOrHasSpacesOrUndefined(str) {
+    return str === undefined || str === null || str.trim() === '';
   }
 }

@@ -38,7 +38,7 @@ export class ForestClientService {
         clientList.forEach((client) => {
           console.log('Adding client with number ' + client.clientNumber + "...");
           axios
-            .post('http://localhost:3000/client/postClient', {
+            .post(process.env.BACKEND_URL + '/client/postClient', {
               client: client,
             })
             .catch((err) => console.log('Error: ' + err));
@@ -47,8 +47,14 @@ export class ForestClientService {
     
     }
 
+    const endDatetime = new Date();
+
+    const msInMinute = 60 * 1000;
+    const timeInMin = Math.round(Math.abs(endDatetime.valueOf() - startDatetime.valueOf()) / msInMinute);
+
     console.log("Migration initialized on " + startDatetime);
-    console.log("Migration finalized on " + new Date());
+    console.log("Migration finalized on " + endDatetime);
+    console.log("Time in minutes: " + timeInMin);
 
     return null;
   }

@@ -1,7 +1,5 @@
 
-import { ClientStatusCodeEntity } from 'src/clientstatuscode/entities/clientStatusCode.entity';
-import { ClientTypeCodeEntity } from 'src/clienttypecode/entities/clientTypeCode.entity';
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 
 @Entity({ name: 'client' })
@@ -28,12 +26,10 @@ export class ClientEntity extends BaseEntity {
   @Column({ name: 'last_name' })
   lastName: string;
 
-  //@ManyToOne(() => ClientStatusCodeEntity, (entity) => entity.code)
-  @ManyToOne(type => ClientStatusCodeEntity)
-  @JoinColumn({ referencedColumnName: "code" })
-  clientStatusCode: ClientStatusCodeEntity;
+  @Column({ name: 'client_status_code' })
+  clientStatusCode: string;
 
-  @ManyToOne(() => ClientTypeCodeEntity, (entity) => entity.code)
+  @Column({ name: 'client_type_code' })
   clientTypeCode: string;
 
   @Column({ name: 'date_of_birth' })

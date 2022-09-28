@@ -8,7 +8,7 @@ export interface Client {
   firstName?: string;
   middleName?: string;
   lastName?: string;
-  clientStatusCode: ClientStatusCodeEntity;
+  clientStatusCode: string;
   clientTypeCode: string;
   dateOfBirth?: Date;
   comment?: string;
