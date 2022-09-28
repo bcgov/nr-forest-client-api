@@ -5,4 +5,5 @@ export interface ForestClient {
   clientTypeCode: string;
   legalFirstName: string;
   legalMiddleName: string;
+  registryCompanyTypeCode: string;
 }
