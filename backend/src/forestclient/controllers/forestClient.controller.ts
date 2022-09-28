@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ForestClientService } from '../services/forestClient.service';
 
@@ -9,9 +9,9 @@ export class ForestClientController {
     private readonly forestClientService: ForestClientService,
   ) {}
 
-  @Get('/findAll')
-  findAll() {
-    return this.forestClientService.findAll();
+  @Get('/migrateFromOracleToPostgress')
+  migrationFromOracleToPostgress() {
+    return this.forestClientService.migrateFromOracleToPostgress();
   }
   
 }

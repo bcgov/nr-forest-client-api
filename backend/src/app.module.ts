@@ -6,6 +6,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ClientModule } from './client/client.module';
 import { ClientPublicViewModule } from './clientpublicview/clientPublicView.module';
+import { ClientStatusCodeModule } from './clientstatuscode/clientStatusCode.module';
+import { ClientTypeCodeModule } from './clienttypecode/clientTypeCode.module';
 import { ForestClientModule } from './forestclient/forestClient.module';
 
 @Module({
@@ -40,6 +42,8 @@ import { ForestClientModule } from './forestclient/forestClient.module';
     ScheduleModule.forRoot(),
     ClientModule,
     ForestClientModule,
+    ClientStatusCodeModule,
+    ClientTypeCodeModule,
     ClientPublicViewModule,
   ],
   controllers: [AppController],

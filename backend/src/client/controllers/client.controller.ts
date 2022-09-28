@@ -1,5 +1,7 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { ForestClient } from 'src/forestclient/entities/forestClient.interface';
+import { Client } from '../entities/client.interface';
 import { ClientService } from '../services/client.service';
 
 @ApiTags('Client')
@@ -7,14 +9,14 @@ import { ClientService } from '../services/client.service';
 export class ClientController {
   constructor(private readonly clientService: ClientService) {}
 
-  @Get('/findAllClients')
-  findAllClients() {
-    return this.clientService.findAllClients();
+  @Get('/findAll')
+  findAll() {
+    return this.clientService.findAll();
   }
 
-  @Get('/findClientByClientNumber')
-  findClientByClientNumber(@Query('clientNumber') clientNumber?: string) {
-    return this.clientService.findClientByClientNumber(clientNumber);
+  @Post('/postClient')
+  async postClient(@Body() client: ForestClient) {
+    return this.clientService.postClient(client);
   }
 
 }

@@ -1,18 +1,20 @@
+import { ClientStatusCodeEntity } from "src/clientstatuscode/entities/clientStatusCode.entity";
+
 export interface Client {
   clientId: number;
-  clientNumberInOracle: string;
-  incorporationNumber: string;
-  organizationName: string;
-  firstName: string;
-  middleName: string;
-  lastName: string;
-  clientStatusCode: string;
+  clientNumberInOracle?: string;
+  incorporationNumber?: string;
+  organizationName?: string;
+  firstName?: string;
+  middleName?: string;
+  lastName?: string;
+  clientStatusCode: ClientStatusCodeEntity;
   clientTypeCode: string;
-  dateOfBirth: Date;
-  comment: string;
-  validInd: string;
+  dateOfBirth?: Date;
+  comment?: string;
+  validInd?: string;
   createTimestamp: Date;
-  updateTimestamp: Date;
+  updateTimestamp?: Date;
   createUser: string;
-  updateUser: string;
+  updateUser?: string;
 }

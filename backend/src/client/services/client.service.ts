@@ -1,9 +1,8 @@
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { Cron } from '@nestjs/schedule';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import axios from 'axios';
 import { Client } from 'src/client/entities/client.interface';
-import { Repository } from 'typeorm';
+import { ForestClient } from 'src/forestclient/entities/forestClient.interface';
+import { DataSource, Repository } from 'typeorm';
 import { ClientEntity } from '../entities/client.entity';
 
 @Injectable()
@@ -13,47 +12,45 @@ export class ClientService {
   constructor(
     @InjectRepository(ClientEntity, 'postgresdb')
     private clientRepository: Repository<ClientEntity>,
+    
+    private dataSource: DataSource,
   ) {}
-
-  findAllClients(): Promise<Client[]> {
+  
+  findAll(): Promise<Client[]> {
     return this.clientRepository
       .createQueryBuilder('client')
       .getMany();
   }
 
-  findClientByClientNumber(clientNumberInOracle: string): Promise<Client> {
-    return this.clientRepository
-      .createQueryBuilder('client')
-      .where('client_number_in_oracle = :clientNumberInOracle', {
-        clientNumberInOracle: clientNumberInOracle,
-      })
-      .getOne();
-  }
-
   //@Cron('*/15 * * * * *') //Runs every 15 seconds
-  async migrateDataFromOracle() {
+  async postData(): Promise<any> {
     console.log('test');
+    const client = new ClientEntity();
+    client.organizationName = 'Mayis';
+    this.clientRepository.save(client);
   }
 
-  async postClient(activeClient: Client) {
-    const client = new ClientEntity();
-    client.clientStatusCode = activeClient.clientStatusCode;
-    client.clientTypeCode = activeClient.clientTypeCode;
-
+  async postClient(clientFromOracleAsObj) {
+    const forestClient: ForestClient = clientFromOracleAsObj.client;
+    
+    const client = new ClientEntity() ;
+    client.clientNumberInOracle = forestClient.clientNumber;
+    client.organizationName = forestClient.clientName;
+    client.firstName = forestClient.legalFirstName;
+    client.middleName = forestClient.legalMiddleName;
+    //client.incorporationNumber = 
     this.clientRepository.save(client);
+
+    /*client.clientStatusCode = clientFromOracle.clientStatusCode;
+    client.clientTypeCode = clientFromOracle.clientTypeCode;*/
 
     /*const queryRunner = this.dataSource.createQueryRunner();
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const client = new ClientEntity() ;
-      client.clientNumber = activeClient.clientNumber;
-      client.clientName = activeClient.clientName;
-      client.clientStatusCode = activeClient.clientStatusCode;
-      client.clientTypeCode = activeClient.clientTypeCode;
-      client.legalFirstName = activeClient.legalFirstName;
-      client.legalMiddleName = activeClient.legalMiddleName;
+
+      
 
       await queryRunner.manager.save(client);
       await queryRunner.commitTransaction();
