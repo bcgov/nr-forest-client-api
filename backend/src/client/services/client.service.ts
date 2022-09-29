@@ -33,8 +33,9 @@ export class ClientService {
     const corpRegnNmbr = forestClient.corpRegnNmbr ? forestClient.corpRegnNmbr : '';
 
     let incorporationNumber = '';
-    incorporationNumber = incorporationNumber + !this.isEmptyOrHasSpaces(registryCompanyTypeCode) ? clientFromOracleAsObj.registryCompanyTypeCode : '';
+    incorporationNumber = incorporationNumber + !this.isEmptyOrHasSpaces(registryCompanyTypeCode) ? registryCompanyTypeCode : '';
     incorporationNumber = incorporationNumber + !this.isEmptyOrHasSpaces(corpRegnNmbr) ? corpRegnNmbr : '';
+    incorporationNumber = !this.isEmptyOrHasSpaces(incorporationNumber) ? incorporationNumber : null;
 
     const client = new ClientEntity();
     client.clientNumberInOracle = forestClient.clientNumber;
@@ -47,7 +48,7 @@ export class ClientService {
     client.createUser = 'mariamar';
     client.createTimestamp = new Date();
 
-    this.clientRepository.save(client);
+    //this.clientRepository.save(client);
 
     /*client.clientStatusCode = clientFromOracle.clientStatusCode;
     client.clientTypeCode = clientFromOracle.clientTypeCode;*/
