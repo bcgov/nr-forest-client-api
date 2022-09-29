@@ -48,7 +48,7 @@ export class ClientService {
     client.createUser = 'mariamar';
     client.createTimestamp = new Date();
 
-    //this.clientRepository.save(client);
+    this.clientRepository.save(client);
 
     /*client.clientStatusCode = clientFromOracle.clientStatusCode;
     client.clientTypeCode = clientFromOracle.clientTypeCode;*/
