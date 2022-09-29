@@ -19,7 +19,7 @@ import { ForestClientModule } from './forestclient/forestClient.module';
       port: Number(process.env.ORACLEDB_PORT || 1521),
       serviceName: process.env.ORACLEDB_SERVICENAME,
       //NOTE: Uncomment this out when deploying to OS
-      //connectString: `(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCPS)(HOST=nrcdb03.bcgov)(PORT=1543))) (CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=FORTMP1.nrs.bcgov)))`,
+      connectString: `(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCPS)(HOST=nrcdb03.bcgov)(PORT=1543))) (CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=FORTMP1.nrs.bcgov)))`,
       database: process.env.ORACLEDB_DATABASE || 'oracle',
       username: process.env.ORACLEDB_USER || 'oracle',
       password: process.env.ORACLEDB_PASSWORD,
