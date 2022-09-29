@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Console } from 'console';
 import { Client } from 'src/client/entities/client.interface';
 import { ForestClient } from 'src/forestclient/entities/forestClient.interface';
 import { Repository } from 'typeorm';
@@ -29,12 +30,9 @@ export class ClientService {
   async postClient(clientFromOracleAsObj) {
     const forestClient: ForestClient = clientFromOracleAsObj.client;
 
-    const registryCompanyTypeCode = forestClient.registryCompanyTypeCode ? forestClient.registryCompanyTypeCode : '';
-    const corpRegnNmbr = forestClient.corpRegnNmbr ? forestClient.corpRegnNmbr : '';
-
-    let incorporationNumber = '';
-    incorporationNumber = incorporationNumber + !this.isEmptyOrHasSpaces(registryCompanyTypeCode) ? registryCompanyTypeCode : '';
-    incorporationNumber = incorporationNumber + !this.isEmptyOrHasSpaces(corpRegnNmbr) ? corpRegnNmbr : '';
+    const registryCompanyTypeCode = forestClient.registryCompanyTypeCode ? forestClient.registryCompanyTypeCode.trim() : '';
+    const corpRegnNmbr = forestClient.corpRegnNmbr ? forestClient.corpRegnNmbr.trim() : '';
+    let incorporationNumber = registryCompanyTypeCode + corpRegnNmbr;
     incorporationNumber = !this.isEmptyOrHasSpaces(incorporationNumber) ? incorporationNumber : null;
 
     const client = new ClientEntity();
@@ -45,6 +43,7 @@ export class ClientService {
     client.incorporationNumber = incorporationNumber;
     client.clientStatusCode = forestClient.clientStatusCode;
     client.clientTypeCode = forestClient.clientTypeCode;
+    client.comment = forestClient.clientComment;
     client.createUser = 'mariamar';
     client.createTimestamp = new Date();
 
