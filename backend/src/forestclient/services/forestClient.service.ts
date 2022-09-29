@@ -41,7 +41,10 @@ export class ForestClientService {
             .post(process.env.BACKEND_URL + '/client/postClient', {
               client: client,
             })
-            .catch((err) => console.log('Error: ' + err));
+            .catch((err) => {
+              console.log('Error: ' + err);
+              return null;
+            });
         });
       }
     

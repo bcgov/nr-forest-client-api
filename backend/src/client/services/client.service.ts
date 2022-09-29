@@ -30,8 +30,9 @@ export class ClientService {
     const forestClient: ForestClient = clientFromOracleAsObj.client;
 
     const registryCompanyTypeCode = clientFromOracleAsObj.registryCompanyTypeCode;
-    let incorporationNumber = !this.isEmptyOrHasSpacesOrUndefined(registryCompanyTypeCode) ? registryCompanyTypeCode : '';
-    incorporationNumber += clientFromOracleAsObj.corpRegnNmbr;
+    let incorporationNumber = !this.isEmptyOrHasSpacesOrUndefined(registryCompanyTypeCode) ? clientFromOracleAsObj.registryCompanyTypeCode : '';
+    const corpRegnNmbr = clientFromOracleAsObj.corpRegnNmbr;
+    incorporationNumber += !this.isEmptyOrHasSpacesOrUndefined(corpRegnNmbr) ? corpRegnNmbr : '';
 
     const client = new ClientEntity();
     client.clientNumberInOracle = forestClient.clientNumber;
@@ -71,6 +72,6 @@ export class ClientService {
   }
 
   isEmptyOrHasSpacesOrUndefined(str) {
-    return str === undefined || str === null || str.trim() === '';
+    return !str || null === str || str.trim() === '';
   }
 }
