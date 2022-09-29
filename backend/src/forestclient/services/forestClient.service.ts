@@ -23,7 +23,6 @@ export class ForestClientService {
         .where('EXTRACT(YEAR FROM FOREST_CLIENT.ADD_TIMESTAMP) = :year', {
           year: i,
         })
-        .andWhere('FOREST_CLIENT.CLIENT_NUMBER IS NOT NULL')
         .orderBy('FOREST_CLIENT.CLIENT_NUMBER', 'ASC');
 
       const itemCount = await queryBuilder.getCount();
