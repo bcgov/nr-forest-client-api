@@ -29,10 +29,12 @@ export class ClientService {
   async postClient(clientFromOracleAsObj) {
     const forestClient: ForestClient = clientFromOracleAsObj.client;
 
-    const registryCompanyTypeCode = clientFromOracleAsObj.registryCompanyTypeCode;
-    let incorporationNumber = !this.isEmptyOrHasSpacesOrUndefined(registryCompanyTypeCode) ? clientFromOracleAsObj.registryCompanyTypeCode : '';
-    const corpRegnNmbr = clientFromOracleAsObj.corpRegnNmbr;
-    incorporationNumber += !this.isEmptyOrHasSpacesOrUndefined(corpRegnNmbr) ? corpRegnNmbr : '';
+    const registryCompanyTypeCode = forestClient.registryCompanyTypeCode ? forestClient.registryCompanyTypeCode : '';
+    const corpRegnNmbr = forestClient.corpRegnNmbr ? forestClient.corpRegnNmbr : '';
+
+    let incorporationNumber = '';
+    incorporationNumber = incorporationNumber + !this.isEmptyOrHasSpaces(registryCompanyTypeCode) ? clientFromOracleAsObj.registryCompanyTypeCode : '';
+    incorporationNumber = incorporationNumber + !this.isEmptyOrHasSpaces(corpRegnNmbr) ? corpRegnNmbr : '';
 
     const client = new ClientEntity();
     client.clientNumberInOracle = forestClient.clientNumber;
@@ -71,7 +73,7 @@ export class ClientService {
     }*/
   }
 
-  isEmptyOrHasSpacesOrUndefined(str) {
-    return !str || null === str || str.trim() === '';
+  isEmptyOrHasSpaces(str) {
+    return null === str || str.trim() === '';
   }
 }
