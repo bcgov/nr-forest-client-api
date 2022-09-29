@@ -26,7 +26,7 @@ export class ForestClientService {
         .orderBy('FOREST_CLIENT.CLIENT_NUMBER', 'ASC');
 
       const itemCount = await queryBuilder.getCount();
-      const take = 500;
+      const take = 100;
       const numberOfPages = Math.ceil(itemCount / take);
 
       for (let page = 1; page <= numberOfPages; page++) {
@@ -43,10 +43,14 @@ export class ForestClientService {
             })
             .catch((err) => {
               console.log(err);
-              return null;
+              return false;
             });
+          
+            return true;
         });
       }
+
+      console.log("Count: " + itemCount);
     
     }
 
