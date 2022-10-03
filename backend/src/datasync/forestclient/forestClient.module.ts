@@ -1,14 +1,16 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ForestClientController } from './controllers/forestClient.controller';
-import { ForestClientEntity } from './entities/forestClient.entity';
+import {
+  ForestClientEntity,
+  ClientEntity,
+} from './entities/forestClient.entity';
 import { ForestClientService } from './services/forestClient.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ForestClientEntity]),
+    TypeOrmModule.forFeature([ForestClientEntity], 'oracle'),
+    TypeOrmModule.forFeature([ClientEntity], 'postgres'),
   ],
-  controllers: [ForestClientController],
   providers: [ForestClientService],
 })
 export class ForestClientModule {}

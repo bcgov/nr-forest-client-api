@@ -3,6 +3,7 @@ import {
   Column,
   Entity,
   PrimaryColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 
 @Entity({ name: 'FOREST_CLIENT' })
@@ -26,7 +27,7 @@ export class ForestClientEntity extends BaseEntity {
   clientTypeCode: string;
 
   @Column({ name: 'BIRTHDATE' })
-  birthdate: string;
+  birthdate: Date;
 
   @Column({ name: 'CLIENT_ID_TYPE_CODE' })
   clientIdTypeCode: string;
@@ -53,13 +54,13 @@ export class ForestClientEntity extends BaseEntity {
   clientComment: string;
 
   @Column({ name: 'ADD_TIMESTAMP' })
-  addTimestamp: string;
+  addTimestamp: Date;
 
   @Column({ name: 'ADD_USERID' })
   addUserid: string;
 
   @Column({ name: 'ADD_ORG_UNIT' })
-  addOrgUnit: string;
+  addOrgUnit: number;
 
   @Column({ name: 'UPDATE_TIMESTAMP' })
   updateTimestamp: Date;
@@ -68,8 +69,59 @@ export class ForestClientEntity extends BaseEntity {
   updateUserid: string;
 
   @Column({ name: 'UPDATE_ORG_UNIT' })
-  updateOrgUnit: string;
+  updateOrgUnit: number;
 
   @Column({ name: 'REVISION_COUNT' })
-  revisionCount: string;
+  revisionCount: number;
+}
+
+@Entity({ name: 'CLIENT' })
+export class ClientEntity extends BaseEntity {
+  @PrimaryGeneratedColumn({ name: 'client_id' })
+  clientId: number;
+
+  @Column({ name: 'client_number_in_oracle' })
+  clientNumberInOracle: string;
+
+  @Column({ name: 'incorporation_number' })
+  incorporationNumber: string;
+
+  @Column({ name: 'organization_name' })
+  organizationName: string;
+
+  @Column({ name: 'first_name' })
+  firstName: string;
+
+  @Column({ name: 'middle_name' })
+  middleName: string;
+
+  @Column({ name: 'last_name' })
+  lastName: string;
+
+  @Column({ name: 'client_status_code' })
+  clientStatusCode: string;
+
+  @Column({ name: 'client_type_code' })
+  clientTypeCode: string;
+
+  @Column({ name: 'date_of_birth' })
+  dateOfBirth: Date;
+
+  @Column({ name: 'comment' })
+  comment: string;
+
+  @Column({ name: 'valid_ind' })
+  validInd: string;
+
+  @Column({ name: 'create_timestamp' })
+  createTimestamp: Date;
+
+  @Column({ name: 'update_timestamp' })
+  updateTimestamp: Date;
+
+  @Column({ name: 'create_user' })
+  createUser: string;
+
+  @Column({ name: 'update_user' })
+  updateUser: string;
 }

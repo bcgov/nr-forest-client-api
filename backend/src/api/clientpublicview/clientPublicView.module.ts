@@ -5,9 +5,7 @@ import { ClientPublicViewEntity } from './entities/clientPublicView.entity';
 import { ClientPublicViewService } from './services/clientPublicView.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([ClientPublicViewEntity]),
-  ],
+  imports: [TypeOrmModule.forFeature([ClientPublicViewEntity], 'oracle')],
   controllers: [ClientPublicViewController],
   providers: [ClientPublicViewService],
 })
