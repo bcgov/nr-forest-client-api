@@ -9,7 +9,7 @@ drop table if exists client_type_code;
 create table client (
     client_id               	serial			not null,
     client_number_in_oracle     varchar(10)    	null,
-	incorporation_number		varchar(10)    	null,
+	incorporation_number		varchar(20)    	null,
     organization_name           varchar(100)    null,
     first_name                  varchar(100)    null,
 	middle_name                 varchar(100)    null,
@@ -17,7 +17,7 @@ create table client (
     client_status_code          varchar(10)    	not null,
 	client_type_code          	varchar(10)    	not null,
 	date_of_birth				date 			null,
-	comment						varchar(4000)	null,
+	comment						varchar(6000)	null,
     valid_ind                   varchar(10)    	null,
 	create_timestamp  			timestamp      	default current_timestamp not null,
     update_timestamp  			timestamp      	default current_timestamp,
