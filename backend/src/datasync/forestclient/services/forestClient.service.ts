@@ -11,9 +11,9 @@ export class ForestClientService {
   private readonly logger = new Logger(ForestClientService.name);
 
   constructor(
-    @InjectRepository(ForestClientEntity)
+    @InjectRepository(ForestClientEntity, 'oracledb')
     private forestClientRepository: Repository<ForestClientEntity>,
-    @InjectRepository(ClientEntity)
+    @InjectRepository(ClientEntity, 'postgresdb')
     private clientRepository: Repository<ClientEntity>,
   ) {}
 

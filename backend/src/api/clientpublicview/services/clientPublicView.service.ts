@@ -10,7 +10,7 @@ import { ClientPublicView } from '../entities/clientPublicView.interface';
 @Injectable()
 export class ClientPublicViewService {
   constructor(
-    @InjectRepository(ClientPublicViewEntity)
+    @InjectRepository(ClientPublicViewEntity, 'oracledb')
     private clientPublicViewRepository: Repository<ClientPublicViewEntity>,
   ) {}
 
