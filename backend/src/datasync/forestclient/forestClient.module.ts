@@ -8,8 +8,8 @@ import { ForestClientService } from './services/forestClient.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ForestClientEntity], 'oracle'),
-    TypeOrmModule.forFeature([ClientEntity], 'postgres'),
+    TypeOrmModule.forFeature([ForestClientEntity], 'oracledb'),
+    TypeOrmModule.forFeature([ClientEntity], 'postgresdb'),
   ],
   providers: [ForestClientService],
 })

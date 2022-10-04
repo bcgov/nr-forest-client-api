@@ -13,7 +13,7 @@ import { ForestClientModule } from './datasync/forestclient/forestClient.module'
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
-      name: 'oracle',
+      name: 'oracledb',
       type: 'oracle',
       host: process.env.ORACLEDB_HOST || 'localhost',
       port: Number(process.env.ORACLEDB_PORT || 1521),
