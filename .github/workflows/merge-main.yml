@@ -131,13 +131,8 @@ jobs:
             -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }} | oc apply -f -
 
           # Follow any active rollouts (see deploymentconfigs)
+          oc rollout status dc/${{ env.NAME }}-${{ env.ZONE }}-database -w
           oc rollout status dc/${{ env.NAME }}-${{ env.ZONE }}-backend -w
-
-          # Run database migration
-          oc exec dc/${{ env.NAME }}-${{ env.ZONE }}-database -- psql -d ${{ env.NAME }} -U ${{ env.NAME }} -c "$(cat backend/src/databasescripts/databasescripts.sql)"
-
-          oc rollout status dc/${{ env.NAME }}-${{ env.ZONE }}-backend -w
-          oc rollout status dc/${{ env.NAME }}-${{ env.ZONE }}-frontend -w
 
           # Remove completed build runs, build pods and deployment pods
           for p in $(oc get po | grep "Completed" | awk '{print $1}')
