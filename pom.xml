@@ -24,27 +24,8 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>17</java.version>
 		<jdk.version>17</jdk.version>
-		<skip.integration.tests>true</skip.integration.tests>
-		<skip.unit.tests>false</skip.unit.tests>
-		<checkstyle.skip>true</checkstyle.skip>
-		<checkstyle.failsOnError>true</checkstyle.failsOnError>
-		<checkstyle.includeTestSourceDirectory>true</checkstyle.includeTestSourceDirectory>
-		<jacoco.output.data>${project.build.directory}/coverage-reports</jacoco.output.data>
-		<timestamp>${maven.build.timestamp}</timestamp>
-		<maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
-		<sonar.organization>bcgov-sonarcloud</sonar.organization>
-		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 	<profiles>
-		<profile>
-			<id>all-tests</id>
-			<properties>
-				<build.profile.id>all-tests</build.profile.id>
-				<skip.integration.tests>false</skip.integration.tests>
-				<skip.unit.tests>false</skip.unit.tests>
-				<jacoco.skip>false</jacoco.skip>
-			</properties>
-		</profile>
 		<profile>
 			<id>dev</id>
 		</profile>
@@ -84,131 +65,12 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>io.projectreactor</groupId>
-			<artifactId>reactor-test</artifactId>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>2.22.2</version>
-				<executions>
-					<execution>
-						<id>integration-tests</id>
-						<goals>
-							<goal>integration-test</goal>
-							<goal>verify</goal>
-						</goals>
-						<configuration>
-							<argLine>@{argLine} -Xmx1024m</argLine>
-							<useSystemClassLoader>false</useSystemClassLoader>
-							<skipTests>${skip.integration.tests}</skipTests>
-							<includes>
-								<include>**/*IntegrationTest.java</include>
-							</includes>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.22.2</version>
-				<configuration>
-					<argLine>@{argLine} -Xmx1024m</argLine>
-					<skipTests>${skip.unit.tests}</skipTests>
-					<excludes>
-						<exclude>**/*IntegrationTest.java</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.4.1</version>
-				<configuration>
-					<source>17</source>
-					<doctitle>Javadoc Documentation for ${project.name} ${project.version}</doctitle>
-					<windowtitle>${project.name} ${project.version}</windowtitle>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>3.1.0</version>
-				<executions>
-					<execution>
-						<id>default-cli</id>
-						<goals>
-							<goal>enforce</goal>
-						</goals>
-						<configuration>
-							<rules>
-								<dependencyCovergence />
-								<requireMavenVersion>
-									<version>[3.2,)</version>
-									<message>Invalid Maven version. It should be at least 3.2</message>
-								</requireMavenVersion>
-								<requireJavaVersion>
-									<version>17</version>
-									<message>Invalid Java Version. It should be at least 1.8</message>
-								</requireJavaVersion>
-								<requireNoRepositories>
-									<allowedRepositories>
-										<id>central</id>
-									</allowedRepositories>
-									<allowedPluginRepositories>
-										<id>central</id>
-									</allowedPluginRepositories>
-								</requireNoRepositories>
-								<requireReleaseDeps>
-									<message>No Snapshots Allowed in releases!</message>
-									<onlyWhenRelease>true</onlyWhenRelease>
-								</requireReleaseDeps>
-								<banDuplicatePomDependencyVersions />
-							</rules>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>3.2.0</version>
-				<dependencies>
-					<dependency>
-						<groupId>com.puppycrawl.tools</groupId>
-						<artifactId>checkstyle</artifactId>
-						<version>10.3.4</version>
-					</dependency>
-				</dependencies>
-				<configuration>
-					<skip>${checkstyle.skip}</skip>
-					<failsOnError>${checkstyle.failsOnError}</failsOnError>
-					<includeTestSourceDirectory>
-						${checkstyle.includeTestSourceDirectory}
-					</includeTestSourceDirectory>
-					<configLocation>.mvn/google_checks.xml</configLocation>
-					<consoleOutput>true</consoleOutput>
-					<linkXRef>false</linkXRef>
-				</configuration>
-				<executions>
-					<execution>
-						<id>validate</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 		<finalName>nr-forest-client-api</finalName>
