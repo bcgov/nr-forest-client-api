@@ -1,16 +1,16 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { PageOptionsDto } from '../../pagination/dtos/page-option.dto';
-import { PageDto } from '../../pagination/dtos/page.dto';
-import { PageMetaDto } from '../../pagination/dtos/page-meta.dto';
+import { PageOptionsDto } from '../../../pagination/dtos/page-option.dto';
+import { PageDto } from '../../../pagination/dtos/page.dto';
+import { PageMetaDto } from '../../../pagination/dtos/page-meta.dto';
 import { ClientPublicViewEntity } from '../entities/clientPublicView.entity';
 import { ClientPublicView } from '../entities/clientPublicView.interface';
 
 @Injectable()
 export class ClientPublicViewService {
   constructor(
-    @InjectRepository(ClientPublicViewEntity)
+    @InjectRepository(ClientPublicViewEntity, 'oracledb')
     private clientPublicViewRepository: Repository<ClientPublicViewEntity>,
   ) {}
 
@@ -25,7 +25,7 @@ export class ClientPublicViewService {
 
     let sqlWhereStr = '1=1';
     sqlWhereStr = sqlWhereStr + ' AND CLIENT_NUMBER = :clientNumber';
-    
+
     return this.clientPublicViewRepository
       .createQueryBuilder('V_CLIENT_PUBLIC')
       .where(sqlWhereStr, {
@@ -41,7 +41,12 @@ export class ClientPublicViewService {
     clientTypeCodesAsCsv: string,
     pageOptionsDto: PageOptionsDto,
   ): Promise<PageDto<ClientPublicView> | HttpException> {
-    if (!clientName && !clientFirstName && !clientMiddleName && !clientTypeCodesAsCsv)
+    if (
+      !clientName &&
+      !clientFirstName &&
+      !clientMiddleName &&
+      !clientTypeCodesAsCsv
+    )
       return new HttpException(
         'Must provide at least one paramater: clientName, clientFirstName, clientMiddleName, clientTypeCode',
         HttpStatus.BAD_REQUEST,
@@ -49,20 +54,27 @@ export class ClientPublicViewService {
 
     let sqlWhereStr = '1=1';
     if (clientName && clientName !== '') {
-      sqlWhereStr = sqlWhereStr + ' AND LOWER(V_CLIENT_PUBLIC.CLIENT_NAME) LIKE LOWER(:clientName)';
+      sqlWhereStr =
+        sqlWhereStr +
+        ' AND LOWER(V_CLIENT_PUBLIC.CLIENT_NAME) LIKE LOWER(:clientName)';
     }
 
     if (clientFirstName && clientFirstName !== '') {
-      sqlWhereStr = sqlWhereStr + ' AND LOWER(V_CLIENT_PUBLIC.LEGAL_FIRST_NAME) LIKE LOWER(:clientFirstName)';
+      sqlWhereStr =
+        sqlWhereStr +
+        ' AND LOWER(V_CLIENT_PUBLIC.LEGAL_FIRST_NAME) LIKE LOWER(:clientFirstName)';
     }
 
     if (clientMiddleName && clientMiddleName !== '') {
-      sqlWhereStr = sqlWhereStr + ' AND LOWER(V_CLIENT_PUBLIC.LEGAL_MIDDLE_NAME) LIKE LOWER(:clientMiddleName)';
+      sqlWhereStr =
+        sqlWhereStr +
+        ' AND LOWER(V_CLIENT_PUBLIC.LEGAL_MIDDLE_NAME) LIKE LOWER(:clientMiddleName)';
     }
 
     let clientTypeCodeAsList = [];
     if (clientTypeCodesAsCsv && clientTypeCodesAsCsv !== '') {
-      sqlWhereStr = sqlWhereStr + ' AND CLIENT_TYPE_CODE IN (:...clientTypeCode)';
+      sqlWhereStr =
+        sqlWhereStr + ' AND CLIENT_TYPE_CODE IN (:...clientTypeCode)';
       clientTypeCodeAsList = clientTypeCodesAsCsv.toUpperCase().split(',');
     }
 
@@ -74,7 +86,7 @@ export class ClientPublicViewService {
         clientName: `%${clientName}%`,
         clientFirstName: `%${clientFirstName}%`,
         clientMiddleName: `%${clientMiddleName}%`,
-        clientTypeCode: clientTypeCodeAsList
+        clientTypeCode: clientTypeCodeAsList,
       });
 
     queryBuilder
