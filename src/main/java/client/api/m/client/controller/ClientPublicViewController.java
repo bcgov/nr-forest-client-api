@@ -21,7 +21,7 @@ import client.api.m.client.entity.ClientPublicViewEntity;
 import client.api.m.client.service.ClientPublicViewService;
 
 @RestController
-@RequestMapping("api/m/clientpublic/")
+@RequestMapping("app/m/clientpublic/")
 public class ClientPublicViewController {
 
 	public static final Logger logger = LoggerFactory.getLogger(ClientPublicViewController.class);
