@@ -9,7 +9,8 @@ ENV JAVA_OPS -Xms256m -Xmx512m
 
 RUN ./mvnw clean package
 RUN chmod -R 777 ./target/*.jar
-RUN mkdir /opt/ora && chmod -R 777 /opt/ora
+RUN chmod -R g+w . && \
+    chmod g+x startup.sh
 
 EXPOSE 3000
 
