@@ -1,10 +1,10 @@
-package ca.bc.gov.app.m.client.service;
+package client.api.m.client.service;
 
 import java.util.List;
 
 import org.springframework.data.domain.Page;
 
-import ca.bc.gov.app.m.client.entity.ClientPublicViewEntity;
+import client.api.m.client.entity.ClientPublicViewEntity;
 
 public interface ClientPublicViewService {
 	

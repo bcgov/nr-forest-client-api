@@ -1,4 +1,4 @@
-package ca.bc.gov.app.m.client.service.impl;
+package client.api.m.client.service.impl;
 
 import java.util.List;
 
@@ -10,9 +10,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import ca.bc.gov.app.m.client.entity.ClientPublicViewEntity;
-import ca.bc.gov.app.m.client.repository.ClientPublicViewRepository;
-import ca.bc.gov.app.m.client.service.ClientPublicViewService;
+import client.api.m.client.entity.ClientPublicViewEntity;
+import client.api.m.client.repository.ClientPublicViewRepository;
+import client.api.m.client.service.ClientPublicViewService;
 
 @Service(ClientPublicViewService.BEAN_NAME)
 public class ClientPublicViewServiceImpl implements ClientPublicViewService {

@@ -1,4 +1,4 @@
-package ca.bc.gov.app.m.client.controller;
+package client.api.m.client.controller;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import ca.bc.gov.app.m.client.entity.ClientPublicViewEntity;
-import ca.bc.gov.app.m.client.service.ClientPublicViewService;
+import client.api.m.client.entity.ClientPublicViewEntity;
+import client.api.m.client.service.ClientPublicViewService;
 
 @RestController
-@RequestMapping("app/m/clientpublic/")
+@RequestMapping("api/m/clientpublic/")
 public class ClientPublicViewController {
 
 	public static final Logger logger = LoggerFactory.getLogger(ClientPublicViewController.class);

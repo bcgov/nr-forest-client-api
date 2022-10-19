@@ -1,4 +1,4 @@
-package ca.bc.gov.app.m.client.entity;
+package client.api.m.client.entity;
 
 import java.util.Objects;
 
@@ -10,8 +10,8 @@ import javax.persistence.Table;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import ca.bc.gov.app.core.entity.AbstractEntity;
-import ca.bc.gov.app.core.misc.scope.ScopeConstant;
+import client.api.core.entity.AbstractEntity;
+import client.api.core.misc.scope.ScopeConstant;
 
 @Component(ClientPublicViewEntity.BEAN_NAME)
 @Scope(ScopeConstant.PROTOTYPE)

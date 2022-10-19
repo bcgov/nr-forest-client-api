@@ -1,4 +1,4 @@
-package ca.bc.gov.app.core.controller;
+package client.api.core.controller;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,4 +1,4 @@
-package ca.bc.gov.app.core.entity;
+package client.api.core.entity;
 
 import java.io.Serializable;
 
