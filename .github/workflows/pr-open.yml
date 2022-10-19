@@ -17,7 +17,7 @@ jobs:
     outputs:
       build: ${{ steps.check.outputs.build }}
     env:
-      TRIGGERS: ('backend/')
+      TRIGGERS: ('src/')
       COMPONENT: backend
       PREV: prod
       ZONE: ${{ github.event.number }}
@@ -98,7 +98,7 @@ jobs:
       - name: Build and push Backend Docker image
         uses: docker/build-push-action@v3.1.1
         with:
-          context: ./backend/
+          context: ./
           push: true
           tags: ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.ZONE }}-${{ env.COMPONENT }}
           cache-from: type=gha
@@ -112,95 +112,95 @@ jobs:
           # Clean previous image
           oc delete is ${{ env.NAME }}-${{ env.ZONE }}-${{ env.COMPONENT }} || true
 
-  tests-backend:
-    name: Backend Unit Tests
-    runs-on: ubuntu-22.04
-    needs:
-      - check-backend
-    if: needs.check-backend.outputs.build == 'true'
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+  # tests-backend:
+  #   name: Backend Unit Tests
+  #   runs-on: ubuntu-22.04
+  #   needs:
+  #     - check-backend
+  #   if: needs.check-backend.outputs.build == 'true'
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v2
 
-      - name: Get npm cache directory
-        id: npm-cache-dir-backend
-        run: |
-          echo "::set-output name=dir::$(npm config get cache)"
+  #     - name: Get npm cache directory
+  #       id: npm-cache-dir-backend
+  #       run: |
+  #         echo "::set-output name=dir::$(npm config get cache)"
 
-      - uses: actions/cache@v3
-        id: npm-cache-backend # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
-        with:
-          path: ${{ steps.npm-cache-dir-backend.outputs.dir }}
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+  #     - uses: actions/cache@v3
+  #       id: npm-cache-backend # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+  #       with:
+  #         path: ${{ steps.npm-cache-dir-backend.outputs.dir }}
+  #         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-node-
 
-      - name: Cache for test results
-        id: cache-backend
-        uses: actions/cache@v3
-        with:
-          path: backend/coverage
-          key: backend-coverage-${{ github.run_number }}
-          restore-keys: |
-            backend-coverage-
+  #     - name: Cache for test results
+  #       id: cache-backend
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: backend/coverage
+  #         key: backend-coverage-${{ github.run_number }}
+  #         restore-keys: |
+  #           backend-coverage-
 
-      - name: Tests
-        run: |
-          cd backend
-          npm ci
-          npm run test:cov
+  #     - name: Tests
+  #       run: |
+  #         cd backend
+  #         npm ci
+  #         npm run test:cov
 
-      - name: Report code coverage
-        uses: romeovs/lcov-reporter-action@v0.3.1
-        with:
-          title: Backend coverage report
-          delete-old-comments: true
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          lcov-file: ./backend/coverage/lcov.info
+  #     - name: Report code coverage
+  #       uses: romeovs/lcov-reporter-action@v0.3.1
+  #       with:
+  #         title: Backend coverage report
+  #         delete-old-comments: true
+  #         github-token: ${{ secrets.GITHUB_TOKEN }}
+  #         lcov-file: ./backend/coverage/lcov.info
 
-  sonarcloud:
-    name: Static Analysis
-    needs:
-      - build-backend
-      - tests-backend
-    if: always() && (needs.build-backend.result == 'success')
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v2
-        # Disable shallow clone for SonarCloud analysis
-        with:
-          fetch-depth: 0
+  # sonarcloud:
+  #   name: Static Analysis
+  #   needs:
+  #     - build-backend
+  #     - tests-backend
+  #   if: always() && (needs.build-backend.result == 'success')
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #       # Disable shallow clone for SonarCloud analysis
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Cache for backend test results
-        id: cache-backend
-        uses: actions/cache@v3
-        with:
-          path: backend/coverage
-          key: backend-coverage-${{ github.run_number }}
-          restore-keys: |
-            backend-coverage-
+  #     - name: Cache for backend test results
+  #       id: cache-backend
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: backend/coverage
+  #         key: backend-coverage-${{ github.run_number }}
+  #         restore-keys: |
+  #           backend-coverage-
 
-    # - name: SonarCloud Scan
-    #   uses: SonarSource/sonarcloud-github-action@master
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
-    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    #   with:
-    #     args: >
-    #       -Dsonar.exclusions=**/test/**,.github/**/*
-    #       -Dsonar.organization=bcgov-sonarcloud
-    #       -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info,frontend/coverage/lcov.info
-    #       -Dsonar.cobertura.reportPaths=backend/coverage/cobertura-coverage.xml,frontend/coverage/cobertura-coverage.xml
-    #       -Dsonar.project.monorepo.enabled=true
-    #       -Dsonar.projectKey=greenfield-template
-    #       -Dsonar.sources=backend,frontend
-    #       -Dsonar.tests=backend/test,frontend/test
+  # - name: SonarCloud Scan
+  #   uses: SonarSource/sonarcloud-github-action@master
+  #   env:
+  #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
+  #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  #   with:
+  #     args: >
+  #       -Dsonar.exclusions=**/test/**,.github/**/*
+  #       -Dsonar.organization=bcgov-sonarcloud
+  #       -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info,frontend/coverage/lcov.info
+  #       -Dsonar.cobertura.reportPaths=backend/coverage/cobertura-coverage.xml,frontend/coverage/cobertura-coverage.xml
+  #       -Dsonar.project.monorepo.enabled=true
+  #       -Dsonar.projectKey=greenfield-template
+  #       -Dsonar.sources=backend,frontend
+  #       -Dsonar.tests=backend/test,frontend/test
 
   deploy-dev:
     name: DEV Deployment
     needs:
       - build-backend
-      - tests-backend
+      # - tests-backend
     if: always() && (needs.build-backend.result == 'success')
     runs-on: ubuntu-22.04
     timeout-minutes: 15
@@ -230,24 +230,23 @@ jobs:
 
           # Follow any active rollouts (see deploymentconfigs)
           oc rollout status dc/${{ env.NAME }}-${{ env.ZONE }}-database -w
-          oc exec dc/${{ env.NAME }}-${{ env.ZONE }}-database -- psql -d ${{ env.NAME }} -U ${{ env.NAME }} -c "$(cat backend/src/databasescripts/databasescripts.sql)"
           oc rollout status dc/${{ env.NAME }}-${{ env.ZONE }}-backend -w
 
-      - name: Deployment Verification
-        env:
-          LINKS: (
-            'https://${{ env.NAME }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}'
-            )
-        run: |
-          LINKS=${{ env.LINKS }}
-          for l in "${LINKS[@]}"; do
-              if [ $(curl -L -s -o /dev/null -w "%{http_code}" "${l}") -ne 200 ]
-              then
-                  echo "Status != 200 for ${l}"
-                  exit 1
-              fi
-          done
-          echo "Deployment verification successful"
+      # - name: Deployment Verification
+      #   env:
+      #     LINKS: (
+      #       'https://${{ env.NAME }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}'
+      #       )
+      #   run: |
+      #     LINKS=${{ env.LINKS }}
+      #     for l in "${LINKS[@]}"; do
+      #         if [ $(curl -L -s -o /dev/null -w "%{http_code}" "${l}") -ne 200 ]
+      #         then
+      #             echo "Status != 200 for ${l}"
+      #             exit 1
+      #         fi
+      #     done
+      #     echo "Deployment verification successful"
 
       - name: DEV Deployment update
         uses: mshick/add-pr-comment@v1
