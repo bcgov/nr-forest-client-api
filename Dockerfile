@@ -10,7 +10,8 @@ ENV JAVA_OPS -Xms256m -Xmx512m
 RUN ./mvnw clean package
 RUN chmod -R 777 ./target/*.jar
 RUN chmod -R g+w . && \
-    chmod g+x startup.sh
+    chmod g+x startup.sh && \
+    chmod g+w /opt/openjdk-17/lib/security/cacerts
 
 EXPOSE 3000
 
