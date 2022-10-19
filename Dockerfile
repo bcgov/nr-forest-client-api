@@ -7,6 +7,8 @@ ENV LANGUAGE en_CA.UTF-8
 ENV LC_ALL en_CA.UTF-8
 ENV JAVA_OPS -Xms256m -Xmx512m
 
+RUN chmod -R 777 /app/target/*.jar
+
 EXPOSE 3000
 
 ENTRYPOINT ["sh", "startup.sh"]
