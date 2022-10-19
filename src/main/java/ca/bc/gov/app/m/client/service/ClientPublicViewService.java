@@ -1,11 +1,17 @@
 package ca.bc.gov.app.m.client.service;
 
-import ca.bc.gov.app.m.client.vo.ClientPublicVO;
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+
+import ca.bc.gov.app.m.client.entity.ClientPublicViewEntity;
 
 public interface ClientPublicViewService {
 	
 	String BEAN_NAME = "clientPublicViewService";
 
-	ClientPublicVO findByNumber();
+	List<ClientPublicViewEntity> findByClientNumber(String clientNumber);
+
+	Page<ClientPublicViewEntity> findAllNonIndividualClients(Integer pageNo, Integer pageSize, String sortBy);
 
 }
