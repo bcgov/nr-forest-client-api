@@ -192,7 +192,7 @@ objects:
                   memory: ${MEMORY_REQUEST}
               readinessProbe:
                 httpGet:
-                  path: /
+                  path: /api/m/clientpublic/findAllNonIndividuals
                   port: 3000
                   scheme: HTTP
                 initialDelaySeconds: 60
@@ -202,7 +202,7 @@ objects:
                 successThreshold: 1
                 failureThreshold: 3
                 httpGet:
-                  path: /
+                  path: /api/m/clientpublic/findAllNonIndividuals
                   port: 3000
                   scheme: HTTP
                 initialDelaySeconds: 60
