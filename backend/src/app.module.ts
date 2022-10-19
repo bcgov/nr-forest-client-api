@@ -18,14 +18,16 @@ import { ForestClientModule } from './datasync/forestclient/forestClient.module'
       host: process.env.ORACLEDB_HOST || 'localhost',
       port: Number(process.env.ORACLEDB_PORT || 1521),
       serviceName: process.env.ORACLEDB_SERVICENAME,
+      // use hardcoded connect string just because the current proxy account only works in dev
+      connectString: `(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCPS)(HOST=nrcdb03.bcgov)(PORT=1543))) (CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=FORTMP1.nrs.bcgov)))`,
       // use connectString with env ORACLEDB_PORT=1543, our comment out connectString line and use port 1521
-      connectString: `(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCPS)(HOST=${
-        process.env.ORACLEDB_HOST
-      })(PORT=${Number(
-        process.env.ORACLEDB_PORT || 1521,
-      )}))) (CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=${
-        process.env.ORACLEDB_SERVICENAME
-      })))`,
+      // connectString: `(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCPS)(HOST=${
+      //   process.env.ORACLEDB_HOST
+      // })(PORT=${Number(
+      //   process.env.ORACLEDB_PORT || 1521,
+      // )}))) (CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=${
+      //   process.env.ORACLEDB_SERVICENAME
+      // })))`,
       database: process.env.ORACLEDB_DATABASE || 'oracle',
       username: process.env.ORACLEDB_USER || 'oracle',
       password: process.env.ORACLEDB_PASSWORD,
