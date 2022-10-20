@@ -33,7 +33,13 @@ public class ClientPublicViewServiceImpl implements ClientPublicViewService {
 	private List<ClientPublicViewVO> toClientPublicViewVOs(List<ClientPublicViewEntity> clients) {
 		if (CollectionUtils.isNotEmpty(clients)) {
 			return clients.stream()
-						  .map(e -> new ClientPublicViewVO())
+						  .map(e -> new ClientPublicViewVO(
+										  e.getClientNumber(),
+										  e.getClientName(),
+										  e.getLegalFirstName(),
+										  e.getLegalMiddleName(),
+										  e.getClientStatusCode(),
+										  e.getClientTypeCode()))
 						  .collect(Collectors.toList());
 		}
 		else {
@@ -51,8 +57,14 @@ public class ClientPublicViewServiceImpl implements ClientPublicViewService {
 	private Page<ClientPublicViewVO> toClientPublicViewVOs(Page<ClientPublicViewEntity> clients) {
 		if (null != clients && clients.getSize() > 0) {
 			return new PageImpl<>(clients.stream()
-						  .map(e -> new ClientPublicViewVO())
-						  .collect(Collectors.toList()));
+					  .map(e -> new ClientPublicViewVO(
+							  e.getClientNumber(),
+							  e.getClientName(),
+							  e.getLegalFirstName(),
+							  e.getLegalMiddleName(),
+							  e.getClientStatusCode(),
+							  e.getClientTypeCode()))
+					  .collect(Collectors.toList()));
 		}
 		else {
 			return null;
