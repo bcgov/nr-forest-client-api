@@ -1,4 +1,4 @@
-package client.api.core.controller;
+package api.core.controller;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;

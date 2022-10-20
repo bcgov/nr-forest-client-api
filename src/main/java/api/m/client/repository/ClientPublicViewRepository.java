@@ -1,4 +1,4 @@
-package client.api.m.client.repository;
+package api.m.client.repository;
 
 import java.util.List;
 
@@ -7,8 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import client.api.core.repository.CoreRepository;
-import client.api.m.client.entity.ClientPublicViewEntity;
+import api.core.repository.CoreRepository;
+import api.m.client.entity.ClientPublicViewEntity;
 
 @Repository
 public interface ClientPublicViewRepository extends CoreRepository<ClientPublicViewEntity> {

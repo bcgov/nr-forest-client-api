@@ -1,4 +1,4 @@
-package client.api.core.entity;
+package api.core.entity;
 
 import java.io.Serializable;
 

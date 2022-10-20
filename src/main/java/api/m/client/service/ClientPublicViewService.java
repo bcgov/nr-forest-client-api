@@ -1,10 +1,10 @@
-package client.api.m.client.service;
+package api.m.client.service;
 
 import java.util.List;
 
 import org.springframework.data.domain.Page;
 
-import client.api.m.client.vo.ClientPublicViewVO;
+import api.m.client.vo.ClientPublicViewVO;
 
 public interface ClientPublicViewService {
 	

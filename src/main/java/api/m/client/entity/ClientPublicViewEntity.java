@@ -1,4 +1,4 @@
-package client.api.m.client.entity;
+package api.m.client.entity;
 
 import java.util.Objects;
 
@@ -10,8 +10,8 @@ import javax.persistence.Table;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import client.api.core.entity.AbstractEntity;
-import client.api.core.misc.scope.ScopeConstant;
+import api.core.entity.AbstractEntity;
+import api.core.misc.scope.ScopeConstant;
 
 @Component(ClientPublicViewEntity.BEAN_NAME)
 @Scope(ScopeConstant.PROTOTYPE)

@@ -1,4 +1,4 @@
-package client.api.core.misc.scope;
+package api.core.misc.scope;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.web.util.TagUtils;

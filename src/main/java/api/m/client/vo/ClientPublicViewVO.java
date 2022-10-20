@@ -1,4 +1,4 @@
-package client.api.m.client.vo;
+package api.m.client.vo;
 
 import java.io.Serializable;
 
