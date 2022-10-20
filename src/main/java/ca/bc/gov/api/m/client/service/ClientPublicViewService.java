@@ -1,10 +1,10 @@
-package api.m.client.service;
+package ca.bc.gov.api.m.client.service;
 
 import java.util.List;
 
 import org.springframework.data.domain.Page;
 
-import api.m.client.vo.ClientPublicViewVO;
+import ca.bc.gov.api.m.client.vo.ClientPublicViewVO;
 
 public interface ClientPublicViewService {
 	

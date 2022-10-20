@@ -1,4 +1,4 @@
-package api.m.client.repository;
+package ca.bc.gov.api.m.client.repository;
 
 import java.util.List;
 
@@ -7,8 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import api.core.repository.CoreRepository;
-import api.m.client.entity.ClientPublicViewEntity;
+import ca.bc.gov.api.core.repository.CoreRepository;
+import ca.bc.gov.api.m.client.entity.ClientPublicViewEntity;
 
 @Repository
 public interface ClientPublicViewRepository extends CoreRepository<ClientPublicViewEntity> {

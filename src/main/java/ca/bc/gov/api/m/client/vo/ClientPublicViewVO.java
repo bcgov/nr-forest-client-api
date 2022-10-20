@@ -1,4 +1,4 @@
-package api.m.client.vo;
+package ca.bc.gov.api.m.client.vo;
 
 import java.io.Serializable;
 

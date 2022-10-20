@@ -1,4 +1,4 @@
-package api.m.client.service.impl;
+package ca.bc.gov.api.m.client.service.impl;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,10 +13,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import api.m.client.entity.ClientPublicViewEntity;
-import api.m.client.repository.ClientPublicViewRepository;
-import api.m.client.service.ClientPublicViewService;
-import api.m.client.vo.ClientPublicViewVO;
+import ca.bc.gov.api.m.client.entity.ClientPublicViewEntity;
+import ca.bc.gov.api.m.client.repository.ClientPublicViewRepository;
+import ca.bc.gov.api.m.client.service.ClientPublicViewService;
+import ca.bc.gov.api.m.client.vo.ClientPublicViewVO;
 
 @Service(ClientPublicViewService.BEAN_NAME)
 public class ClientPublicViewServiceImpl implements ClientPublicViewService {

@@ -1,4 +1,4 @@
-package api;
+package ca.bc.gov.api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

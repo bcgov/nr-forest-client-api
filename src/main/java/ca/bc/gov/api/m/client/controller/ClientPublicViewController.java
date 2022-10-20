@@ -1,4 +1,4 @@
-package api.m.client.controller;
+package ca.bc.gov.api.m.client.controller;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import api.m.client.service.ClientPublicViewService;
-import api.m.client.vo.ClientPublicViewVO;
+import ca.bc.gov.api.m.client.service.ClientPublicViewService;
+import ca.bc.gov.api.m.client.vo.ClientPublicViewVO;
 
 @RestController
 @RequestMapping("api/m/clientpublic/")

@@ -1,4 +1,4 @@
-package api.core.misc.scope;
+package ca.bc.gov.api.core.misc.scope;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.web.util.TagUtils;
