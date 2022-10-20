@@ -2,12 +2,12 @@ package ca.bc.gov.app.m.client.service.impl;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.inject.Inject;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -45,9 +45,18 @@ public class ClientPublicViewServiceImpl implements ClientPublicViewService {
 	public Page<ClientPublicViewVO> findAllNonIndividualClients(Integer pageNo, Integer pageSize, String sortBy) {
 		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).ascending());
 		Page<ClientPublicViewEntity> clients = clientPublicViewRepository.findByClientTypeCodeNotI(paging);
-		Page<ClientPublicViewVO> pagedResult = clients;
+		return toClientPublicViewVOs(clients);
+	}
 
-		return pagedResult;
+	private Page<ClientPublicViewVO> toClientPublicViewVOs(Page<ClientPublicViewEntity> clients) {
+		if (null != clients && clients.getSize() > 0) {
+			return new PageImpl<>(clients.stream()
+						  .map(e -> new ClientPublicViewVO())
+						  .collect(Collectors.toList()));
+		}
+		else {
+			return null;
+		}
 	}
 
 }
