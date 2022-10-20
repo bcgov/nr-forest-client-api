@@ -35,7 +35,7 @@ public class ClientPublicViewController {
 	}
 
 	@GetMapping("/findAllNonIndividuals")
-	public ResponseEntity<Page<ClientPublicViewVO>> findByNumber(@RequestParam(defaultValue = "0") Integer pageNo,
+	public ResponseEntity<Page<ClientPublicViewVO>> findAllNonIndividuals(@RequestParam(defaultValue = "0") Integer pageNo,
 															  	 @RequestParam(defaultValue = "10") Integer pageSize,
 																 @RequestParam(defaultValue = "CLIENT_NUMBER") String sortBy) {
 		try {
