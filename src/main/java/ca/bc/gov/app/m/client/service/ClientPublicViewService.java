@@ -4,14 +4,14 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 
-import ca.bc.gov.app.m.client.entity.ClientPublicViewEntity;
+import ca.bc.gov.app.m.client.vo.ClientPublicViewVO;
 
 public interface ClientPublicViewService {
 	
 	String BEAN_NAME = "clientPublicViewService";
 
-	List<ClientPublicViewEntity> findByClientNumber(String clientNumber);
+	List<ClientPublicViewVO> findByClientNumber(String clientNumber);
 
-	Page<ClientPublicViewEntity> findAllNonIndividualClients(Integer pageNo, Integer pageSize, String sortBy);
+	Page<ClientPublicViewVO> findAllNonIndividualClients(Integer pageNo, Integer pageSize, String sortBy);
 
 }
