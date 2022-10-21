@@ -121,3 +121,4 @@ snyk.sarif
 .settings/org.eclipse.jdt.core.prefs
 .settings/org.eclipse.m2e.core.prefs
 /target/
+src/main/resources/application-local.properties
