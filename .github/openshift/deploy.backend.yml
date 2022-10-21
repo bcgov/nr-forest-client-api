@@ -192,7 +192,7 @@ objects:
                   memory: ${MEMORY_REQUEST}
               readinessProbe:
                 httpGet:
-                  path: /swagger-ui/index.html
+                  path: /
                   port: 3000
                   scheme: HTTP
                 initialDelaySeconds: 180
@@ -202,7 +202,7 @@ objects:
                 successThreshold: 1
                 failureThreshold: 3
                 httpGet:
-                  path: /swagger-ui/index.html
+                  path: /
                   port: 3000
                   scheme: HTTP
                 initialDelaySeconds: 180

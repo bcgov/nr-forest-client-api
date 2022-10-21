@@ -230,23 +230,24 @@ jobs:
 
           # Follow any active rollouts (see deploymentconfigs)
           oc rollout status dc/${{ env.NAME }}-${{ env.ZONE }}-database -w
+          oc exec dc/${{ env.NAME }}-${{ env.ZONE }}-database -- psql -d ${{ env.NAME }} -U ${{ env.NAME }} -c "$(cat src/databasescripts/databasescripts.sql)"
           oc rollout status dc/${{ env.NAME }}-${{ env.ZONE }}-backend -w
 
-      # - name: Deployment Verification
-      #   env:
-      #     LINKS: (
-      #       'https://${{ env.NAME }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}'
-      #       )
-      #   run: |
-      #     LINKS=${{ env.LINKS }}
-      #     for l in "${LINKS[@]}"; do
-      #         if [ $(curl -L -s -o /dev/null -w "%{http_code}" "${l}") -ne 200 ]
-      #         then
-      #             echo "Status != 200 for ${l}"
-      #             exit 1
-      #         fi
-      #     done
-      #     echo "Deployment verification successful"
+      - name: Deployment Verification
+        env:
+          LINKS: (
+            'https://${{ env.NAME }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}'
+            )
+        run: |
+          LINKS=${{ env.LINKS }}
+          for l in "${LINKS[@]}"; do
+              if [ $(curl -L -s -o /dev/null -w "%{http_code}" "${l}") -ne 200 ]
+              then
+                  echo "Status != 200 for ${l}"
+                  exit 1
+              fi
+          done
+          echo "Deployment verification successful"
 
       - name: DEV Deployment update
         uses: mshick/add-pr-comment@v1
