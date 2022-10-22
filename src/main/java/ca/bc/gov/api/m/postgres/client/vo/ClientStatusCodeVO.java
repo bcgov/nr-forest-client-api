@@ -1,4 +1,4 @@
-package ca.bc.gov.api.mpg.clientstatuscode.vo;
+package ca.bc.gov.api.m.postgres.client.vo;
 
 import java.util.Date;
 import java.sql.Timestamp;

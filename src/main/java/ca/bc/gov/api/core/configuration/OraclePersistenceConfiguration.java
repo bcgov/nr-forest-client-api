@@ -13,7 +13,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 @Configuration
 @EnableJpaRepositories(entityManagerFactoryRef = "oracleEntityManager", 
-					   basePackages = "ca.bc.gov.api.m")
+					   basePackages = "ca.bc.gov.api.m.oracle")
 public class OraclePersistenceConfiguration {
 
     @Bean(name = "oracleDataSource")
@@ -26,7 +26,7 @@ public class OraclePersistenceConfiguration {
     public LocalContainerEntityManagerFactoryBean oracleEntityManager(final EntityManagerFactoryBuilder builder,
     																  @Qualifier("oracleDataSource") final DataSource dataSource) {
 		return builder.dataSource(dataSource)
-					  .packages("ca.bc.gov.api.m")
+					  .packages("ca.bc.gov.api.m.oracle")
 					  .persistenceUnit("oracle")
 					  .build();
     }

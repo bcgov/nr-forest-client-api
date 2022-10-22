@@ -1,8 +1,7 @@
-package ca.bc.gov.api.mpg.clientstatuscode.entity;
+package ca.bc.gov.api.m.postgres.client.entity;
 
-import java.util.Objects;
-import java.util.Date;
 import java.sql.Timestamp;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,7 +24,7 @@ public class ClientStatusCodeEntity implements AbstractEntity {
 
 	public static final String BEAN_NAME = "clientStatusCodeEntity";
 
-  @Id
+	@Id
 	@Column(name = "CLIENT_STATUS_CODE")
 	private String clientStatusCode;
 
@@ -44,7 +43,7 @@ public class ClientStatusCodeEntity implements AbstractEntity {
 	@Column(name = "UPDATE_TIMESTAMP")
 	private Timestamp updateTimestamp;
 
-  @Column(name = "CREATE_USER")
+	@Column(name = "CREATE_USER")
 	private String createUser;
 
 	@Column(name = "UPDATE_USER")
@@ -98,7 +97,7 @@ public class ClientStatusCodeEntity implements AbstractEntity {
 		this.updateTimestamp = updateTimestamp;
 	}
 
-  public String getCreateUser() {
+	public String getCreateUser() {
 		return createUser;
 	}
 
@@ -106,7 +105,7 @@ public class ClientStatusCodeEntity implements AbstractEntity {
 		this.createUser = createUser;
 	}
 
-  public String getUpdateUser() {
+	public String getUpdateUser() {
 		return updateUser;
 	}
 

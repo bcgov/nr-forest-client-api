@@ -1,4 +1,4 @@
-package ca.bc.gov.api.m.client.service.impl;
+package ca.bc.gov.api.m.oracle.legacyclient.service.impl;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,20 +13,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import ca.bc.gov.api.m.client.entity.ClientPublicViewEntity;
-import ca.bc.gov.api.m.client.repository.ClientPublicViewRepository;
-import ca.bc.gov.api.m.client.service.ClientPublicViewService;
-import ca.bc.gov.api.m.client.vo.ClientPublicViewVO;
+import ca.bc.gov.api.m.oracle.legacyclient.entity.ClientPublicViewEntity;
+import ca.bc.gov.api.m.oracle.legacyclient.repository.LegacyClientRepository;
+import ca.bc.gov.api.m.oracle.legacyclient.service.LegacyClientService;
+import ca.bc.gov.api.m.oracle.legacyclient.vo.ClientPublicViewVO;
 
-@Service(ClientPublicViewService.BEAN_NAME)
-public class ClientPublicViewServiceImpl implements ClientPublicViewService {
+@Service(LegacyClientService.BEAN_NAME)
+public class LegacyClientServiceImpl implements LegacyClientService {
 		
 	@Inject
-	private ClientPublicViewRepository clientPublicViewRepository;
+	private LegacyClientRepository legacyClientRepository;
 
 	@Override
 	public List<ClientPublicViewVO> findByClientNumber(String clientNumber) {
-		List<ClientPublicViewEntity> clients = clientPublicViewRepository.findByClientNumber(clientNumber);
+		List<ClientPublicViewEntity> clients = legacyClientRepository.findByClientNumber(clientNumber);
 		return toClientPublicViewVOs(clients);
 	}
 
@@ -50,7 +50,7 @@ public class ClientPublicViewServiceImpl implements ClientPublicViewService {
 	@Override
 	public Page<ClientPublicViewVO> findAllNonIndividualClients(Integer pageNo, Integer pageSize, String sortBy) {
 		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).ascending());
-		Page<ClientPublicViewEntity> clients = clientPublicViewRepository.findByClientTypeCodeNotI(paging);
+		Page<ClientPublicViewEntity> clients = legacyClientRepository.findByClientTypeCodeNotI(paging);
 		return toClientPublicViewVOs(clients);
 	}
 

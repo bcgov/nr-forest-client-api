@@ -14,7 +14,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 @Configuration
 @EnableJpaRepositories(entityManagerFactoryRef = "postgresEntityManager", 
-					   basePackages = "ca.bc.gov.api.mpg")
+					   basePackages = "ca.bc.gov.api.m.postgres")
 public class PostgresPersistenceConfiguration {
 
 
@@ -30,7 +30,7 @@ public class PostgresPersistenceConfiguration {
     public LocalContainerEntityManagerFactoryBean postgresEntityManager(final EntityManagerFactoryBuilder builder,
     																  @Qualifier("postgresDataSource") final DataSource dataSource) {
 		return builder.dataSource(dataSource)
-					  .packages("ca.bc.gov.api.mpg")
+					  .packages("ca.bc.gov.api.m.postgres")
 					  .persistenceUnit("postgres")
 					  .build();
     }

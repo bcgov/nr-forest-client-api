@@ -1,4 +1,4 @@
-package ca.bc.gov.api.m.client.vo;
+package ca.bc.gov.api.m.oracle.legacyclient.vo;
 
 import java.io.Serializable;
 

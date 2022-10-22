@@ -1,4 +1,4 @@
-package ca.bc.gov.api.m.client.entity;
+package ca.bc.gov.api.m.oracle.legacyclient.entity;
 
 import java.util.Objects;
 

@@ -1,4 +1,4 @@
-package ca.bc.gov.api.m.client.controller;
+package ca.bc.gov.api.m.oracle.legacyclient.controller;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -17,29 +17,30 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import ca.bc.gov.api.m.client.service.ClientPublicViewService;
-import ca.bc.gov.api.m.client.vo.ClientPublicViewVO;
+import ca.bc.gov.api.m.oracle.legacyclient.service.LegacyClientService;
+import ca.bc.gov.api.m.oracle.legacyclient.vo.ClientPublicViewVO;
 
 @RestController
-@RequestMapping("api/m/clientpublic/")
-public class ClientPublicViewController {
+@RequestMapping("api/m/legacyclient/")
+public class LegacyClientController {
 
-	public static final Logger logger = LoggerFactory.getLogger(ClientPublicViewController.class);
+	public static final Logger logger = LoggerFactory.getLogger(LegacyClientController.class);
 
 	@Inject
-	private ClientPublicViewService clientPublicViewService;
+	private LegacyClientService legacyClientService;
 
 	@RequestMapping(value = "/findByClientNumber", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
 	public List<ClientPublicViewVO> findByClientNumber(@RequestParam("clientNumber") String clientNumber) {
-		return clientPublicViewService.findByClientNumber(clientNumber);
+		return legacyClientService.findByClientNumber(clientNumber);
 	}
 
+	//TODO: Improve logic
 	@GetMapping("/findAllNonIndividuals")
 	public ResponseEntity<Page<ClientPublicViewVO>> findAllNonIndividuals(@RequestParam(defaultValue = "0") Integer pageNo,
-															  	 @RequestParam(defaultValue = "10") Integer pageSize,
-																 @RequestParam(defaultValue = "CLIENT_NUMBER") String sortBy) {
+																	      @RequestParam(defaultValue = "10") Integer pageSize,
+																		  @RequestParam(defaultValue = "CLIENT_NUMBER") String sortBy) {
 		try {
-			Page<ClientPublicViewVO> clientData = clientPublicViewService.findAllNonIndividualClients(pageNo, pageSize, sortBy);
+			Page<ClientPublicViewVO> clientData = legacyClientService.findAllNonIndividualClients(pageNo, pageSize, sortBy);
 			return new ResponseEntity<Page<ClientPublicViewVO>>(clientData, HttpStatus.OK);
 		} 
 		catch (Exception e) {
