@@ -17,6 +17,8 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 					   basePackages = "ca.bc.gov.api.m.postgres")
 public class PostgresPersistenceConfiguration {
 
+    public final static String POSTGRES_ATTRIBUTE_SCHEMA_QUALIFIER = "PUBLIC.";
+    public final static String POSTGRES_ATTRIBUTE_SCHEMA = "PUBLIC";
 
 	@Primary
     @Bean(name = "postgresDataSource")
