@@ -51,10 +51,10 @@ public class LegacyClientServiceImpl implements LegacyClientService {
 	public Page<ClientPublicViewVO> findAllNonIndividualClients(Integer pageNo, Integer pageSize, String sortBy) {
 		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).ascending());
 		Page<ClientPublicViewEntity> clients = legacyClientRepository.findAllNonIndividualClients(paging);
-		return toClientPublicViewVOs(clients);
+		return toClientPublicViewVOs(clients, paging);
 	}
 
-	private Page<ClientPublicViewVO> toClientPublicViewVOs(Page<ClientPublicViewEntity> clients) {
+	private Page<ClientPublicViewVO> toClientPublicViewVOs(Page<ClientPublicViewEntity> clients, Pageable paging) {
 		if (null != clients && clients.getSize() > 0) {
 			return new PageImpl<>(clients.stream()
 					  .map(e -> new ClientPublicViewVO(
@@ -64,7 +64,7 @@ public class LegacyClientServiceImpl implements LegacyClientService {
 							  e.getLegalMiddleName(),
 							  e.getClientStatusCode(),
 							  e.getClientTypeCode()))
-					  .collect(Collectors.toList()));
+					  .collect(Collectors.toList()), paging, clients.getTotalElements());
 		}
 		else {
 			return null;
