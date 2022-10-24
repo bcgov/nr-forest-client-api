@@ -17,9 +17,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import ca.bc.gov.api.core.configuration.OraclePersistenceConfiguration;
 import ca.bc.gov.api.m.oracle.legacyclient.service.LegacyClientService;
 import ca.bc.gov.api.m.oracle.legacyclient.vo.ClientPublicViewVO;
+import io.swagger.annotations.Api;
 
+@Api(tags = OraclePersistenceConfiguration.ORACLE_API_TAG)
 @RestController
 @RequestMapping("api/m/legacyclient/")
 public class LegacyClientController {

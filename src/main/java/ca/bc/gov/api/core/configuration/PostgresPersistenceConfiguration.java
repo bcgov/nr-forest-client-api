@@ -19,6 +19,7 @@ public class PostgresPersistenceConfiguration {
 
     public final static String POSTGRES_ATTRIBUTE_SCHEMA_QUALIFIER = "PUBLIC.";
     public final static String POSTGRES_ATTRIBUTE_SCHEMA = "PUBLIC";
+    public static final String POSTGRES_API_TAG = "Client";
 
 	@Primary
     @Bean(name = "postgresDataSource")
