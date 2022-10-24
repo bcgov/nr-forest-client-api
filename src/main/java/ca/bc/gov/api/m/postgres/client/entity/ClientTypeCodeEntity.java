@@ -15,18 +15,20 @@ import ca.bc.gov.api.core.entity.AbstractEntity;
 import ca.bc.gov.api.core.misc.scope.ScopeConstant;
 
 @Entity
-@Table(name = "CLIENT_STATUS_CODE", schema = PostgresPersistenceConfiguration.POSTGRES_ATTRIBUTE_SCHEMA)
-@Component(ClientStatusCodeEntity.BEAN_NAME)
+@Table(name = "CLIENT_TYPE_CODE", schema = PostgresPersistenceConfiguration.POSTGRES_ATTRIBUTE_SCHEMA)
+@Component(ClientTypeCodeEntity.BEAN_NAME)
 @Scope(ScopeConstant.PROTOTYPE)
-public class ClientStatusCodeEntity implements AbstractEntity {
+public class ClientTypeCodeEntity implements AbstractEntity {
 
-	private static final long serialVersionUID = 4341025008217142732L;
+	private static final long serialVersionUID = 8069253248355277428L;
 
-	public static final String BEAN_NAME = "clientStatusCodeEntity";
+	public static final String BEAN_NAME = "clientTypeCodeEntity";
+	
+	public static final String INACTIVE	= "I";
 
 	@Id
-	@Column(name = "CLIENT_STATUS_CODE")
-	private String clientStatusCode;
+	@Column(name = "CLIENT_TYPE_CODE")
+	private String clientTypeCode;
 
 	@Column(name = "DESCRIPTION")
 	private String description;
@@ -49,12 +51,12 @@ public class ClientStatusCodeEntity implements AbstractEntity {
 	@Column(name = "UPDATE_USER")
 	private String updateUser;
 
-	public String getClientStatusCode() {
-		return clientStatusCode;
+	public String getClientTypeCode() {
+		return clientTypeCode;
 	}
 
-	public void setClientStatusCode(String clientStatusCode) {
-		this.clientStatusCode = clientStatusCode;
+	public void setClientTypeCode(String clientTypeCode) {
+		this.clientTypeCode = clientTypeCode;
 	}
 
 	public String getDescription() {
