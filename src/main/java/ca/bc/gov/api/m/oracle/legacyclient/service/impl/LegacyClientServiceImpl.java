@@ -50,7 +50,7 @@ public class LegacyClientServiceImpl implements LegacyClientService {
 	@Override
 	public Page<ClientPublicViewVO> findAllNonIndividualClients(Integer pageNo, Integer pageSize, String sortBy) {
 		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).ascending());
-		Page<ClientPublicViewEntity> clients = legacyClientRepository.findByClientTypeCodeNotI(paging);
+		Page<ClientPublicViewEntity> clients = legacyClientRepository.findAllNonIndividualClients(paging);
 		return toClientPublicViewVOs(clients);
 	}
 
