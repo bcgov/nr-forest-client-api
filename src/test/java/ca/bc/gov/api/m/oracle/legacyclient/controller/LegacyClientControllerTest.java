@@ -18,22 +18,17 @@ import ca.bc.gov.api.m.oracle.legacyclient.repository.LegacyClientRepository;
 import ca.bc.gov.api.m.oracle.legacyclient.vo.ClientPublicViewVO;
 
 @ExtendWith(MockitoExtension.class)
-public class LegacyClientServiceImplTest {
+public class LegacyClientControllerTest {
 
     public static final String CLIENT_NUMBER = "00000008";
     public static final String CLIENT_NUMBER_INVALID = "abc";
-    
-    @Mock
-    private LegacyClientRepository legacyClientRepository;
 
     @Mock
     private LegacyClientController legacyClientController;
 
-    @InjectMocks
-    private LegacyClientServiceImpl legacyClientServiceImpl;
-
 
     private ClientPublicViewEntity client;
+    private ClientPublicViewVO clientVO;
 
 
     @BeforeEach
@@ -45,19 +40,40 @@ public class LegacyClientServiceImplTest {
         client.setClientTypeCode("I");
         client.setLegalFirstName("MyFirstName");
         client.setLegalMiddleName("MyMiddleName");
+        clientVO = new ClientPublicViewVO(
+            client.getClientNumber(),
+            client.getClientName(),
+            client.getLegalFirstName(),
+            client.getLegalMiddleName(),
+            client.getClientStatusCode(),
+            client.getClientTypeCode());
     }
 
     @Test
     public void testFindByClientNumberPass() {
         
         // given
-        given(legacyClientRepository.findByClientNumber(CLIENT_NUMBER)).willReturn(client);
+        given(legacyClientController.findByClientNumber(CLIENT_NUMBER)).willReturn(new ResponseEntity<ClientPublicViewVO>(clientVO, HttpStatus.OK));
 
         // when
-        ClientPublicViewVO client = legacyClientServiceImpl.findByClientNumber(CLIENT_NUMBER);
+        ResponseEntity client = legacyClientController.findByClientNumber(CLIENT_NUMBER);
 
         // then
         assertThat(client).isNotNull();
+    }
+
+    @Test
+    public void testFindByClientNumberInvalidInput() {
+        // todo: check if this is the correct way to test error cases
+        
+        // given
+        given(legacyClientController.findByClientNumber(CLIENT_NUMBER_INVALID)).willReturn(new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
+
+        // when
+        ResponseEntity response = legacyClientController.findByClientNumber(CLIENT_NUMBER_INVALID);
+
+        // then
+        assertThat(response).isNotNull();
     }
 
 }

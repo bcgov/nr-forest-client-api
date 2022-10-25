@@ -63,26 +63,18 @@ jobs:
         uses: github/codeql-action/analyze@v2
 
   # # SonarCloud runs in the main branch are needed to compare against PRs
-  # sonarcloud:
-  #   name: Static Analysis
-  #   runs-on: ubuntu-22.04
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #       # Disable shallow clone for SonarCloud analysis
-  #       with:
-  #         fetch-depth: 0
+  sonarcloud:
+    name: Static Analysis
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v2
+        # Disable shallow clone for SonarCloud analysis
+        with:
+          fetch-depth: 0
 
-  #     - name: Backend Tests
-  #       run: |
-  #         cd frontend
-  #         npm ci
-  #         npm run test:cov
-
-  #     - name: Frontend Tests
-  #       run: |
-  #         cd frontend
-  #         npm ci
-  #         npm run test:cov
+      - name: Unit Tests
+        run: |
+          ./mvnw test
 
   #     - name: SonarCloud Scan
   #       uses: SonarSource/sonarcloud-github-action@master
@@ -105,7 +97,7 @@ jobs:
     needs:
       - cleanup-ghcr
       - codeql
-      # - sonarcloud
+      - sonarcloud
     runs-on: ubuntu-22.04
     environment:
       name: test
