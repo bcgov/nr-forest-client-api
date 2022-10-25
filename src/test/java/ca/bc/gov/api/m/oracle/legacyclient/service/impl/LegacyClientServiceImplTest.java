@@ -9,8 +9,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import ca.bc.gov.api.m.oracle.legacyclient.entity.ClientPublicViewEntity;
+import ca.bc.gov.api.m.oracle.legacyclient.controller.LegacyClientController;
 import ca.bc.gov.api.m.oracle.legacyclient.repository.LegacyClientRepository;
 import ca.bc.gov.api.m.oracle.legacyclient.vo.ClientPublicViewVO;
 
@@ -18,12 +21,17 @@ import ca.bc.gov.api.m.oracle.legacyclient.vo.ClientPublicViewVO;
 public class LegacyClientServiceImplTest {
 
     public static final String CLIENT_NUMBER = "00000008";
+    public static final String CLIENT_NUMBER_INVALID = "abc";
     
     @Mock
     private LegacyClientRepository legacyClientRepository;
 
+    @Mock
+    private LegacyClientController legacyClientController;
+
     @InjectMocks
     private LegacyClientServiceImpl legacyClientServiceImpl;
+
 
     private ClientPublicViewEntity client;
 
@@ -40,7 +48,7 @@ public class LegacyClientServiceImplTest {
     }
 
     @Test
-    public void test() {
+    public void testFindByClientNumberPass() {
         
         // given
         given(legacyClientRepository.findByClientNumber(CLIENT_NUMBER)).willReturn(client);
@@ -50,6 +58,20 @@ public class LegacyClientServiceImplTest {
 
         // then
         assertThat(client).isNotNull();
+    }
+
+    @Test
+    public void testFindByClientNumberInvalidInput() {
+        // todo: check if this is the correct way to test error cases
+        
+        // given
+        given(legacyClientController.findByClientNumber(CLIENT_NUMBER_INVALID)).willReturn(new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
+
+        // when
+        ResponseEntity response = legacyClientController.findByClientNumber(CLIENT_NUMBER_INVALID);
+
+        // then
+        assertThat(response).isNotNull();
     }
 
 }

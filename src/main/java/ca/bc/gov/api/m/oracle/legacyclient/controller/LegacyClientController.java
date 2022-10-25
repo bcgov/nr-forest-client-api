@@ -31,8 +31,17 @@ public class LegacyClientController {
 	private LegacyClientService legacyClientService;
 
 	@RequestMapping(value = "/findByClientNumber", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
-	public ClientPublicViewVO findByClientNumber(@RequestParam("clientNumber") String clientNumber) {
-		return legacyClientService.findByClientNumber(clientNumber);
+	public ResponseEntity<ClientPublicViewVO> findByClientNumber(@RequestParam("clientNumber") String clientNumber) {
+		try {
+			if (clientNumber.matches("[0-9]+")) {
+				return new ResponseEntity<ClientPublicViewVO>(legacyClientService.findByClientNumber(clientNumber), HttpStatus.OK);
+			} 
+			// todo: how to show error message when client number has letters
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
 	}
 
 	//TODO: Improve logic
