@@ -3,8 +3,6 @@ package ca.bc.gov.api.m.oracle.legacyclient.service.impl;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +17,8 @@ import ca.bc.gov.api.m.oracle.legacyclient.vo.ClientPublicViewVO;
 @ExtendWith(MockitoExtension.class)
 public class LegacyClientServiceImplTest {
 
+    public static final String CLIENT_NUMBER = "00000008";
+    
     @Mock
     private LegacyClientRepository legacyClientRepository;
 
@@ -43,14 +43,13 @@ public class LegacyClientServiceImplTest {
     public void test() {
         
         // given
-        given(legacyClientRepository.findByClientNumber("00000008")).willReturn(List.of(client));
+        given(legacyClientRepository.findByClientNumber(CLIENT_NUMBER)).willReturn(client);
 
         // when
-        List<ClientPublicViewVO> clients = legacyClientServiceImpl.findByClientNumber("00000008");
+        ClientPublicViewVO client = legacyClientServiceImpl.findByClientNumber(CLIENT_NUMBER);
 
         // then
-        assertThat(clients).isNotNull();
-        assertThat(clients.size()).isGreaterThan(0);
+        assertThat(client).isNotNull();
     }
 
 }

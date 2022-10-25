@@ -2,8 +2,6 @@ package ca.bc.gov.api.m.oracle.legacyclient.controller;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
@@ -33,7 +31,7 @@ public class LegacyClientController {
 	private LegacyClientService legacyClientService;
 
 	@RequestMapping(value = "/findByClientNumber", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
-	public List<ClientPublicViewVO> findByClientNumber(@RequestParam("clientNumber") String clientNumber) {
+	public ClientPublicViewVO findByClientNumber(@RequestParam("clientNumber") String clientNumber) {
 		return legacyClientService.findByClientNumber(clientNumber);
 	}
 
