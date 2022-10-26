@@ -1,4 +1,4 @@
-package ca.bc.gov.api.m.oracle.legacyclient.service.impl;
+package ca.bc.gov.api.m.oracle.legacyclient.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -53,7 +53,7 @@ public class LegacyClientControllerTest {
     public void testFindByClientNumberPass() {
         
         // given
-        given(legacyClientController.findByClientNumber(CLIENT_NUMBER)).willReturn(new ResponseEntity<ClientPublicViewVO>(clientVO, HttpStatus.OK));
+        //given(legacyClientController.findByClientNumber(CLIENT_NUMBER)).willReturn(new ResponseEntity<ClientPublicViewVO>(clientVO, HttpStatus.OK));
 
         // when
         ResponseEntity client = legacyClientController.findByClientNumber(CLIENT_NUMBER);
