@@ -15,22 +15,10 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2
 public class SwaggerConfiguration {
-    
-	@Bean
-	public Docket postgresApi() {
-		return new Docket(DocumentationType.SWAGGER_2)
-					.groupName("PostgresAPI")
-					.apiInfo(apiInfo())
-					.select()
-					.apis(RequestHandlerSelectors.basePackage("ca.bc.gov.api"))
-					.paths(regex("/api/mpg/.*"))
-					.build();
-	}
 
 	@Bean
-	public Docket oracleApi() {
+	public Docket applicationApi() {
 		return new Docket(DocumentationType.SWAGGER_2)
-					.groupName("OracleAPI")
 					.apiInfo(apiInfo())
 					.select()
 					.apis(RequestHandlerSelectors.basePackage("ca.bc.gov.api"))
