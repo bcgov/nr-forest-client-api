@@ -16,5 +16,16 @@ public class CoreUtilImpl implements CoreUtil {
     public Date getCurrentTime() {
         return Calendar.getInstance().getTime();
     }
+    
+    /**
+     * Check if given string is a number (digits only)
+     * 
+     * @param str
+     * @return true if this string is a number
+     */
+    @Override
+    public boolean isNumber(String str) {
+        return str.matches("^\\d+$");
+    }
 
 }

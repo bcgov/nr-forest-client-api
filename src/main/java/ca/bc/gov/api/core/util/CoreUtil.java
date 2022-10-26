@@ -8,4 +8,6 @@ public interface CoreUtil {
 
 	Date getCurrentTime();
 	
+	boolean isNumber(String str);
+	
 }
