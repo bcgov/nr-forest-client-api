@@ -6,15 +6,12 @@ import static org.mockito.BDDMockito.given;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import ca.bc.gov.api.m.oracle.legacyclient.entity.ClientPublicViewEntity;
-import ca.bc.gov.api.m.oracle.legacyclient.controller.LegacyClientController;
-import ca.bc.gov.api.m.oracle.legacyclient.repository.LegacyClientRepository;
 import ca.bc.gov.api.m.oracle.legacyclient.vo.ClientPublicViewVO;
 
 @ExtendWith(MockitoExtension.class)
@@ -53,7 +50,7 @@ public class LegacyClientControllerTest {
     public void testFindByClientNumberPass() {
         
         // given
-        //given(legacyClientController.findByClientNumber(CLIENT_NUMBER)).willReturn(new ResponseEntity<ClientPublicViewVO>(clientVO, HttpStatus.OK));
+        given(legacyClientController.findByClientNumber(CLIENT_NUMBER)).willReturn(new ResponseEntity<Object>(clientVO, HttpStatus.OK));
 
         // when
         ResponseEntity client = legacyClientController.findByClientNumber(CLIENT_NUMBER);
