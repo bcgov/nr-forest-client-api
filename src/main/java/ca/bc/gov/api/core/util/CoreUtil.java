@@ -9,5 +9,7 @@ public interface CoreUtil {
 	Date getCurrentTime();
 	
 	boolean isNumber(String str);
+
+    <T> T jsonStringToObj(String jsonInString, Class<T> valueType);
 	
 }
