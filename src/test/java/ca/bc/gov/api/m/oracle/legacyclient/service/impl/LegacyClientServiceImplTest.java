@@ -12,7 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import ca.bc.gov.api.m.oracle.legacyclient.controller.LegacyClientController;
 import ca.bc.gov.api.m.oracle.legacyclient.entity.ClientPublicViewEntity;
-import ca.bc.gov.api.m.oracle.legacyclient.repository.LegacyClientRepository;
+import ca.bc.gov.api.m.oracle.legacyclient.repository.ClientPublicViewRepository;
 import ca.bc.gov.api.m.oracle.legacyclient.vo.ClientPublicViewVO;
 
 @ExtendWith(MockitoExtension.class)
@@ -22,7 +22,7 @@ public class LegacyClientServiceImplTest {
     public static final String CLIENT_NUMBER_INVALID = "abc";
     
     @Mock
-    private LegacyClientRepository legacyClientRepository;
+    private ClientPublicViewRepository clientPublicViewRepository;
 
     @Mock
     private LegacyClientController legacyClientController;
@@ -49,7 +49,7 @@ public class LegacyClientServiceImplTest {
     public void testFindByClientNumberPass() {
         
         // given
-        given(legacyClientRepository.findByClientNumber(CLIENT_NUMBER)).willReturn(client);
+        given(clientPublicViewRepository.findByClientNumber(CLIENT_NUMBER)).willReturn(client);
 
         // when
         ClientPublicViewVO client = legacyClientServiceImpl.findByClientNumber(CLIENT_NUMBER);

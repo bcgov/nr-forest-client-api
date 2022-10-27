@@ -24,9 +24,10 @@ public class ClientTypeCodeEntity implements AbstractEntity {
 
 	public static final String BEAN_NAME = "clientTypeCodeEntity";
 	
-	public static final String INDIVIDUAL	= "I";
-	public static final String ASSOCIATION  = "A";
-	public static final String CORPORATION  = "C";
+	public static final String INDIVIDUAL	       = "I";
+	public static final String ASSOCIATION         = "A";
+	public static final String CORPORATION         = "C";
+	public static final String FIRST_NATION_BAND   = "B";
 	
 
 	@Id

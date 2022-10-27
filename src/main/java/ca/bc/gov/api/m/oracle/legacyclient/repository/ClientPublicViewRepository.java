@@ -1,7 +1,5 @@
 package ca.bc.gov.api.m.oracle.legacyclient.repository;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -13,7 +11,7 @@ import ca.bc.gov.api.m.oracle.legacyclient.entity.ClientPublicViewEntity;
 import ca.bc.gov.api.m.postgres.client.entity.ClientTypeCodeEntity;
 
 @Repository
-public interface LegacyClientRepository extends CoreRepository<ClientPublicViewEntity> {
+public interface ClientPublicViewRepository extends CoreRepository<ClientPublicViewEntity> {
 	
 	@Query("select x from ClientPublicViewEntity x " +
 	       "where x.clientNumber = :clientNumber")
@@ -23,9 +21,5 @@ public interface LegacyClientRepository extends CoreRepository<ClientPublicViewE
 		   countQuery = "select count(*) from V_CLIENT_PUBLIC WHERE CLIENT_TYPE_CODE != '" + ClientTypeCodeEntity.INDIVIDUAL + "'", 
 		   nativeQuery = true)
 	Page<ClientPublicViewEntity> findAllNonIndividualClients(Pageable paging);
-
-	@Query("select x from ClientPublicViewEntity x " +
-	       "where x.clientTypeCode = 'B' and x.clientStatusCode = 'ACT'")
-	List<ClientPublicViewEntity> findAllFirstNationBandClients();
 
 }
