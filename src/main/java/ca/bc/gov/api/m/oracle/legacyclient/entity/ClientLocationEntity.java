@@ -93,7 +93,7 @@ public class ClientLocationEntity implements AbstractEntity {
     private String updateUserId;
 
     @Column(name = "UPDATE_ORG_UNIT")
-    private Number updateOrgUnit;
+    private Long updateOrgUnit;
 
     @Column(name = "ADD_TIMESTAMP")
     private Date addTimestamp;
@@ -102,10 +102,10 @@ public class ClientLocationEntity implements AbstractEntity {
     private String addUserId;
 
     @Column(name = "ADD_ORG_UNIT")
-    private Number addOrgUnit;
+    private Long addOrgUnit;
 
     @Column(name = "REVISION_COUNT")
-    private Number revisionCount;
+    private Long revisionCount;
 
     public String getClientNumber() {
         return clientNumber;
@@ -283,11 +283,11 @@ public class ClientLocationEntity implements AbstractEntity {
         this.updateUserId = updateUserId;
     }
 
-    public Number getUpdateOrgUnit() {
+    public Long getUpdateOrgUnit() {
         return updateOrgUnit;
     }
 
-    public void setUpdateOrgUnit(Number updateOrgUnit) {
+    public void setUpdateOrgUnit(Long updateOrgUnit) {
         this.updateOrgUnit = updateOrgUnit;
     }
 
@@ -307,19 +307,19 @@ public class ClientLocationEntity implements AbstractEntity {
         this.addUserId = addUserId;
     }
 
-    public Number getAddOrgUnit() {
+    public Long getAddOrgUnit() {
         return addOrgUnit;
     }
 
-    public void setAddOrgUnit(Number addOrgUnit) {
+    public void setAddOrgUnit(Long addOrgUnit) {
         this.addOrgUnit = addOrgUnit;
     }
 
-    public Number getRevisionCount() {
+    public Long getRevisionCount() {
         return revisionCount;
     }
 
-    public void setRevisionCount(Number revisionCount) {
+    public void setRevisionCount(Long revisionCount) {
         this.revisionCount = revisionCount;
     }
 
