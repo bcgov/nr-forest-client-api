@@ -21,7 +21,9 @@ import ca.bc.gov.api.core.misc.scope.ScopeConstant;
 @Scope(ScopeConstant.PROTOTYPE)
 public class ForestClientEntity implements AbstractEntity {
 
-    public static final String BEAN_NAME = "forestClientEntity";
+	private static final long serialVersionUID = 832879803987592344L;
+
+	public static final String BEAN_NAME = "forestClientEntity";
 
     @Id
     @Column(name = "CLIENT_NUMBER")

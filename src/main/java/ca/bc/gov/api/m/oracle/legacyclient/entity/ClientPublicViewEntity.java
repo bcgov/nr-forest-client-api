@@ -20,6 +20,8 @@ import ca.bc.gov.api.core.misc.scope.ScopeConstant;
 @Scope(ScopeConstant.PROTOTYPE)
 public class ClientPublicViewEntity implements AbstractEntity {
 
+	private static final long serialVersionUID = -3060423136744818530L;
+
 	public static final String BEAN_NAME = "clientPublicViewEntity";
 
 	@Id

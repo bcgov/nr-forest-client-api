@@ -21,7 +21,9 @@ import ca.bc.gov.api.core.misc.scope.ScopeConstant;
 @Scope(ScopeConstant.PROTOTYPE)
 public class ClientLocationEntity implements AbstractEntity {
 
-    public static final String BEAN_NAME = "clientLocationEntity";
+	private static final long serialVersionUID = -1795480401567670619L;
+
+	public static final String BEAN_NAME = "clientLocationEntity";
 
     @Id
     @Column(name = "CLIENT_NUMBER")
