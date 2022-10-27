@@ -78,7 +78,7 @@ public class ForestClientEntity implements AbstractEntity {
     private String addUserId;
 
     @Column(name = "ADD_ORG_UNIT")
-    private Number addOrgUnit;
+    private Long addOrgUnit;
 
     @Column(name = "UPDATE_TIMESTAMP")
     private Date updateTimestamp;
@@ -87,10 +87,10 @@ public class ForestClientEntity implements AbstractEntity {
     private String updateUserId;
 
     @Column(name = "UPDATE_ORG_UNIT")
-    private Number updateOrgUnit;
+    private Long updateOrgUnit;
 
     @Column(name = "REVISION_COUNT")
-    private Number revisionCount;
+    private Long revisionCount;
 
     public String getClientNumber() {
         return clientNumber;
@@ -232,7 +232,7 @@ public class ForestClientEntity implements AbstractEntity {
         return addOrgUnit;
     }
 
-    public void setAddOrgUnit(Number addOrgUnit) {
+    public void setAddOrgUnit(Long addOrgUnit) {
         this.addOrgUnit = addOrgUnit;
     }
 
@@ -256,7 +256,7 @@ public class ForestClientEntity implements AbstractEntity {
         return updateOrgUnit;
     }
 
-    public void setUpdateOrgUnit(Number updateOrgUnit) {
+    public void setUpdateOrgUnit(Long updateOrgUnit) {
         this.updateOrgUnit = updateOrgUnit;
     }
 
@@ -264,7 +264,7 @@ public class ForestClientEntity implements AbstractEntity {
         return revisionCount;
     }
 
-    public void setRevisionCount(Number revisionCount) {
+    public void setRevisionCount(Long revisionCount) {
         this.revisionCount = revisionCount;
     }
 
