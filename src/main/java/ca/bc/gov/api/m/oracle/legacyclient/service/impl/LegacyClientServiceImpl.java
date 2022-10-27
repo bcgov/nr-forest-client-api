@@ -1,8 +1,7 @@
 package ca.bc.gov.api.m.oracle.legacyclient.service.impl;
 
-import java.util.stream.Collectors;
-import java.util.Dictionary;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -12,7 +11,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.scheduling.annotation.Async;
 
 import ca.bc.gov.api.m.oracle.legacyclient.entity.ClientPublicViewEntity;
 import ca.bc.gov.api.m.oracle.legacyclient.repository.LegacyClientRepository;
