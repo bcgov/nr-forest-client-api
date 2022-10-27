@@ -10,12 +10,13 @@ import javax.persistence.Table;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import ca.bc.gov.api.core.configuration.OraclePersistenceConfiguration;
+// import ca.bc.gov.api.core.configuration.OraclePersistenceConfiguration;
 import ca.bc.gov.api.core.entity.AbstractEntity;
 import ca.bc.gov.api.core.misc.scope.ScopeConstant;
 
 @Entity
-@Table(name = "V_CLIENT_PUBLIC", schema = OraclePersistenceConfiguration.ORACLE_ATTRIBUTE_SCHEMA)
+// @Table(name = "V_CLIENT_PUBLIC", schema = OraclePersistenceConfiguration.ORACLE_ATTRIBUTE_SCHEMA)
+@Table(name = "V_CLIENT_PUBLIC")
 @Component(ClientPublicViewEntity.BEAN_NAME)
 @Scope(ScopeConstant.PROTOTYPE)
 public class ClientPublicViewEntity implements AbstractEntity {
