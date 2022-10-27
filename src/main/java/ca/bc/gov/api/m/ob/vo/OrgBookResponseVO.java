@@ -1,4 +1,4 @@
-package ca.bc.gov.api.m.oracle.ob.vo;
+package ca.bc.gov.api.m.ob.vo;
 
 import java.util.List;
 

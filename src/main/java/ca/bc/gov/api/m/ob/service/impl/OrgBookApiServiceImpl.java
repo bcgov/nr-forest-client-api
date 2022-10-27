@@ -1,4 +1,4 @@
-package ca.bc.gov.api.m.oracle.ob.service.impl;
+package ca.bc.gov.api.m.ob.service.impl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import ca.bc.gov.api.core.util.CoreUtil;
-import ca.bc.gov.api.m.oracle.ob.service.OrgBookApiService;
-import ca.bc.gov.api.m.oracle.ob.vo.OrgBookResponseVO;
+import ca.bc.gov.api.m.ob.service.OrgBookApiService;
+import ca.bc.gov.api.m.ob.vo.OrgBookResponseVO;
 
 @Service(OrgBookApiService.BEAN_NAME)
 public class OrgBookApiServiceImpl implements OrgBookApiService {

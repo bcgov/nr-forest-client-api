@@ -1,4 +1,4 @@
-package ca.bc.gov.api.m.oracle.ob.controller;
+package ca.bc.gov.api.m.ob.controller;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -12,11 +12,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import ca.bc.gov.api.core.configuration.OraclePersistenceConfiguration;
-import ca.bc.gov.api.m.oracle.ob.service.OrgBookApiService;
+import ca.bc.gov.api.m.ob.service.OrgBookApiService;
 import io.swagger.annotations.Api;
 
-@Api(tags = OraclePersistenceConfiguration.ORACLE_API_TAG)
+//NOTE: 
+//This class is for testing purposes. This will be removed. 
+
+@Api(tags = "OrgBook")
 @RestController
 @RequestMapping("api/m/orgbook/")
 public class OrgBookApiController {

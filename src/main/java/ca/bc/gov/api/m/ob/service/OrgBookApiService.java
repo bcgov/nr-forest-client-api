@@ -1,4 +1,4 @@
-package ca.bc.gov.api.m.oracle.ob.service;
+package ca.bc.gov.api.m.ob.service;
 
 import org.springframework.http.ResponseEntity;
 
