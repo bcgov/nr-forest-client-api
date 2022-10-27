@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 
-import ca.bc.gov.api.m.oracle.legacyclient.entity.ClientPublicViewEntity;
+import ca.bc.gov.api.m.oracle.legacyclient.entity.ForestClientEntity;
 import ca.bc.gov.api.m.oracle.legacyclient.vo.ClientPublicViewVO;
 
 public interface LegacyClientService {
@@ -15,6 +15,6 @@ public interface LegacyClientService {
 
 	Page<ClientPublicViewVO> findAllNonIndividualClients(Integer pageNo, Integer pageSize, String sortBy);
 
-	List<ClientPublicViewEntity> validateFirstNationBand();
+	List<ForestClientEntity> validateFirstNationBand();
 
 }

@@ -23,6 +23,8 @@
 // 	private static final long serialVersionUID = 4341025008217142732L;
 
 // 	public static final String BEAN_NAME = "clientStatusCodeEntity";
+	
+// public static final String ACTIVE = "ACT";
 
 // 	@Id
 // 	@Column(name = "CLIENT_STATUS_CODE")

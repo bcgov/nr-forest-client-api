@@ -13,7 +13,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import ca.bc.gov.api.m.oracle.legacyclient.entity.ClientPublicViewEntity;
-import ca.bc.gov.api.m.oracle.legacyclient.repository.LegacyClientRepository;
+import ca.bc.gov.api.m.oracle.legacyclient.entity.ForestClientEntity;
+import ca.bc.gov.api.m.oracle.legacyclient.repository.ClientPublicViewRepository;
+import ca.bc.gov.api.m.oracle.legacyclient.repository.ForestClientRepository;
 import ca.bc.gov.api.m.oracle.legacyclient.service.LegacyClientService;
 import ca.bc.gov.api.m.oracle.legacyclient.vo.ClientPublicViewVO;
 
@@ -21,11 +23,15 @@ import ca.bc.gov.api.m.oracle.legacyclient.vo.ClientPublicViewVO;
 public class LegacyClientServiceImpl implements LegacyClientService {
 		
 	@Inject
-	private LegacyClientRepository legacyClientRepository;
+	private ClientPublicViewRepository clientPublicViewRepository;
 
+	@Inject
+    private ForestClientRepository forestClientRepository;
+	
+	
 	@Override
 	public ClientPublicViewVO findByClientNumber(String clientNumber) {
-		ClientPublicViewEntity client = legacyClientRepository.findByClientNumber(clientNumber);
+		ClientPublicViewEntity client = clientPublicViewRepository.findByClientNumber(clientNumber);
 		
 		return new ClientPublicViewVO(
     		        client.getClientNumber(),
@@ -39,7 +45,7 @@ public class LegacyClientServiceImpl implements LegacyClientService {
 	@Override
 	public Page<ClientPublicViewVO> findAllNonIndividualClients(Integer pageNo, Integer pageSize, String sortBy) {
 		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).ascending());
-		Page<ClientPublicViewEntity> clients = legacyClientRepository.findAllNonIndividualClients(paging);
+		Page<ClientPublicViewEntity> clients = clientPublicViewRepository.findAllNonIndividualClients(paging);
 		return toClientPublicViewVOs(clients, paging);
 	}
 
@@ -61,8 +67,8 @@ public class LegacyClientServiceImpl implements LegacyClientService {
 	}
 
 	@Override
-	public List<ClientPublicViewEntity> validateFirstNationBand() {
-		List<ClientPublicViewEntity> clients = legacyClientRepository.findAllFirstNationBandClients();
+	public List<ForestClientEntity> validateFirstNationBand() {
+		List<ForestClientEntity> clients = forestClientRepository.findAllFirstNationBandClients();
 		
 		// todo: go for each client to make the api call
 		// for (ClientPublicViewEntity client : clients) { 
