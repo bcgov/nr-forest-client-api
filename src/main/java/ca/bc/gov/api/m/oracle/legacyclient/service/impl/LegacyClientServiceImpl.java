@@ -1,6 +1,8 @@
 package ca.bc.gov.api.m.oracle.legacyclient.service.impl;
 
 import java.util.stream.Collectors;
+import java.util.Dictionary;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -10,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.scheduling.annotation.Async;
 
 import ca.bc.gov.api.m.oracle.legacyclient.entity.ClientPublicViewEntity;
 import ca.bc.gov.api.m.oracle.legacyclient.repository.LegacyClientRepository;
@@ -57,6 +60,19 @@ public class LegacyClientServiceImpl implements LegacyClientService {
 		else {
 			return null;
 		}
+	}
+
+	@Override
+	public List<ClientPublicViewEntity> validateFirstNationBand() {
+		List<ClientPublicViewEntity> clients = legacyClientRepository.findAllFirstNationBandClients();
+		
+		// todo: go for each client to make the api call
+		// for (ClientPublicViewEntity client : clients) { 
+		// 		System.out.println(client.getClientName());
+		// }
+
+		return clients;
+
 	}
 
 }

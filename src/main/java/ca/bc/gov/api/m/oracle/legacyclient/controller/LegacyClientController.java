@@ -3,6 +3,7 @@ package ca.bc.gov.api.m.oracle.legacyclient.controller;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import javax.inject.Inject;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,7 @@ import ca.bc.gov.api.core.configuration.OraclePersistenceConfiguration;
 import ca.bc.gov.api.core.util.CoreUtil;
 import ca.bc.gov.api.m.oracle.legacyclient.service.LegacyClientService;
 import ca.bc.gov.api.m.oracle.legacyclient.vo.ClientPublicViewVO;
+import ca.bc.gov.api.m.oracle.legacyclient.entity.ClientPublicViewEntity;
 import io.swagger.annotations.Api;
 
 @Api(tags = OraclePersistenceConfiguration.ORACLE_API_TAG)
@@ -58,5 +60,11 @@ public class LegacyClientController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+	@GetMapping("/validateFirstNationBand")
+	public List<ClientPublicViewEntity> validateFirstNationBand() {
+		List<ClientPublicViewEntity> client = legacyClientService.validateFirstNationBand();
+		return client;
+	}
 
 }
