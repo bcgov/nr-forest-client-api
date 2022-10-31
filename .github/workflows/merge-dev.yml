@@ -72,6 +72,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Set up JDK 17 and Caching maven dependencies
+        uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
       - name: Unit Tests
         run: |
           ./mvnw test
