@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,6 +25,7 @@ import ca.bc.gov.api.m.oracle.legacyclient.vo.ClientPublicViewVO;
 import io.swagger.annotations.Api;
 
 @Api(tags="Legacy Client")
+@CrossOrigin(maxAge = 3600)
 @RestController
 @RequestMapping("api/m/legacyclient/")
 public class LegacyClientController {
