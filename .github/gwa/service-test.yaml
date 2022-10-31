@@ -11,7 +11,7 @@ services:
         hosts:
           - nrfc-api-test.api.gov.bc.ca
         paths:
-          - /swagger-ui/index.html
+          - /
         methods:
           - GET
         strip_path: false
@@ -22,7 +22,7 @@ services:
         hosts:
           - nrfc-api-test.api.gov.bc.ca
         paths:
-          - /
+          - /api
         methods:
           - GET
           - OPTIONS
