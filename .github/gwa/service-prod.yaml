@@ -11,7 +11,7 @@ services:
         hosts:
           - nrfc-api-prod.api.gov.bc.ca
         paths:
-          - /api
+          - /swagger-ui/index.html
         methods:
           - GET
         strip_path: false
