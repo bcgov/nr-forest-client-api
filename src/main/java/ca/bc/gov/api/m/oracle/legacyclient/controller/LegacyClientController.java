@@ -17,15 +17,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-// import ca.bc.gov.api.core.configuration.OraclePersistenceConfiguration;
 import ca.bc.gov.api.core.util.CoreUtil;
 import ca.bc.gov.api.m.oracle.legacyclient.entity.ForestClientEntity;
 import ca.bc.gov.api.m.oracle.legacyclient.service.LegacyClientService;
 import ca.bc.gov.api.m.oracle.legacyclient.vo.ClientPublicViewVO;
 import io.swagger.annotations.Api;
 
-// @Api(tags = OraclePersistenceConfiguration.ORACLE_API_TAG)
-@Api()
+@Api(tags="Legacy Client")
 @RestController
 @RequestMapping("api/m/legacyclient/")
 public class LegacyClientController {
@@ -62,11 +60,5 @@ public class LegacyClientController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-	@GetMapping("/validateFirstNationBand")
-	public List<ForestClientEntity> validateFirstNationBand() {
-		List<ForestClientEntity> client = legacyClientService.validateFirstNationBand();
-		return client;
-	}
 
 }

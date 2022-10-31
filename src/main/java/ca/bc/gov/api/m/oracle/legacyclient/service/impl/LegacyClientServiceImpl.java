@@ -65,18 +65,4 @@ public class LegacyClientServiceImpl implements LegacyClientService {
 			return null;
 		}
 	}
-
-	@Override
-	public List<ForestClientEntity> validateFirstNationBand() {
-		List<ForestClientEntity> clients = forestClientRepository.findAllFirstNationBandClients();
-		
-		// todo: go for each client to make the api call
-		// for (ClientPublicViewEntity client : clients) { 
-		// 		System.out.println(client.getClientName());
-		// }
-
-		return clients;
-
-	}
-
 }

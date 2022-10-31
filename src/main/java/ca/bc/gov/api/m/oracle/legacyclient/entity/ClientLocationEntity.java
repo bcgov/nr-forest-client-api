@@ -11,13 +11,11 @@ import javax.persistence.Table;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-// import ca.bc.gov.api.core.configuration.OraclePersistenceConfiguration;
 import ca.bc.gov.api.core.entity.AbstractEntity;
 import ca.bc.gov.api.core.misc.scope.ScopeConstant;
 
 @Entity
-// @Table(name = "CLIENT_LOCATION", schema = OraclePersistenceConfiguration.ORACLE_ATTRIBUTE_SCHEMA)
-@Table(name = "CLIENT_LOCATION")
+@Table(name = "CLIENT_LOCATION", schema = "THE")
 @Component(ClientLocationEntity.BEAN_NAME)
 @Scope(ScopeConstant.PROTOTYPE)
 public class ClientLocationEntity implements AbstractEntity {

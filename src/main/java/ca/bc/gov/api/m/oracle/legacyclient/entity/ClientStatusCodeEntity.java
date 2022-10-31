@@ -1,4 +1,4 @@
-package ca.bc.gov.api.m.postgres.client.entity;
+package ca.bc.gov.api.m.oracle.legacyclient.entity;
 
 import java.util.Date;
 
@@ -14,7 +14,7 @@ import ca.bc.gov.api.core.entity.AbstractEntity;
 import ca.bc.gov.api.core.misc.scope.ScopeConstant;
 
 @Entity
-@Table(name = "CLIENT_STATUS_CODE")
+@Table(name = "CLIENT_STATUS_CODE", schema = "THE")
 @Component(ClientStatusCodeEntity.BEAN_NAME)
 @Scope(ScopeConstant.PROTOTYPE)
 public class ClientStatusCodeEntity implements AbstractEntity {

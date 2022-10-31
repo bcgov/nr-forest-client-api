@@ -15,6 +15,4 @@ public interface LegacyClientService {
 
 	Page<ClientPublicViewVO> findAllNonIndividualClients(Integer pageNo, Integer pageSize, String sortBy);
 
-	List<ForestClientEntity> validateFirstNationBand();
-
 }
