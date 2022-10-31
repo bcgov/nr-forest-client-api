@@ -112,7 +112,6 @@ jobs:
           oc project ${{ secrets.OC_NAMESPACE }}
 
           # Process and apply deployment templates
-          oc process -f .github/openshift/deploy.database.yml -p ZONE=${{ env.ZONE }} | oc apply -f -
           oc process -f .github/openshift/deploy.backend.yml -p ZONE=${{ env.ZONE }} \
             -p PROMOTE=${{ github.repository }}:${{ env.ZONE }}-backend \
             -p NODE_ENV='development' \
@@ -123,7 +122,6 @@ jobs:
             -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }} | oc apply -f -
 
           # Follow any active rollouts (see deploymentconfigs)
-          oc rollout status dc/${{ env.NAME }}-${{ env.ZONE }}-database -w
           oc rollout status dc/${{ env.NAME }}-${{ env.ZONE }}-backend -w
 
           # Remove completed build runs, build pods and deployment pods
@@ -132,38 +130,38 @@ jobs:
             oc delete po ${p}
           done
 
-  # publish-test-api:
-  #   name: Publish Test Api
-  #   needs:
-  #     - deploy-test
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #       with:
-  #         fetch-depth: 0
+  publish-test-api:
+    name: Publish Test Api
+    needs:
+      - deploy-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-  #     - uses: actions/setup-node@v1
-  #       with:
-  #         node-version: 10
-  #         TOKEN: ${ secrets.GITHUB_TOKEN }
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 10
+          TOKEN: ${ secrets.GITHUB_TOKEN }
 
-  #     - name: Get GWA Command Line
-  #       run: |
-  #         curl -L -O https://github.com/bcgov/gwa-cli/releases/download/v1.3.1/gwa_v1.3.1_linux_x64.zip
-  #         unzip gwa_v1.3.1_linux_x64.zip
-  #         export PATH=`pwd`:$PATH
+      - name: Get GWA Command Line
+        run: |
+          curl -L -O https://github.com/bcgov/gwa-cli/releases/download/v1.3.1/gwa_v1.3.1_linux_x64.zip
+          unzip gwa_v1.3.1_linux_x64.zip
+          export PATH=`pwd`:$PATH
 
-  #     - name: Apply Namespace Configuration
-  #       run: |
-  #         export PATH=`pwd`:$PATH
-  #         cd .github/gwa
+      - name: Apply Namespace Configuration
+        run: |
+          export PATH=`pwd`:$PATH
+          cd .github/gwa
 
-  #         gwa init -P \
-  #           --namespace=${{ env.NS }} \
-  #           --client-id=${{ secrets.GWA_ACCT_ID }} \
-  #           --client-secret=${{ secrets.GWA_ACCT_SECRET }}
+          gwa init -P \
+            --namespace=${{ env.NS }} \
+            --client-id=${{ secrets.GWA_ACCT_ID }} \
+            --client-secret=${{ secrets.GWA_ACCT_SECRET }}
 
-  #         gwa pg service-test.yaml
+          gwa pg service-test.yaml
 
   zap-backend:
     name: Backend Pen Tests
