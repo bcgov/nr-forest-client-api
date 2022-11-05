@@ -8,15 +8,15 @@ public interface LegacyClientService {
 
 	ResponseEntity<Object> findByClientNumber(String clientNumber);
 
-	ResponseEntity<Object> findAllNonIndividualClients(Integer currentPage, 
-														 Integer itemsPerPage, 
-														 String sortBy);
+	ResponseEntity<Object> findAllNonIndividualClients(String currentPage, 
+													   String itemsPerPage,
+													   String sortedColumnName);
 
 	ResponseEntity<Object> findByNames(String clientName, 
 									   String clientFirstName, 
 									   String clientMiddleName,
 									   String clientTypeCodesAsCsv, 
-									   Integer currentPage, 
-									   Integer itemsPerPage);
+									   String currentPage, 
+									   String itemsPerPage);
 
 }

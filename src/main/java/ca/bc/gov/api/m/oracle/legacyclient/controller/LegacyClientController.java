@@ -36,11 +36,11 @@ public class LegacyClientController {
     }
 
     @GetMapping("/findAllNonIndividuals")
-    public ResponseEntity<Object> findAllNonIndividuals(@RequestParam(defaultValue = "0") Integer currentPage,
-                                                        @RequestParam(defaultValue = "10") Integer itemsPerPage,
-                                                        @RequestParam(defaultValue = "CLIENT_NUMBER") String sortBy) {
+    public ResponseEntity<Object> findAllNonIndividuals(@RequestParam(defaultValue = "1") String currentPage,
+                                                        @RequestParam(defaultValue = "10") String itemsPerPage,
+                                                        @RequestParam(defaultValue = "clientName") String sortedColumnName) {
 
-    	return legacyClientService.findAllNonIndividualClients(currentPage, itemsPerPage, sortBy);
+    	return legacyClientService.findAllNonIndividualClients(currentPage, itemsPerPage, sortedColumnName);
     }
     
     @RequestMapping(value = "/findByNames", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
@@ -62,8 +62,8 @@ public class LegacyClientController {
     									                 		"Please enter one or more client type codes as CSV, i.e. C,A,B.") 
     										  String clientTypeCodesAsCsv,
     										  
-    										  @RequestParam(defaultValue = "1") Integer currentPage,
-                                              @RequestParam(defaultValue = "10") Integer itemsPerPage) {
+    										  @RequestParam(defaultValue = "1") String currentPage,
+                                              @RequestParam(defaultValue = "10") String itemsPerPage) {
     	
     	return legacyClientService.findByNames(clientName,
 											   clientFirstName,

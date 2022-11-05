@@ -41,6 +41,14 @@ public class ClientPublicViewDaoImpl implements ClientPublicViewDao {
 	@Override
 	public List<ClientPublicViewVO> retrieveSearchResultItems(ClientPublicFilterObjectVO filterObject) {
 		
+		if (coreUtil.isNullOrBlank(filterObject.sortedColumnName)) {
+			filterObject.sortedColumnName = "client_number";	
+		}
+		
+		if (coreUtil.isNullOrBlank(filterObject.sortedColumnDirection)) {
+			filterObject.sortedColumnDirection = "asc";	
+		} 
+		
 		String sql = buildSearchItemsSql(filterObject);
 		
 		return jdbcTemplate.query(sql, new ResultSetExtractor<List<ClientPublicViewVO>>() {
@@ -82,7 +90,10 @@ public class ClientPublicViewDaoImpl implements ClientPublicViewDao {
 		StringBuilder sb = new StringBuilder();
 		sb.append("select * ");
 		sb.append("from (");
-		sb.append("		select qry1.*, row_number() over (order by client_number ASC) rn ");
+		sb.append("		select qry1.*, row_number() over (" +
+				  "							order by " + 
+				  							toSqlColumnName(filterObject.sortedColumnName) + " " + 
+				  							filterObject.sortedColumnDirection + ") rn ");
 		sb.append("		from (");
 		buildMainQuery(sb);
 		sb.append("		) qry1 ");
@@ -118,7 +129,26 @@ public class ClientPublicViewDaoImpl implements ClientPublicViewDao {
 		if (!coreUtil.isNullOrBlank(filterObject.clientTypeCodesAsCsv)) {
 			sb.append("and client_type_code in (" + coreUtil.fromStringListToCsvWithAposthrophe(filterObject.clientTypeCodesAsCsv) + ") ");
 		}
+		
+		if (null != filterObject.clientType) {
+			if (filterObject.clientType.equalsInd)
+				sb.append("and upper(client_type_code) = upper('" + filterObject.clientType.clientTypeCode + "') ");
+			else
+				sb.append("and upper(client_type_code) != upper('" + filterObject.clientType.clientTypeCode + "') ");
+		}
 
+	}
+	
+	private String toSqlColumnName(String sortedColumnName) {
+		if ("clientName".equals(sortedColumnName)) {
+			return "client_name";
+		}
+		else if ("clientNumber".equals(sortedColumnName)) {
+			return "client_number";	
+		}
+		else {
+			throw new IllegalArgumentException("Unexpected 'sortedColumnValue' arg was passed into call to method 'toSqlColumnName': " + sortedColumnName);
+		}	
 	}
 
 }
