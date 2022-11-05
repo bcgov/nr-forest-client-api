@@ -53,7 +53,7 @@ public class LegacyClientControllerTest {
         given(legacyClientController.findByClientNumber(CLIENT_NUMBER)).willReturn(new ResponseEntity<Object>(clientVO, HttpStatus.OK));
 
         // when
-        ResponseEntity client = legacyClientController.findByClientNumber(CLIENT_NUMBER);
+        ResponseEntity<Object> client = legacyClientController.findByClientNumber(CLIENT_NUMBER);
 
         // then
         assertThat(client).isNotNull();
@@ -67,7 +67,7 @@ public class LegacyClientControllerTest {
         given(legacyClientController.findByClientNumber(CLIENT_NUMBER_INVALID)).willReturn(new ResponseEntity<>(null, HttpStatus.BAD_REQUEST));
 
         // when
-        ResponseEntity response = legacyClientController.findByClientNumber(CLIENT_NUMBER_INVALID);
+        ResponseEntity<Object> response = legacyClientController.findByClientNumber(CLIENT_NUMBER_INVALID);
 
         // then
         assertThat(response).isNotNull();
