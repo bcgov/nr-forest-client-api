@@ -43,7 +43,7 @@ public class LegacyClientServiceImpl implements LegacyClientService {
 							                    client.getClientTypeCode()));
 			}
 			else {
-				return ResponseEntity.ok(new ClientPublicViewVO());
+				return ResponseEntity.ok(null);
 			}
         } 
         else {

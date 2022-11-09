@@ -42,7 +42,7 @@ public class ClientPublicViewDaoImpl implements ClientPublicViewDao {
 	public List<ClientPublicViewVO> retrieveSearchResultItems(ClientPublicFilterObjectVO filterObject) {
 		
 		if (coreUtil.isNullOrBlank(filterObject.sortedColumnName)) {
-			filterObject.sortedColumnName = "client_number";	
+			filterObject.sortedColumnName = "clientNumber";	
 		}
 		
 		if (coreUtil.isNullOrBlank(filterObject.sortedColumnDirection)) {
