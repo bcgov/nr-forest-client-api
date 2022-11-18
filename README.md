@@ -9,7 +9,7 @@
 
 The nr-forest-client-api application provides the API that allows systems to consume forest client data without having to connect to a database. We are working the process to publish our API  
 
-The nr-forest-client-api is a Java, integrated with the [greenfield-template](https://github.com/bcgov/greenfield-template) to automate the process for testing, security scanning, code quality checking, image building and deploying. It is hosted in openshift, protected and published through [API Services Portal](https://api.gov.bc.ca/)
+The nr-forest-client-api is a Java application, integrated with the [greenfield-template](https://github.com/bcgov/greenfield-template) to automate the process for testing, security scanning, code quality checking, image building and deploying. It is hosted in openshift, protected and published through [API Services Portal](https://api.gov.bc.ca/)
 
 
 
