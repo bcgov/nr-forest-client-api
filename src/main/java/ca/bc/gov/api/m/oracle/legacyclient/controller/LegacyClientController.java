@@ -49,11 +49,11 @@ public class LegacyClientController {
     										  String clientName,
     										  
     										  @RequestParam(name="clientFirstName", required=false) 
-    										  @ApiParam(value = "The client's first name", required=false) 
+    										  @ApiParam(value = "The client's first name") 
     										  String clientFirstName,
     										  
     										  @RequestParam(name="clientMiddleName", required=false) 
-    										  @ApiParam(value = "The client's middle name", required=false) 
+    										  @ApiParam(value = "The client's middle name") 
     										  String clientMiddleName,
     										  
     										  @RequestParam(name="clientTypeCodesAsCsv", required=false) 
