@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ca.bc.gov.api.m.oracle.legacyclient.service.LegacyClientService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Parameter;
 
 @Api(tags="Legacy Client")
 @CrossOrigin(maxAge = 3600)
@@ -45,19 +45,19 @@ public class LegacyClientController {
     
     @RequestMapping(value = "/findByNames", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> findByNames(@RequestParam(name="clientName", required=false) 
-    										  @ApiParam(value = "The name of the entity or individual's last name") 
+    										  @Parameter(description = "The name of the entity or individual's last name") 
     										  String clientName,
     										  
     										  @RequestParam(name="clientFirstName", required=false) 
-    										  @ApiParam(value = "The client's first name") 
+    										  @Parameter(description = "The client's first name") 
     										  String clientFirstName,
     										  
     										  @RequestParam(name="clientMiddleName", required=false) 
-    										  @ApiParam(value = "The client's middle name") 
+    										  @Parameter(description = "The client's middle name") 
     										  String clientMiddleName,
     										  
     										  @RequestParam(name="clientTypeCodesAsCsv", required=false) 
-    										  @ApiParam(value = "A code indicating a type of ministry client.<br>" +
+    										  @Parameter(description = "A code indicating a type of ministry client.<br>" +
     									                 		"Examples include but are not limited to: Corporation, Individual, Association, First Nation Band...<br>" + 
     									                 		"Please enter one or more client type codes as CSV, i.e. C,A,B.") 
     										  String clientTypeCodesAsCsv,
