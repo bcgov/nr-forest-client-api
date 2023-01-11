@@ -147,7 +147,6 @@
 >>>>>>> 46bf21d (Merge #59: feat: Upgrade Spring Boot to version 3.0.0 (#65))
 		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 <<<<<<< HEAD
