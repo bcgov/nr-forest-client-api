@@ -1,11 +1,5 @@
 package ca.bc.gov.api.m.oracle.legacyclient.service.impl;
 
-import javax.inject.Inject;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-
 import ca.bc.gov.api.core.util.CoreUtil;
 import ca.bc.gov.api.m.oracle.legacyclient.dao.ClientPublicViewDao;
 import ca.bc.gov.api.m.oracle.legacyclient.entity.ClientPublicViewEntity;
@@ -15,6 +9,10 @@ import ca.bc.gov.api.m.oracle.legacyclient.service.LegacyClientService;
 import ca.bc.gov.api.m.oracle.legacyclient.vo.ClientPublicFilterObjectVO;
 import ca.bc.gov.api.m.oracle.legacyclient.vo.ClientPublicFilterObjectVO.ClientTypeHelper;
 import ca.bc.gov.api.m.oracle.legacyclient.vo.ClientPublicViewVO;
+import javax.inject.Inject;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
 @Service(LegacyClientService.BEAN_NAME)
 public class LegacyClientServiceImpl implements LegacyClientService {

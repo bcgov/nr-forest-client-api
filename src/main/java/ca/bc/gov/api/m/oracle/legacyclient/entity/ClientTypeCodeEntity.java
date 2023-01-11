@@ -1,17 +1,14 @@
 package ca.bc.gov.api.m.oracle.legacyclient.entity;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
 import ca.bc.gov.api.core.entity.AbstractEntity;
 import ca.bc.gov.api.core.misc.scope.ScopeConstant;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import java.util.Date;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 @Entity
 @Table(name = "CLIENT_TYPE_CODE", schema = "THE")
