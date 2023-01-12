@@ -9,12 +9,7 @@ import lombok.RequiredArgsConstructor;
 @Builder
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class ClientPublicViewDto {
-
-  public String clientNumber;
-  public String clientName;
-  public String legalFirstName;
-  public String legalMiddleName;
-  public String clientStatusCode;
-  public String clientTypeCode;
+public record ClientPublicViewDto(
+    String clientNumber, String clientName, String legalFirstName, String legalMiddleName,
+    String clientStatusCode, String clientTypeCode) {
 }
