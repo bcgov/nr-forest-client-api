@@ -1,9 +1,8 @@
 package ca.bc.gov.api.m.oracle.legacyclient.dao;
 
-import java.util.List;
-
 import ca.bc.gov.api.m.oracle.legacyclient.vo.ClientPublicFilterObjectVO;
 import ca.bc.gov.api.m.oracle.legacyclient.vo.ClientPublicViewVO;
+import java.util.List;
 
 /**
  * @author Maria Martinez, Government of BC

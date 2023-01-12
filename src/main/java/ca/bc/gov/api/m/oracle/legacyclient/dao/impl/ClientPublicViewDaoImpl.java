@@ -1,24 +1,21 @@
 package ca.bc.gov.api.m.oracle.legacyclient.dao.impl;
 
+import ca.bc.gov.api.core.configuration.OraclePersistenceConfiguration;
+import ca.bc.gov.api.core.util.CoreUtil;
+import ca.bc.gov.api.m.oracle.legacyclient.dao.ClientPublicViewDao;
+import ca.bc.gov.api.m.oracle.legacyclient.vo.ClientPublicFilterObjectVO;
+import ca.bc.gov.api.m.oracle.legacyclient.vo.ClientPublicViewVO;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
-
-import ca.bc.gov.api.core.configuration.OraclePersistenceConfiguration;
-import ca.bc.gov.api.core.util.CoreUtil;
-import ca.bc.gov.api.m.oracle.legacyclient.dao.ClientPublicViewDao;
-import ca.bc.gov.api.m.oracle.legacyclient.vo.ClientPublicFilterObjectVO;
-import ca.bc.gov.api.m.oracle.legacyclient.vo.ClientPublicViewVO;
 
 /**
  * @author Maria Martinez, Government of BC

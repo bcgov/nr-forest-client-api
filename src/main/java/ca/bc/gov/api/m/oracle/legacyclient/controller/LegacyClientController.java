@@ -2,8 +2,10 @@ package ca.bc.gov.api.m.oracle.legacyclient.controller;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+import ca.bc.gov.api.m.oracle.legacyclient.service.LegacyClientService;
+import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.Parameter;
 import javax.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import ca.bc.gov.api.m.oracle.legacyclient.service.LegacyClientService;
-import io.swagger.annotations.Api;
-import io.swagger.v3.oas.annotations.Parameter;
 
 @Api(tags="Legacy Client")
 @CrossOrigin(maxAge = 3600)

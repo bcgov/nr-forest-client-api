@@ -1,21 +1,18 @@
 package ca.bc.gov.api.core.util.impl;
 
+import ca.bc.gov.api.core.CoreConstant;
+import ca.bc.gov.api.core.util.CoreUtil;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-
-import ca.bc.gov.api.core.util.CoreUtil;
-import ca.bc.gov.api.core.CoreConstant;
 
 @Component
 @Qualifier(CoreUtil.BEAN_NAME)
