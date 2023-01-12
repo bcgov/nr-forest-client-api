@@ -11,8 +11,8 @@
 	<groupId>ca.bc.gov</groupId>
 	<artifactId>nr-forest-client-api</artifactId>
 	<version>0.0.1</version>
-	<name>nr-forest-legacy-client</name>
-	<description>NR Legacy Forest Client Backend</description>
+	<name>nr-forest-client-api</name>
+	<description>NR Legacy Forest Client API Backend</description>
 
 	<licenses>
 		<license>
