@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@RequiredArgsConstructor
 @Entity
 @Table(name = "V_CLIENT_PUBLIC", schema = "THE")
 public class ClientPublicViewEntity {
