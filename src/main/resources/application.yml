@@ -10,7 +10,7 @@ spring:
     allow-bean-definition-overriding: true
   datasource:
     driver-class-name: oracle.jdbc.OracleDriver
-    url: jdbc:oracle:thin:@${ca.bc.gov.nrs.oracle.host}/${ca.bc.gov.nrs.oracle.service}
+    url: jdbc:oracle:thin:@tcps://${ca.bc.gov.nrs.oracle.host}/${ca.bc.gov.nrs.oracle.service}
     username: ${ca.bc.gov.nrs.oracle.username}
     password: ${ca.bc.gov.nrs.oracle.password}
     hikari:
