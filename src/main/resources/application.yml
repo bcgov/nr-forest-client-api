@@ -9,7 +9,7 @@ spring:
     banner-mode: "off"
     allow-bean-definition-overriding: true
   datasource:
-    url: jdbc:oracle:thin:@tcps://${ca.bc.gov.nrs.oracle.host}:${ORACLEDB_PORT}/${ca.bc.gov.nrs.oracle.database}
+    url: jdbc:oracle:thin:@tcps://${ca.bc.gov.nrs.oracle.host}/${ca.bc.gov.nrs.oracle.database}
     username: ${ca.bc.gov.nrs.oracle.username}
     password: ${ca.bc.gov.nrs.oracle.password}
     hikari:
