@@ -8,19 +8,18 @@ spring:
     lazy-initialization: false
     banner-mode: "off"
     allow-bean-definition-overriding: true
-  r2dbc:
+  datasource:
     url: jdbc:oracle:thin:@tcps://${ca.bc.gov.nrs.oracle.host}:${ORACLEDB_PORT}/${ca.bc.gov.nrs.oracle.database}
     username: ${ca.bc.gov.nrs.oracle.username}
     password: ${ca.bc.gov.nrs.oracle.password}
-    pool:
-      enabled: true
-      initialSize: 1
-      minIdle: 1
-      maxSize: 3
-      maxLifeTime: 60000
-      maxIdleTime: 45000
-      maxCreateConnectionTime: 90000
-      poolName: FsaClientConPool
+    hikari:
+      connectionTimeout: 90000
+      idleTimeout: 45000
+      maxLifetime: 60000
+      keepaliveTime: 30000
+      poolName: SimpleCachePool
+      minimumIdle: 1
+      maximumPoolSize: 3
 
 management:
   endpoint:
@@ -36,6 +35,8 @@ management:
       include: principal,request-headers,response-headers,cookie-headers,time-taken,authorization-header,remote-address,session-id
 
 springdoc:
+  swagger-ui:
+    path: /
   webjars:
     prefix: /v3
   api-docs:
@@ -43,26 +44,14 @@ springdoc:
       enabled: true
   show-actuator: false
 
-frontend:
-  url: ${FRONTEND_URL:*}
-
-
 ca:
   bc:
     gov:
       nrs:
-        ches:
-          uri: ${CHES_API_URL:http://127.0.0.1:10010/chess/uri}
-          tokenUrl: ${CHES_TOKEN_URL:http://127.0.0.1:10010/token/uri}
-          clientId: ${CHES_CLIENT_ID:clientId}
-          clientSecret: ${CHES_CLIENT_SECRET:secret}
-          scope: scope
-        orgbook:
-          uri: https://orgbook.gov.bc.ca/api
-        openmaps:
-          uri: https://openmaps.gov.bc.ca/geo/pub/ows
-        postgres:
-          database: ${POSTGRESQL_DATABASE:fsa-forest}
-          host: ${POSTGRESQL_HOST:localhost}:5432
-          username: ${POSTGRESQL_USER:user}
-          password: ${POSTGRESQL_PASSWORD:passwd}
+        oracle:
+          service: ${ORACLEDB_SERVICENAME:fsa-forest}
+          database: ${ORACLEDB_DATABASE:fsa-forest}
+          host: ${ORACLEDB_HOST:localhost}:${ORACLEDB_PORT:1543}
+          username: ${ORACLEDB_USER:user}
+          password: ${ORACLEDB_PASSWORD:passwd}
+
