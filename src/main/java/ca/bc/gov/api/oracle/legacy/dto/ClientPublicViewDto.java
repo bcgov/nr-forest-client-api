@@ -1,9 +1,6 @@
 package ca.bc.gov.api.oracle.legacy.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
 @Builder
 public record ClientPublicViewDto(
