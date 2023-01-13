@@ -373,7 +373,7 @@
 			</plugin>
 
 		</plugins>
-		<finalName>nr-forest-client-backend</finalName>
+		<finalName>nr-forest-client-api</finalName>
 	</build>
 
 	<profiles>
