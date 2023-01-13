@@ -162,11 +162,10 @@ jobs:
 
       - uses: bcgov-nr/action-builder-ghcr@v0.0.2
         with:
-          package: ${{ matrix.package }}
+          package: api
           tag: ${{ github.event.number }}
           tag_fallback: test
           token: ${{ secrets.GITHUB_TOKEN }}
-          triggers: ${{ matrix.triggers }}
 
   tests-backend:
     name: Backend Unit Tests
