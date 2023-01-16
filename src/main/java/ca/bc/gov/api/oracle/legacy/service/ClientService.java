@@ -12,7 +12,6 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
@@ -50,12 +49,17 @@ public class ClientService {
             PageRequest.of(page, size, Sort.by(sortBy)))
         .stream()
         .map(ClientMapper::mapEntityToDto)
-        .collect(Collectors.toList());
+        .toList();
   }
 
   public List<ClientPublicViewDto> searchByNames(
-      String clientName, String clientFirstName, String clientMiddleName,
-      List<String> clientTypeCodes, int page, int size) {
+      String clientName,
+      String clientFirstName,
+      String clientMiddleName,
+      List<String> clientTypeCodes,
+      int page,
+      int size
+  ) {
 
     if (StringUtils.isBlank(clientName)
         && StringUtils.isBlank(clientFirstName)
@@ -92,7 +96,7 @@ public class ClientService {
     return clientPublicViewRepository.findAll(queryExpression, PageRequest.of(page, size))
         .stream()
         .map(ClientMapper::mapEntityToDto)
-        .collect(Collectors.toList());
+        .toList();
   }
 
   private String getClientTypeCodeQueryString(List<String> clientTypeCodes) {
