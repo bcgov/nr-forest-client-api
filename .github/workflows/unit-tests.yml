@@ -28,7 +28,7 @@ jobs:
         with:
           commands: |
             mvn -B verify -P all-tests checkstyle:checkstyle -Dcheckstyle.skip=false --file pom.xml
-          dir: backend
+          dir: .
           java-cache: maven
           java-distribution: temurin
           java-version: "17"
