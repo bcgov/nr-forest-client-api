@@ -12,7 +12,7 @@ labels:
 parameters:
   - name: NAME
     description: Module name
-    value: nrfc-api
+    value: nr-forest-client-api
   - name: COMPONENT
     description: Component name
     value: backend

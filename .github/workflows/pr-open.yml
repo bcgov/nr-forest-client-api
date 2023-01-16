@@ -214,7 +214,7 @@ jobs:
           health_url: health
           parameters:
             -p ZONE=${{ github.event.number }} -p NAME=${{ github.event.repository.name }}
-            -p PROMOTE=${{ github.repository }}:${{ github.event.number }}
+            -p PROMOTE=${{ github.repository }}/api:${{ github.event.number }}
             -p NODE_ENV='development'
             -p ORACLEDB_USER=${{ secrets.ORACLEDB_USER }}
             -p ORACLEDB_PASSWORD=${{ secrets.ORACLEDB_PASSWORD }}
