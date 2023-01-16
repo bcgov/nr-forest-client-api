@@ -160,7 +160,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - uses: bcgov-nr/action-builder-ghcr@v0.0.2
+      - uses: bcgov-nr/action-builder-ghcr@v0.0.3-rc1
         with:
           package: api
           tag: ${{ github.event.number }}
