@@ -1,0 +1,58 @@
+server:
+  port: 3001
+
+spring:
+  application:
+    name: FSA Forest Client API
+  main:
+    lazy-initialization: false
+    banner-mode: "off"
+    allow-bean-definition-overriding: true
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+    url: jdbc:oracle:thin:@tcps://${ca.bc.gov.nrs.oracle.host}/${ca.bc.gov.nrs.oracle.service}
+    username: ${ca.bc.gov.nrs.oracle.username}
+    password: ${ca.bc.gov.nrs.oracle.password}
+    hikari:
+      connectionTimeout: 90000
+      idleTimeout: 45000
+      maxLifetime: 60000
+      keepaliveTime: 30000
+      poolName: SimpleCachePool
+      minimumIdle: 1
+      maximumPoolSize: 3
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include: "*"
+  httpexchanges:
+    recording:
+      include: principal,request-headers,response-headers,cookie-headers,time-taken,authorization-header,remote-address,session-id
+
+springdoc:
+  swagger-ui:
+    path: /
+  webjars:
+    prefix: /v3
+  api-docs:
+    groups:
+      enabled: true
+  show-actuator: false
+
+ca:
+  bc:
+    gov:
+      nrs:
+        oracle:
+          service: ${ORACLEDB_SERVICENAME:fsa-forest}
+          database: ${ORACLEDB_DATABASE:fsa-forest}
+          host: ${ORACLEDB_HOST:localhost}:${ORACLEDB_PORT:1543}
+          username: ${ORACLEDB_USER:user}
+          password: ${ORACLEDB_PASSWORD:passwd}
+

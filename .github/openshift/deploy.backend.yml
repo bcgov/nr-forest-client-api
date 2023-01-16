@@ -12,7 +12,7 @@ labels:
 parameters:
   - name: NAME
     description: Module name
-    value: nrfc-api
+    value: nr-forest-client-api
   - name: COMPONENT
     description: Component name
     value: backend
@@ -118,27 +118,6 @@ objects:
               imagePullPolicy: Always
               name: ${NAME}
               env:
-                # - name: POSTGRESQL_HOST
-                #   value: ${NAME}-${ZONE}-database
-                # - name: POSTGRESQL_DATABASE
-                #   valueFrom:
-                #     secretKeyRef:
-                #       name: ${NAME}-${ZONE}-database
-                #       key: database-name
-                # - name: POSTGRESQL_PASSWORD
-                #   valueFrom:
-                #     secretKeyRef:
-                #       name: ${NAME}-${ZONE}-database
-                #       key: database-password
-                # - name: POSTGRESQL_USER
-                #   valueFrom:
-                #     secretKeyRef:
-                #       name: ${NAME}-${ZONE}-database
-                #       key: database-user
-                # - name: FRONTEND_URL
-                #   value: https://${NAME}-${ZONE}-frontend.${DOMAIN}
-                # - name: BACKEND_URL
-                #   value: https://${NAME}-${ZONE}-backend.${DOMAIN}
                 - name: ORACLEDB_USER
                   valueFrom:
                     secretKeyRef:
@@ -170,7 +149,7 @@ objects:
                   value: ${NODE_ENV}
 
               ports:
-                - containerPort: 3000
+                - containerPort: 3001
                   protocol: TCP
               resources:
                 limits:
@@ -182,8 +161,8 @@ objects:
               readinessProbe:
                 failureThreshold: 12
                 httpGet:
-                  path: /
-                  port: 3000
+                  path: /health
+                  port: 3001
                   scheme: HTTP
                 initialDelaySeconds: 240
                 periodSeconds: 15
@@ -192,8 +171,8 @@ objects:
                 successThreshold: 1
                 failureThreshold: 12
                 httpGet:
-                  path: /
-                  port: 3000
+                  path: /health
+                  port: 3001
                   scheme: HTTP
                 initialDelaySeconds: 240
                 periodSeconds: 30
@@ -206,10 +185,10 @@ objects:
       name: ${NAME}-${ZONE}-${COMPONENT}
     spec:
       ports:
-        - name: 3000-tcp
+        - name: 3001-tcp
           protocol: TCP
           port: 80
-          targetPort: 3000
+          targetPort: 3001
       selector:
         deploymentconfig: ${NAME}-${ZONE}-${COMPONENT}
   - apiVersion: route.openshift.io/v1
@@ -221,7 +200,7 @@ objects:
     spec:
       host: ${NAME}-${ZONE}-${COMPONENT}.${DOMAIN}
       port:
-        targetPort: 3000-tcp
+        targetPort: 3001-tcp
       to:
         kind: Service
         name: ${NAME}-${ZONE}-${COMPONENT}

@@ -12,6 +12,88 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  pr-validation:
+    name: Pull Request Validation
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Pull request size and stability labels
+        uses: actions/labeler@v4
+        continue-on-error: true
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Conventional Label
+        uses: bcoe/conventional-release-labels@v1
+        continue-on-error: true
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ignored_types: '["chore","pr"]'
+          type_labels: '{"feat": "feature", "fix": "fix", "bug": "fix", "doc": "documentation", "ci": "ci", "chore": "chore", "breaking": "breaking", "BREAKING CHANGE": "breaking"}'
+
+      - name: Checkout branch
+        uses: actions/checkout@v3
+        with:
+          ref: refs/heads/${{ github.head_ref }}
+
+      - name: Conventional Changelog Update
+        continue-on-error: true
+        uses: TriPSs/conventional-changelog-action@v3
+        id: changelog
+        with:
+          github-token: ${{ github.token }}
+          output-file: 'CHANGELOG.md'
+          skip-version-file: 'true'
+          skip-commit: 'true'
+          git-push: 'false'
+          git-branch: refs/heads/${{ github.head_ref }}
+
+      - name: Checkout pr
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Comment PR
+        continue-on-error: true
+        uses: thollander/actions-comment-pull-request@v1
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        with:
+          message: |
+            # Current changelog
+            
+            ${{ steps.changelog.outputs.clean_changelog }}
+          comment_includes: '# Current changelog'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  pr-greeting:
+    name: PR Greeting
+    env:
+      DOMAIN: apps.silver.devops.gov.bc.ca
+      PREFIX: ${{ github.event.repository.name }}-${{ github.event.number }}
+    runs-on: ubuntu-22.04
+    permissions:
+      pull-requests: write
+    steps:
+      - name: PR Greeting
+        uses: bcgov-nr/action-pr-description-add@v0.0.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          add_markdown: |
+            ---
+            Thanks for the PR!
+
+            Any successful deployments (not always required) will be available below.
+            [API](https://${{ env.NAME }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}/) available
+            
+            Once merged, code will be promoted and handed off to following workflow run.
+            [Main Merge Workflow](https://github.com/${{ github.repository }}/actions/workflows/merge-main.yml)
+
+
+
   check-backend:
     name: Check Backend
     outputs:
@@ -58,6 +140,8 @@ jobs:
           tags: |
             ${{ env.ZONE }}-${{ env.COMPONENT }}
 
+
+
   build-backend:
     name: Backend Image Build
     env:
@@ -74,43 +158,14 @@ jobs:
       packages: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Cache Docker layers
-        uses: actions/cache@v3
+      - uses: bcgov-nr/action-builder-ghcr@v0.0.3-rc1
         with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
-      - name: Log in to the Container registry
-        uses: docker/login-action@v1
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_TOKEN }}
-
-      # need docker/build-push-action to have version at least v3 in order to have github token works
-      - name: Build and push Backend Docker image
-        uses: docker/build-push-action@v3.1.1
-        with:
-          context: ./
-          push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository }}:${{ env.ZONE }}-${{ env.COMPONENT }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Clear any previous OpenShift image
-        run: |
-          # Login to OpenShift and select project
-          oc login --token=${{ secrets.OC_TOKEN }} --server=${{ secrets.OC_SERVER }}
-          oc project ${{ secrets.OC_NAMESPACE }}
-          # Clean previous image
-          oc delete is ${{ env.NAME }}-${{ env.ZONE }}-${{ env.COMPONENT }} || true
+          package: api
+          tag: ${{ github.event.number }}
+          tag_fallback: test
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   tests-backend:
     name: Backend Unit Tests
@@ -129,64 +184,10 @@ jobs:
           java-version: "17"
           cache: "maven"
 
-      # - name: Cache for test results
-      #   id: cache-backend
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: backend/coverage
-      #     key: backend-coverage-${{ github.run_number }}
-      #     restore-keys: |
-      #       backend-coverage-
-
       - name: Tests
         run: |
           ./mvnw test
 
-      # - name: Report code coverage
-      #   uses: romeovs/lcov-reporter-action@v0.3.1
-      #   with:
-      #     title: Backend coverage report
-      #     delete-old-comments: true
-      #     github-token: ${{ secrets.GITHUB_TOKEN }}
-      #     lcov-file: ./backend/coverage/lcov.info
-
-  # sonarcloud:
-  #   name: Static Analysis
-  #   needs:
-  #     - build-backend
-  #     - tests-backend
-  #   if: always() && (needs.build-backend.result == 'success')
-  #   runs-on: ubuntu-22.04
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #       # Disable shallow clone for SonarCloud analysis
-  #       with:
-  #         fetch-depth: 0
-
-  #     - name: Cache for backend test results
-  #       id: cache-backend
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: backend/coverage
-  #         key: backend-coverage-${{ github.run_number }}
-  #         restore-keys: |
-  #           backend-coverage-
-
-  # - name: SonarCloud Scan
-  #   uses: SonarSource/sonarcloud-github-action@master
-  #   env:
-  #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
-  #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  #   with:
-  #     args: >
-  #       -Dsonar.exclusions=**/test/**,.github/**/*
-  #       -Dsonar.organization=bcgov-sonarcloud
-  #       -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info,frontend/coverage/lcov.info
-  #       -Dsonar.cobertura.reportPaths=backend/coverage/cobertura-coverage.xml,frontend/coverage/cobertura-coverage.xml
-  #       -Dsonar.project.monorepo.enabled=true
-  #       -Dsonar.projectKey=greenfield-template
-  #       -Dsonar.sources=backend,frontend
-  #       -Dsonar.tests=backend/test,frontend/test
 
   deploy-dev:
     name: DEV Deployment
@@ -200,63 +201,23 @@ jobs:
       name: dev
     env:
       DOMAIN: apps.silver.devops.gov.bc.ca
-      ZONE: ${{ github.event.number }}
     steps:
-      - uses: actions/checkout@v2
-      - name: Deploy
-        run: |
-          # Login to OpenShift and select project
-          oc login --token=${{ secrets.OC_TOKEN }} --server=${{ secrets.OC_SERVER }}
-          oc project ${{ secrets.OC_NAMESPACE }}
-
-          # Process and apply template  
-          oc process -f .github/openshift/deploy.backend.yml -p ZONE=${{ env.ZONE }} \
-            -p PROMOTE=${{ github.repository }}:${{ env.ZONE }}-backend \
-            -p NODE_ENV='development' \
-            -p ORACLEDB_USER=${{ secrets.ORACLEDB_USER }} \
-            -p ORACLEDB_PASSWORD=${{ secrets.ORACLEDB_PASSWORD }} \
-            -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }} \
-            -p ORACLEDB_HOST=${{ secrets.ORACLEDB_HOST }} \
-            -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }} | oc apply -f -
-
-          # Follow any active rollouts (see deploymentconfigs)
-          oc rollout status dc/${{ env.NAME }}-${{ env.ZONE }}-backend -w
-
-      - name: Deployment Verification
-        env:
-          LINKS: (
-            'https://${{ env.NAME }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}'
-            )
-        run: |
-          LINKS=${{ env.LINKS }}
-          for l in "${LINKS[@]}"; do
-              if [ $(curl -L -s -o /dev/null -w "%{http_code}" "${l}") -ne 200 ]
-              then
-                  echo "Status != 200 for ${l}"
-                  exit 1
-              fi
-          done
-          echo "Deployment verification successful"
-
-      - name: DEV Deployment update
-        uses: mshick/add-pr-comment@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v3
+      - name: Deploys
+        uses: bcgov-nr/action-deployer-openshift@v1.0.0
         with:
-          allow-repeats: false
-          message: |
-            DEV deployments have completed successfully!
-            [Backend](https://${{ env.NAME }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}/) available
-
-  # # Uncomment to for development and troubleshooting
-  # # https://docs.github.com/en/actions/learn-github-actions/contexts
-  # view-context:
-  #   name: View GitHub Context
-  #   runs-on: ubuntu-22.04
-  #   steps:
-  #     - name: Echo GitHub context
-  #       uses: satackey/action-js-inline@v0.0.2
-  #       with:
-  #         script: |
-  #           const github = require('@actions/github');
-  #           console.log(JSON.stringify(github, null, 2));
+          file: .github/openshift/deploy.backend.yml
+          oc_namespace: ${{ secrets.OC_NAMESPACE }}
+          oc_server: ${{ secrets.OC_SERVER }}
+          oc_token: ${{ secrets.OC_TOKEN }}
+          overwrite: true
+          health_url: health
+          parameters:
+            -p ZONE=${{ github.event.number }} -p NAME=${{ github.event.repository.name }}
+            -p PROMOTE=${{ github.repository }}/api:${{ github.event.number }}
+            -p NODE_ENV='development'
+            -p ORACLEDB_USER=${{ secrets.ORACLEDB_USER }}
+            -p ORACLEDB_PASSWORD=${{ secrets.ORACLEDB_PASSWORD }}
+            -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }}
+            -p ORACLEDB_HOST=${{ secrets.ORACLEDB_HOST }}
+            -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }}
