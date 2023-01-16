@@ -118,27 +118,6 @@ objects:
               imagePullPolicy: Always
               name: ${NAME}
               env:
-                # - name: POSTGRESQL_HOST
-                #   value: ${NAME}-${ZONE}-database
-                # - name: POSTGRESQL_DATABASE
-                #   valueFrom:
-                #     secretKeyRef:
-                #       name: ${NAME}-${ZONE}-database
-                #       key: database-name
-                # - name: POSTGRESQL_PASSWORD
-                #   valueFrom:
-                #     secretKeyRef:
-                #       name: ${NAME}-${ZONE}-database
-                #       key: database-password
-                # - name: POSTGRESQL_USER
-                #   valueFrom:
-                #     secretKeyRef:
-                #       name: ${NAME}-${ZONE}-database
-                #       key: database-user
-                # - name: FRONTEND_URL
-                #   value: https://${NAME}-${ZONE}-frontend.${DOMAIN}
-                # - name: BACKEND_URL
-                #   value: https://${NAME}-${ZONE}-backend.${DOMAIN}
                 - name: ORACLEDB_USER
                   valueFrom:
                     secretKeyRef:
@@ -170,7 +149,7 @@ objects:
                   value: ${NODE_ENV}
 
               ports:
-                - containerPort: 3000
+                - containerPort: 3001
                   protocol: TCP
               resources:
                 limits:
