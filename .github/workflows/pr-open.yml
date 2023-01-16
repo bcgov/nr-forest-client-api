@@ -95,13 +95,14 @@ jobs:
 
 
 
+
   check-backend:
     name: Check Backend
     outputs:
       build: ${{ steps.check.outputs.build }}
     env:
       TRIGGERS: ('src/')
-      COMPONENT: backend
+      COMPONENT: api
       PREV: prod
       ZONE: ${{ github.event.number }}
     runs-on: ubuntu-22.04
@@ -112,7 +113,7 @@ jobs:
         id: check
         run: |
           # Fetch main to diff against
-          git fetch origin main:refs/remotes/origin/master
+          git fetch origin main:refs/remotes/origin/main
           # Trigger build if diff matches any triggers
           TRIGGERS=${{ env.TRIGGERS }}
           while read -r check
@@ -128,20 +129,6 @@ jobs:
               done
           done < <(git diff origin/main --name-only)
           echo "Container build not required"
-
-      - name: Recycle/retag Previous Images
-        if: steps.check.outputs.build != 'true'
-        uses: shrink/actions-docker-registry-tag@v2
-        with:
-          registry: ${{ env.REGISTRY }}
-          repository: ${{ github.repository }}
-          token: ${{ secrets.GHCR_TOKEN }}
-          target: ${{ env.PREV }}-${{ env.COMPONENT }}
-          tags: |
-            ${{ env.ZONE }}-${{ env.COMPONENT }}
-
-
-
 
   build-backend:
     name: Backend Image Build
