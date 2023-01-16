@@ -203,7 +203,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Deploys
-        uses: bcgov-nr/action-deployer-openshift@v1.0.0
+        uses: bcgov-nr/action-deployer-openshift@v1.0.1
         with:
           file: .github/openshift/deploy.backend.yml
           oc_namespace: ${{ secrets.OC_NAMESPACE }}
