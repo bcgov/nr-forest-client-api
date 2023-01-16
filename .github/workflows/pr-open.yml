@@ -177,7 +177,7 @@ jobs:
         run: ./mvnw test checkstyle:checkstyle -Dcheckstyle.skip=false
 
       - name: Archive CycloneDX
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: cyclone
           path: target/bom.json
