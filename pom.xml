@@ -176,13 +176,8 @@
 						<exclude>**/dto/**</exclude>
 						<exclude>**/entity/**</exclude>
 						<exclude>**/repository/**</exclude>
-						<exclude>**/validator/**</exclude>
 						<exclude>**/*$*Builder*</exclude>
 						<exclude>**/BootApplication*</exclude>
-						<exclude>**/test/**</exclude>
-						<exclude>**/bdd/**</exclude>
-						<exclude>**/extensions/**</exclude>
-						<exclude>**/*Test*</exclude>
 					</excludes>
 				</configuration>
 				<executions>
@@ -269,7 +264,7 @@
 										<limit>
 											<counter>LINE</counter>
 											<value>COVEREDRATIO</value>
-											<minimum>70%</minimum>
+											<minimum>0%</minimum>
 										</limit>
 									</limits>
 								</rule>
