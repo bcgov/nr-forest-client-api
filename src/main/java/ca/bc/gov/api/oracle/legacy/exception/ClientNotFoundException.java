@@ -1,4 +1,4 @@
-package ca.bc.gov.api.oracle.legacy.exceptions;
+package ca.bc.gov.api.oracle.legacy.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

@@ -5,7 +5,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  NAME: nrfc-api
+  NAME: nr-forest-client-api
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -94,6 +94,7 @@ jobs:
 
 
 
+
   check-backend:
     name: Check Backend
     outputs:
@@ -107,7 +108,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-
       - name: Check and process modified files
         id: check
         run: |
@@ -142,6 +142,7 @@ jobs:
 
 
 
+
   build-backend:
     name: Backend Image Build
     env:
@@ -160,9 +161,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - uses: bcgov-nr/action-builder-ghcr@v0.0.3-rc1
+      - uses: bcgov-nr/action-builder-ghcr@v1.0.0
         with:
           package: api
+          build_context: ./
           tag: ${{ github.event.number }}
           tag_fallback: test
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -185,9 +187,19 @@ jobs:
           cache: "maven"
 
       - name: Tests
-        run: |
-          ./mvnw test
+        run: ./mvnw test checkstyle:checkstyle -Dcheckstyle.skip=false
 
+      - name: Archive CycloneDX
+        uses: actions/upload-artifact@v2
+        with:
+          name: cyclone
+          path: target/bom.json
+          retention-days: 5
+
+      - name: Use Checkstyle report
+        uses: jwgmeligmeyling/checkstyle-github-action@master
+        with:
+          path: '**/checkstyle-result.xml'
 
   deploy-dev:
     name: DEV Deployment

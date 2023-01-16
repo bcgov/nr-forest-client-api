@@ -4,15 +4,10 @@ on:
   pull_request:
     types:
       - closed
-    # paths-ignore:
-    #   - ".**"
-    #   - "**.md"
-    #   - "**.yml"
-    #   - "**.yaml"
 
 env:
   REGISTRY: ghcr.io
-  NAME: nrfc-api
+  NAME: nr-forest-client-api
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -34,68 +29,18 @@ jobs:
           # Remove old build runs, build pods and deployment pods
           oc delete all,pvc,secret -l app=${{ env.NAME }}-${{ github.event.number }}
 
-  # If merged, then handle any image promotion
-  image-backend:
-    name: Backend Image Promotion
-    outputs:
-      build: ${{ steps.check.outputs.build }}
-    env:
-      COMPONENT: backend
-      PREV: ${{ github.event.number }}
-      ZONE: test
-    environment:
-      name: test
+  # If merged into main, then handle any image promotions
+  image-promotions:
+    name: Image Promotions
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
     runs-on: ubuntu-22.04
-    if: github.event.pull_request.merged == true && (github.event.pull_request.base.ref == 'main' || github.event.pull_request.base.ref == 'dev')
     steps:
-      - name: Check for image changes
-        id: check
-        run: |
-          # Vars
-          IMG_PREV="${{ env.REGISTRY }}/${{ github.repository }}:${{ env.PREV }}-${{ env.COMPONENT }}"
-          IMG_ZONE="${{ env.REGISTRY }}/${{ github.repository }}:${{ env.ZONE }}-${{ env.COMPONENT }}"
-
-          # Make sure an image exists to promote; grab SHA
-          if [[ ! $(docker pull "${IMG_PREV}") ]]; then
-              echo -e "\n No images to promote"
-              exit 0
-          fi
-          SHA_PREV=$(docker inspect -f '{{.Id}}' "${IMG_PREV}")
-
-          # Use blank SHA for promoted image, unless a real one exists instead
-          SHA_ZONE=""
-          if [[ $(docker pull "${IMG_ZONE}") ]]; then
-            SHA_ZONE=$(docker inspect -f '{{.Id}}' "${IMG_ZONE}")
-          fi
-
-          # Output SHAs
-          echo -e "\n${IMG_PREV}: ${SHA_PREV}"
-          echo -e "${IMG_ZONE}: ${SHA_ZONE}\n"
-
-          # If different, then trigger updates
-          if [[ "${SHA_PREV}" != "${SHA_ZONE}" ]]; then
-            echo "::set-output name=build::true"
-            echo "Image has changed"
-            
-            # Login to OpenShift and select project
-            oc login --token=${{ secrets.OC_TOKEN }} --server=${{ secrets.OC_SERVER }}
-            oc project ${{ secrets.OC_NAMESPACE }}
-            
-            oc delete is/${{ env.NAME }}-${{ env.ZONE}}-${{ env.COMPONENT }} || true
-            exit 0
-          fi
-          echo "Image promotion not required"
-
-      - name: Promote Backend Image
-        if: steps.check.outputs.build == 'true'
-        uses: shrink/actions-docker-registry-tag@v2
+      - uses: shrink/actions-docker-registry-tag@v3
         with:
-          registry: ${{ env.REGISTRY }}
-          repository: ${{ github.repository }}
-          token: ${{ secrets.GHCR_TOKEN }}
-          target: ${{ env.PREV }}-${{ env.COMPONENT }}
-          tags: |
-            ${{ env.ZONE }}-${{ env.COMPONENT }}
+          registry: ghcr.io
+          repository: ${{ github.repository }}/api
+          target: ${{ github.event.number }}
+          tags: test
 
   # Notify when PR merged and branch = main
   merge-notification:

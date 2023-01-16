@@ -1,0 +1,40 @@
+github_actions:
+  - .github/*
+
+tests:
+  - src/test/**/*.java
+
+source:
+  - src/main/**/*.java
+
+docker:
+  - any: ['Dockerfile','dockerfile-entrypoint.sh']
+
+controller:
+  - src/main/**/controller/*.java
+
+dto:
+  - src/main/**/dto/*.java
+
+entity:
+  - src/main/**/entity/*.java
+
+repository:
+  - src/main/**/repository/*.java
+
+configuration:
+  - src/main/**/configuration/*.java
+  - src/main/resources/**/*
+  - config/**/*
+
+service:
+  - src/main/**/service/*.java
+
+dependencies:
+  - pom.xml
+
+documentation:
+  - docs/**/*
+
+openshift:
+  - .github/openshift/*.yml

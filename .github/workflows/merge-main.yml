@@ -10,7 +10,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  NAME: nrfc-api
+  NAME: nr-forest-client-api
   NS: nr-d2723f
 
 concurrency:
@@ -18,22 +18,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # https://github.com/marketplace/actions/ghcr-io-container-cleanup
-  cleanup-ghcr:
-    name: Cleanup Container Registry
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Delete old packages
-        uses: davahome/ghcr-cleanup@v1.1.0.1
-        with:
-          delete_untagged: 1
-          keep_versions: 10
-          keep_versions_untagged: 0
-          minimum_days: 14
-          owner: orgs/bcgov
-          package: ${{ github.event.repository.name }}
-          skip_tags: prod-frontend,prod-backend
-          token: ${{ secrets.GHCR_TOKEN }}
 
   codeql:
     name: Semantic Code Analysis
@@ -44,61 +28,46 @@ jobs:
       security-events: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Initialize
         uses: github/codeql-action/init@v2
         with:
-          languages: javascript
-
-      # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
-      # If this step fails, then you should remove it and run the build manually (see below)
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v2
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
-
-  # # SonarCloud runs in the main branch are needed to compare against PRs
-  sonarcloud:
-    name: Static Analysis
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v2
-        # Disable shallow clone for SonarCloud analysis
-        with:
-          fetch-depth: 0
+          languages: java
 
       - name: Set up JDK 17 and Caching maven dependencies
         uses: actions/setup-java@v3
         with:
           distribution: "temurin"
           java-version: "17"
+          cache: "maven"
 
-      - name: Unit Tests
-        run: |
-          ./mvnw test
+      - name: Build for Java
+        run: ./mvnw clean package
 
-  #     - name: SonarCloud Scan
-  #       uses: SonarSource/sonarcloud-github-action@master
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
-  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  #       with:
-  #         args: >
-  #           -Dsonar.exclusions=**/test/**,.github/**/*
-  #           -Dsonar.organization=bcgov-sonarcloud
-  #           -Dsonar.javascript.lcov.reportPaths=backend/coverage/lcov.info,frontend/coverage/lcov.info
-  #           -Dsonar.cobertura.reportPaths=backend/coverage/cobertura-coverage.xml,frontend/coverage/cobertura-coverage.xml
-  #           -Dsonar.project.monorepo.enabled=true
-  #           -Dsonar.projectKey=greenfield-template
-  #           -Dsonar.sources=backend,frontend
-  #           -Dsonar.tests=backend/test,frontend/test
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+
+  sonarcloud:
+    name: Static Analysis
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: bcgov-nr/action-test-and-analyse-java@v0.1.0
+        with:
+          commands: |
+            mvn -B verify -P all-tests checkstyle:checkstyle -Dcheckstyle.skip=false --file pom.xml
+          dir: .
+          java-cache: maven
+          java-distribution: temurin
+          java-version: "17"
+          sonar_args: >
+            -Dsonar.organization=bcgov-sonarcloud
+            -Dsonar.projectKey=bcgov_forest-client-api
+          sonar_project_token: ${{ secrets.SONAR_TOKEN }}
 
   deploy-test:
     name: TEST Deployment
     needs:
-      - cleanup-ghcr
       - codeql
       - sonarcloud
     runs-on: ubuntu-22.04
@@ -107,73 +76,28 @@ jobs:
     env:
       ZONE: test
     steps:
-      - uses: actions/checkout@v2
-      - name: Deploy
-        run: |
-          # Login to OpenShift and select project
-          oc login --token=${{ secrets.OC_TOKEN }} --server=${{ secrets.OC_SERVER }}
-          oc project ${{ secrets.OC_NAMESPACE }}
-
-          # Process and apply deployment templates
-          oc process -f .github/openshift/deploy.backend.yml -p ZONE=${{ env.ZONE }} \
-            -p PROMOTE=${{ github.repository }}:${{ env.ZONE }}-backend \
-            -p NODE_ENV='development' \
-            -p ORACLEDB_USER=${{ secrets.ORACLEDB_USER }} \
-            -p ORACLEDB_PASSWORD=${{ secrets.ORACLEDB_PASSWORD }} \
-            -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }} \
-            -p ORACLEDB_HOST=${{ secrets.ORACLEDB_HOST }} \
-            -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }} | oc apply -f -
-
-          # Follow any active rollouts (see deploymentconfigs)
-          oc rollout status dc/${{ env.NAME }}-${{ env.ZONE }}-backend -w
-
-          # Remove completed build runs, build pods and deployment pods
-          for p in $(oc get po | grep "Completed" | awk '{print $1}')
-          do
-            oc delete po ${p}
-          done
-
-  zap-backend:
-    name: Backend Pen Tests
-    needs:
-      - deploy-test
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: ZAP Scan
-        uses: zaproxy/action-full-scan@v0.3.0
+      - uses: actions/checkout@v3
+      - name: Deploys
+        uses: bcgov-nr/action-deployer-openshift@v1.0.0
         with:
-          target: https://${{ env.NAME }}-test-backend.apps.silver.devops.gov.bc.ca/
-          cmd_options: "-a"
-          allow_issue_writing: false
-          fail_action: false
-
-  # # https://github.com/snyk/cli, https://github.com/snyk/actions
-  # # Note: using free tier - called late in pipeline to limit runs
-  # snyk:
-  #   name: Vulnerability Report
-  #   needs:
-  #     - zap-backend
-  #     - zap-frontend
-  #   runs-on: ubuntu-22.04
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v2
-
-  #     - name: Run Snyk to check for vulnerabilities
-  #       uses: snyk/actions/node@master
-  #       continue-on-error: true # To make sure that SARIF upload gets called
-  #       env:
-  #         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-  #       with:
-  #         args: --all-projects --severity-threshold=high --sarif-file-output=snyk.sarif
-
-  #     - name: Upload result to GitHub Code Scanning
-  #       uses: github/codeql-action/upload-sarif@v2
-  #       with:
-  #         sarif_file: snyk.sarif
+          file: .github/openshift/deploy.backend.yml
+          oc_namespace: ${{ secrets.OC_NAMESPACE }}
+          oc_server: ${{ secrets.OC_SERVER }}
+          oc_token: ${{ secrets.OC_TOKEN }}
+          overwrite: true
+          health_url: health
+          penetration_test: true
+          parameters:
+            -p ZONE=${{ env.ZONE }} -p NAME=${{ github.event.repository.name }}
+            -p PROMOTE=${{ github.repository }}/api:${{ env.ZONE }}
+            -p NODE_ENV='development'
+            -p API_URL='https://nr-forest-client-api-test.api.gov.bc.ca'
+            -p X_API_KEY=${{ secrets.GWA_X_API_KEY }}
+            -p ORACLEDB_USER=${{ secrets.ORACLEDB_USER }}
+            -p ORACLEDB_PASSWORD=${{ secrets.ORACLEDB_PASSWORD }}
+            -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }}
+            -p ORACLEDB_HOST=${{ secrets.ORACLEDB_HOST }}
+            -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }}
 
   # https://github.com/marketplace/actions/aqua-security-trivy
   trivy-repo:
@@ -200,62 +124,9 @@ jobs:
         with:
           sarif_file: "trivy-results.sarif"
 
-  image-backend:
-    name: Backend Image Handling
-    needs:
-      - zap-backend
-    outputs:
-      build: ${{ steps.check.outputs.build }}
-    env:
-      COMPONENT: backend
-      PREV: test
-      ZONE: prod
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Check for image changes
-        id: check
-        run: |
-          # Vars
-          IMG_PREV="${{ env.REGISTRY }}/${{ github.repository }}:${{ env.PREV }}-${{ env.COMPONENT }}"
-          IMG_ZONE="${{ env.REGISTRY }}/${{ github.repository }}:${{ env.ZONE }}-${{ env.COMPONENT }}"
-
-          # Pull previous image; grab SHA
-          docker pull "${IMG_PREV}"
-          SHA_PREV=$(docker inspect -f '{{.Id}}' "${IMG_PREV}")
-
-          # Use blank SHA for promoted image, unless a real one exists instead
-          docker pull "${IMG_ZONE}" && \
-            SHA_ZONE=$(docker inspect -f '{{.Id}}' "${IMG_ZONE}") ||
-            SHA_ZONE=""
-
-          # Output SHAs
-          echo -e "\n${IMG_PREV}: ${SHA_PREV}"
-          echo -e "${IMG_ZONE}: ${SHA_ZONE}\n"
-
-          # If different, then trigger updates
-          if [[ "${SHA_PREV}" != "${SHA_ZONE}" ]]; then
-            echo "::set-output name=build::true"
-            echo "Image has changed"
-            exit 0
-          fi
-          echo "Image promotion not required"
-
-      - name: Promote Backend Image
-        if: steps.check.outputs.build == 'true'
-        uses: shrink/actions-docker-registry-tag@v2
-        with:
-          registry: ${{ env.REGISTRY }}
-          repository: ${{ github.repository }}
-          token: ${{ secrets.GHCR_TOKEN }}
-          target: ${{ env.PREV }}-${{ env.COMPONENT }}
-          tags: |
-            ${{ env.ZONE }}-${{ env.COMPONENT }}
-
   deploy-prod:
     name: PROD Deployment
     needs:
-      - image-backend
-      # - snyk
       - trivy-repo
     runs-on: ubuntu-22.04
     environment:
@@ -264,51 +135,28 @@ jobs:
       ZONE: prod
       PREV: test
     steps:
-      - name: Remove any stale backend images
-        if: needs.image-backend.outputs.build == 'true'
-        env:
-          COMPONENT: backend
-        run: |
-          # Login to OpenShift and select project
-          oc login --token=${{ secrets.OC_TOKEN }} --server=${{ secrets.OC_SERVER }}
-          oc project ${{ secrets.OC_NAMESPACE }}
-          oc delete is/${{ env.NAME }}-${{ env.ZONE}}-${{ env.COMPONENT }} || true
-
-      - uses: actions/checkout@v2
-      - name: Deploy
-        run: |
-          # Login to OpenShift and select project
-          oc login --token=${{ secrets.OC_TOKEN }} --server=${{ secrets.OC_SERVER }}
-          oc project ${{ secrets.OC_NAMESPACE }}
-
-          # Process and apply deployment templates
-          oc process -f .github/openshift/deploy.backend.yml -p ZONE=${{ env.ZONE }} \
-            -p PROMOTE=${{ github.repository }}:${{ env.PREV }}-backend \
-            -p NODE_ENV='production' \
-            -p ORACLEDB_USER=${{ secrets.ORACLEDB_USER }} \
-            -p ORACLEDB_PASSWORD=${{ secrets.ORACLEDB_PASSWORD }} \
-            -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }} \
-            -p ORACLEDB_HOST=${{ secrets.ORACLEDB_HOST }} \
-            -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }} | oc apply -f -
-
-          # Follow any active rollouts (see deploymentconfigs)
-          oc rollout status dc/${{ env.NAME }}-${{ env.ZONE }}-backend -w
-
-          # Remove completed build runs, build pods and deployment pods
-          for p in $(oc get po | grep "Completed" | awk '{print $1}')
-          do
-            oc delete po ${p}
-          done
-
-      - name: Promote Backend Image to PROD
-        uses: shrink/actions-docker-registry-tag@v2
+      - uses: actions/checkout@v3
+      - name: Deploys
+        uses: bcgov-nr/action-deployer-openshift@v1.0.0
         with:
-          registry: ${{ env.REGISTRY }}
-          repository: ${{ github.repository }}
-          token: ${{ secrets.GHCR_TOKEN }}
-          target: ${{ env.PREV }}-backend
-          tags: |
-            prod-backend
+          file: backend/openshift.deploy.yml
+          oc_namespace: ${{ secrets.OC_NAMESPACE }}
+          oc_server: ${{ secrets.OC_SERVER }}
+          oc_token: ${{ secrets.OC_TOKEN }}
+          overwrite: true
+          penetration_test: false
+          health_url: health
+          parameters:
+            -p ZONE=${{ env.ZONE }} -p NAME=${{ github.event.repository.name }}
+            -p PROMOTE=${{ github.repository }}/api:${{ env.PREV }}
+            -p NODE_ENV='production'
+            -p API_URL='https://nr-forest-client-api-prod.api.gov.bc.ca'
+            -p X_API_KEY=${{ secrets.GWA_X_API_KEY }}
+            -p ORACLEDB_USER=${{ secrets.ORACLEDB_USER }}
+            -p ORACLEDB_PASSWORD=${{ secrets.ORACLEDB_PASSWORD }}
+            -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }}
+            -p ORACLEDB_HOST=${{ secrets.ORACLEDB_HOST }}
+            -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }}
 
   publish-api:
     name: Publish Api
@@ -344,16 +192,3 @@ jobs:
 
           gwa pg service-test.yaml
           gwa pg service-prod.yaml
-
-  # # Uncomment to for development and troubleshooting
-  # # https://docs.github.com/en/actions/learn-github-actions/contexts
-  # view-context:
-  #   name: View GitHub Context
-  #   runs-on: ubuntu-22.04
-  #   steps:
-  #     - name: Echo GitHub context
-  #       uses: satackey/action-js-inline@v0.0.2
-  #       with:
-  #         script: |
-  #           const github = require('@actions/github');
-  #           console.log(JSON.stringify(github, null, 2));
