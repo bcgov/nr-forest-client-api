@@ -5,7 +5,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  NAME: nrfc-api
+  NAME: nr-forest-client-api
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
