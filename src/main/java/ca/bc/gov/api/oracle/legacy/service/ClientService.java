@@ -49,11 +49,9 @@ public class ClientService {
   public List<ClientPublicViewDto> findAllNonIndividualClients(
       int page, int size, String sortBy) {
 
-    List<ClientPublicViewEntity> entities = clientPublicViewRepository.findByClientTypeCodeNot(
-        ClientPublicViewEntity.INDIVIDUAL,
-        PageRequest.of(page, size, Sort.by(sortBy)));
-
-    return entities
+    return clientPublicViewRepository.findByClientTypeCodeNot(
+            ClientPublicViewEntity.INDIVIDUAL,
+            PageRequest.of(page, size, Sort.by(sortBy)))
         .stream()
         .map(ClientMapper::mapEntityToDto)
         .toList();
@@ -65,7 +63,8 @@ public class ClientService {
       String clientMiddleName,
       List<String> clientTypeCodes,
       int page,
-      int size) {
+      int size
+  ) {
 
     if (StringUtils.isBlank(clientName)
         && StringUtils.isBlank(clientFirstName)
@@ -93,7 +92,7 @@ public class ClientService {
     if (!CollectionUtils.isEmpty(clientTypeCodes)) {
       booleanBuilder.and(clientEntity.clientTypeCode.in(clientTypeCodes));
     }
-    
+
     return clientPublicViewRepository.findAll(booleanBuilder, PageRequest.of(page, size))
         .stream()
         .map(ClientMapper::mapEntityToDto)
