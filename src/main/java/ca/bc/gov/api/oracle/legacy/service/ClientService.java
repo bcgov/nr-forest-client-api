@@ -93,11 +93,8 @@ public class ClientService {
     if (!CollectionUtils.isEmpty(clientTypeCodes)) {
       booleanBuilder.and(clientEntity.clientTypeCode.in(clientTypeCodes));
     }
-    log.info(clientName + " " + clientFirstName +  " " + clientMiddleName);
-    Page<ClientPublicViewEntity>
-        pageReq = clientPublicViewRepository.findAll(booleanBuilder, PageRequest.of(page, size));
-
-    return pageReq
+    
+    return clientPublicViewRepository.findAll(booleanBuilder, PageRequest.of(page, size))
         .stream()
         .map(ClientMapper::mapEntityToDto)
         .toList();
