@@ -77,6 +77,16 @@ jobs:
       ZONE: test
     steps:
       - uses: actions/checkout@v3
+      - name: Import Secrets
+        id: secrets
+        uses: hashicorp/vault-action@v2.4.3
+        with:
+          url: https://vault-iit.apps.silver.devops.gov.bc.ca
+          token: ${{ secrets.VAULT_TOKEN }}
+          exportEnv: 'false'
+          secrets: |
+            apps/data/test/client/app-client/db_proxy_read_only db_username | VAULT_DB_USER;
+            apps/data/test/client/app-client/db_proxy_read_only db_password | VAULT_DB_PASS;
       - name: Deploys
         uses: bcgov-nr/action-deployer-openshift@v1.0.1
         with:
@@ -93,8 +103,8 @@ jobs:
             -p NODE_ENV='development'
             -p API_URL='https://nr-forest-client-api-test.api.gov.bc.ca'
             -p X_API_KEY=${{ secrets.GWA_X_API_KEY }}
-            -p ORACLEDB_USER=${{ secrets.ORACLEDB_USER }}
-            -p ORACLEDB_PASSWORD=${{ secrets.ORACLEDB_PASSWORD }}
+            -p ORACLEDB_USER=${{ steps.secrets.outputs.VAULT_DB_USER }}
+            -p ORACLEDB_PASSWORD=${{ steps.secrets.outputs.VAULT_DB_PASS }}
             -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }}
             -p ORACLEDB_HOST=${{ secrets.ORACLEDB_HOST }}
             -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }}
@@ -103,14 +113,14 @@ jobs:
   trivy-repo:
     name: Repository Report
     needs:
-      - zap-backend
+      - codeql
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Run Trivy vulnerability scanner in repo mode
-        uses: aquasecurity/trivy-action@0.3.0
+        uses: aquasecurity/trivy-action@0.8.0
         with:
           scan-type: "fs"
           format: "sarif"
@@ -136,6 +146,16 @@ jobs:
       PREV: test
     steps:
       - uses: actions/checkout@v3
+      - name: Import Secrets
+        id: secrets
+        uses: hashicorp/vault-action@v2.4.3
+        with:
+          url: https://vault-iit.apps.silver.devops.gov.bc.ca
+          token: ${{ secrets.VAULT_TOKEN }}
+          exportEnv: 'false'
+          secrets: |
+            apps/data/prod/client/app-client/db_proxy_read_only db_username | VAULT_DB_USER;
+            apps/data/prod/client/app-client/db_proxy_read_only db_password | VAULT_DB_PASS;
       - name: Deploys
         uses: bcgov-nr/action-deployer-openshift@v1.0.1
         with:
@@ -152,8 +172,8 @@ jobs:
             -p NODE_ENV='production'
             -p API_URL='https://nr-forest-client-api-prod.api.gov.bc.ca'
             -p X_API_KEY=${{ secrets.GWA_X_API_KEY }}
-            -p ORACLEDB_USER=${{ secrets.ORACLEDB_USER }}
-            -p ORACLEDB_PASSWORD=${{ secrets.ORACLEDB_PASSWORD }}
+            -p ORACLEDB_USER=${{ steps.secrets.outputs.VAULT_DB_USER }}
+            -p ORACLEDB_PASSWORD=${{ steps.secrets.outputs.VAULT_DB_PASS }}
             -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }}
             -p ORACLEDB_HOST=${{ secrets.ORACLEDB_HOST }}
             -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }}
