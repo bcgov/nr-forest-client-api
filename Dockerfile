@@ -14,6 +14,7 @@ ENV LANGUAGE en_CA.UTF-8
 ENV LC_ALL en_CA.UTF-8
 ENV JAVA_OPS -Xms512m -Xmx512m
 
+COPY --from=build /app/target/nr-forest-client-api.jar /app/service.jar
 COPY startup.sh .
 COPY InstallCert.java .
 
