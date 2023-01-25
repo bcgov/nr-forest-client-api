@@ -92,8 +92,8 @@ public class ClientController {
       }
   )
   public ResponseEntity<List<ClientPublicViewDto>> findAllNonIndividuals(
-      @Parameter(description = "The one index page number, defaults to 1", example = "1")
-      @RequestParam(defaultValue = "1") int page,
+      @Parameter(description = "The one index page number, defaults to 0", example = "0")
+      @RequestParam(defaultValue = "0") int page,
 
       @Parameter(description = "The amount of data to be returned per page, defaults to 10",
           example = "10")
@@ -170,8 +170,8 @@ public class ClientController {
           example = "I")
       List<String> clientTypeCodes,
 
-      @Parameter(description = "The one index page number, defaults to 1", example = "1")
-      @RequestParam(defaultValue = "1") int page,
+      @Parameter(description = "The one index page number, defaults to 1", example = "0")
+      @RequestParam(defaultValue = "0") int page,
 
       @Parameter(description = "The amount of data to be returned per page, defaults to 10",
           example = "10")

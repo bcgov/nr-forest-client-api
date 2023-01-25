@@ -8,18 +8,23 @@ import ca.bc.gov.api.oracle.legacy.exception.InvalidClientNumberException;
 import ca.bc.gov.api.oracle.legacy.exception.NoSearchParameterFound;
 import ca.bc.gov.api.oracle.legacy.repository.ClientPublicViewRepository;
 import ca.bc.gov.api.oracle.legacy.util.ClientMapper;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.StringPath;
+import com.querydsl.jpa.hibernate.HibernateQuery;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class ClientService {
 
@@ -44,9 +49,11 @@ public class ClientService {
   public List<ClientPublicViewDto> findAllNonIndividualClients(
       int page, int size, String sortBy) {
 
-    return clientPublicViewRepository.findByClientTypeCodeNot(
-            ClientPublicViewEntity.INDIVIDUAL,
-            PageRequest.of(page, size, Sort.by(sortBy)))
+    List<ClientPublicViewEntity> entities = clientPublicViewRepository.findByClientTypeCodeNot(
+        ClientPublicViewEntity.INDIVIDUAL,
+        PageRequest.of(page, size, Sort.by(sortBy)));
+
+    return entities
         .stream()
         .map(ClientMapper::mapEntityToDto)
         .toList();
@@ -58,8 +65,7 @@ public class ClientService {
       String clientMiddleName,
       List<String> clientTypeCodes,
       int page,
-      int size
-  ) {
+      int size) {
 
     if (StringUtils.isBlank(clientName)
         && StringUtils.isBlank(clientFirstName)
@@ -70,48 +76,27 @@ public class ClientService {
 
     QClientPublicViewEntity clientEntity = QClientPublicViewEntity.clientPublicViewEntity;
 
-    BooleanExpression queryExpression = Expressions.asBoolean(true);
+    BooleanBuilder booleanBuilder = new BooleanBuilder();
 
     if (StringUtils.isNotBlank(clientName)) {
-      queryExpression =
-          queryExpression.and(clientEntity.clientName.likeIgnoreCase(clientName));
+      booleanBuilder.and(clientEntity.clientName.containsIgnoreCase(clientName));
     }
 
     if (StringUtils.isNotBlank(clientFirstName)) {
-      queryExpression =
-          queryExpression.and(clientEntity.legalFirstName.likeIgnoreCase(clientFirstName));
+      booleanBuilder.and(clientEntity.legalFirstName.containsIgnoreCase(clientFirstName));
     }
 
     if (StringUtils.isNotBlank(clientMiddleName)) {
-      queryExpression =
-          queryExpression.and(clientEntity.legalMiddleName.likeIgnoreCase(clientMiddleName));
+      booleanBuilder.and(clientEntity.legalMiddleName.containsIgnoreCase(clientMiddleName));
     }
 
     if (!CollectionUtils.isEmpty(clientTypeCodes)) {
-      queryExpression =
-          queryExpression.and(
-              clientEntity.clientTypeCode.in(getClientTypeCodeQueryString(clientTypeCodes)));
+      booleanBuilder.and(clientEntity.clientTypeCode.in(clientTypeCodes));
     }
-
-    return clientPublicViewRepository.findAll(queryExpression, PageRequest.of(page, size))
+    
+    return clientPublicViewRepository.findAll(booleanBuilder, PageRequest.of(page, size))
         .stream()
         .map(ClientMapper::mapEntityToDto)
         .toList();
-  }
-
-  private String getClientTypeCodeQueryString(List<String> clientTypeCodes) {
-    StringBuilder stringBuilder = new StringBuilder();
-
-    for (String code : clientTypeCodes) {
-      if (stringBuilder.isEmpty()) {
-        stringBuilder.append("'");
-      } else {
-        stringBuilder.append(", '");
-      }
-      stringBuilder.append(code);
-      stringBuilder.append("'");
-    }
-
-    return stringBuilder.toString();
   }
 }

@@ -92,10 +92,6 @@ jobs:
             Once merged, code will be promoted and handed off to following workflow run.
             [Main Merge Workflow](https://github.com/${{ github.repository }}/actions/workflows/merge-main.yml)
 
-
-
-
-
   build-backend:
     name: Backend Image Build
     env:
@@ -104,6 +100,7 @@ jobs:
     environment:
       name: dev
     runs-on: ubuntu-latest
+    if: github.actor != 'dependabot[bot]'
     permissions:
       contents: read
       packages: write
@@ -136,7 +133,7 @@ jobs:
           cache: "maven"
 
       - name: Tests
-        run: ./mvnw test checkstyle:checkstyle -Dcheckstyle.skip=false
+        run: ./mvnw verify -P all-tests checkstyle:checkstyle -Dcheckstyle.skip=false
 
       - name: Archive CycloneDX
         uses: actions/upload-artifact@v3
@@ -155,7 +152,7 @@ jobs:
     needs:
       - build-backend
       - tests-backend
-    if: always() && (needs.build-backend.result == 'success')
+    if: always() && (needs.build-backend.result == 'success') && github.actor != 'dependabot[bot]'
     runs-on: ubuntu-22.04
     timeout-minutes: 15
     environment:
