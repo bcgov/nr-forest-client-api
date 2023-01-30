@@ -189,12 +189,11 @@ jobs:
           
           # Unwrap the token to get the secret id
           SECRET_ID=$(curl -s -X PUT https://vault-iit.apps.silver.devops.gov.bc.ca/v1/sys/wrapping/unwrap \
-            -H "X-Vault-Request: true" \
-            -H "X-Vault-Token: '"$WRAPPED_VAULT_TOKEN"'")
+            -H "X-Vault-Token: $WRAPPED_TOKEN"|jq '.data.secret_id')
           
           # Log into vault using the app role url, this will give us back the vault token we need to read the secrets
           LOGIN=$(curl -s -X POST https://vault-iit.apps.silver.devops.gov.bc.ca/v1/auth/vs_apps_approle/login \
-              --data-raw '{ "role_id": "'${PROVISION_ROLE_ID}'", "secret_id": "'${SECRET_ID}'" }' \
+              --data-raw '{ "role_id": "'${PROVISION_ROLE_ID}'", "secret_id": '${SECRET_ID}' }' \
               --header 'Content-Type: application/json' | jq -r '.auth.client_token')
           
           # Close the broker intention
