@@ -166,7 +166,7 @@ jobs:
         id: broker
         run: |
           # Read the intention file and replace the event url and the user id
-          PAYLOAD=$(cat ./.github/openshift/intention.json | \
+          PAYLOAD=$(cat .github/openshift/intention.json | \
               jq ".event.url=\"$GITHUB_SERVER_URL$GITHUB_ACTION_PATH\" | \
               .user.id=\"$GITHUB_ACTOR\"")
 
