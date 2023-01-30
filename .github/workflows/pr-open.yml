@@ -171,10 +171,10 @@ jobs:
               .user.id=\"$GITHUB_ACTOR\"")
 
           # Open an intention to the broker
-          #INTENTION=$(curl -s -X POST https://nr-broker.apps.silver.devops.gov.bc.ca/v1/intention/open \
-          #    -H 'Content-Type: application/json' \
-          #    -H "Authorization: Bearer ${{ secrets.BROKER_JWT }}" \
-          #    --data-raw $PAYLOAD)
+          INTENTION=$(curl -s -X POST https://nr-broker.apps.silver.devops.gov.bc.ca/v1/intention/open \
+              -H "Content-Type: application/json" \
+              -H "Authorization: Bearer ${{ secrets.BROKER_JWT }}" \
+              --data-raw $PAYLOAD)
           
           # Extract both the action and the intention token
           #INTENTION_TOKEN=$(echo $INTENTION | jq -r '.token')
