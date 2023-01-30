@@ -66,7 +66,7 @@ jobs:
             # Current changelog
             
             ${{ steps.changelog.outputs.clean_changelog }}
-          comment_includes: 'message'
+          comment_tag: '# Current changelog'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   pr-greeting:
@@ -178,14 +178,15 @@ jobs:
               --data-raw "${PAYLOAD}")
           
           # Extract both the action and the intention token
-          #INTENTION_TOKEN=$(echo $INTENTION | jq -r '.token')
-          #ACTION_TOKEN=$(echo $INTENTION | jq -r '.actions.provision.token')
+          INTENTION_TOKEN=$(echo {$INTENTION} | jq -r '.token')
+          ACTION_TOKEN=$(echo {$INTENTION} | jq -r '.actions.provision.token')
           
           # With the action token in hand, provision a secret id for our app role
-          #WRAPPED_DATA=$(curl -s -X POST https://nr-broker.apps.silver.devops.gov.bc.ca/v1/provision/approle/secret-id \
-          #    -H 'x-broker-token: '"$ACTION_TOKEN"'' \
-          #    -H 'x-vault-role-id: '"${{ secrets.PROVISION_ROLE_ID }}"'')
-          #WRAPPED_TOKEN=$(echo $WRAPPED_DATA | jq -r '.wrap_info.token')
+          WRAPPED_DATA=$(curl -s -X \
+              POST https://nr-broker.apps.silver.devops.gov.bc.ca/v1/provision/approle/secret-id \
+              -H 'x-broker-token: '"$ACTION_TOKEN"'' \
+              -H 'x-vault-role-id: '"${{ secrets.PROVISION_ROLE_ID }}"'')
+          WRAPPED_TOKEN=$(echo $WRAPPED_DATA | jq -r '.wrap_info.token')
           
           # Unwrap the token to get the secret id
           #SECRET_ID=$(curl -s -X PUT https://vault-iit.apps.silver.devops.gov.bc.ca/v1/sys/wrapping/unwrap \
@@ -198,9 +199,9 @@ jobs:
           #    --header 'Content-Type: application/json' | jq -r '.auth.client_token')
           
           # Close the broker intention
-          #curl -s -X POST https://nr-broker.apps.silver.devops.gov.bc.ca/v1/intention/close \
-          #    -H 'Content-Type: application/json' \
-          #    -H "x-broker-token: $INTENTION_TOKEN"
+          curl -s -X POST https://nr-broker.apps.silver.devops.gov.bc.ca/v1/intention/close \
+              -H "Content-Type: application/json" \
+              -H "x-broker-token: ${INTENTION_TOKEN}"
           
           # Forward the vault token to be consumed
           #echo VAULT_TOKEN=${LOGIN} >> $GITHUB_OUTPUT
