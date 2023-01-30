@@ -182,10 +182,10 @@ jobs:
           ACTION_TOKEN=$(echo "${INTENTION}" | jq -r ".actions.provision.token")
           
           # With the action token in hand, provision a secret id for our app role
-          #WRAPPED_DATA=$(curl -s -X POST https://nr-broker.apps.silver.devops.gov.bc.ca/v1/provision/approle/secret-id \
-          #  -H "x-broker-token: '"${ACTION_TOKEN}"'" \
-          #  -H "x-vault-role-id: '"${PROVISION_ROLE_ID}"'")
-          #WRAPPED_TOKEN=$(echo ${WRAPPED_DATA} | jq -r '.wrap_info.token')
+          WRAPPED_DATA=$(curl -s -X POST https://nr-broker.apps.silver.devops.gov.bc.ca/v1/provision/approle/secret-id \
+            -H "x-broker-token: '"${ACTION_TOKEN}"'" \
+            -H "x-vault-role-id: '"${PROVISION_ROLE_ID}"'")
+          WRAPPED_TOKEN=$(echo "${WRAPPED_DATA}" | jq -r '.wrap_info.token')
           
           # Unwrap the token to get the secret id
           #SECRET_ID=$(curl -s -X PUT https://vault-iit.apps.silver.devops.gov.bc.ca/v1/sys/wrapping/unwrap \
