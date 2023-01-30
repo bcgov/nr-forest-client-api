@@ -198,9 +198,9 @@ jobs:
           #    --header 'Content-Type: application/json' | jq -r '.auth.client_token')
           
           # Close the broker intention
-          curl -s -X POST https://nr-broker.apps.silver.devops.gov.bc.ca/v1/intention/close \
-              -H "Content-Type: application/json" \
-              -H "x-broker-token: ${INTENTION_TOKEN}"
+          #curl -s -X POST https://nr-broker.apps.silver.devops.gov.bc.ca/v1/intention/close \
+          #    -H "Content-Type: application/json" \
+          #    -H "x-broker-token: ${INTENTION_TOKEN}"
           
           # Forward the vault token to be consumed
           #echo VAULT_TOKEN=${LOGIN} >> $GITHUB_OUTPUT
