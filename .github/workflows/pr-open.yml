@@ -175,7 +175,7 @@ jobs:
               https://nr-broker.apps.silver.devops.gov.bc.ca/v1/intention/open \
               -H "Content-Type: application/json" \
               -H "Authorization: Bearer ${{ secrets.BROKER_JWT }}" \
-              --data-raw ${PAYLOAD})
+              --data-raw "${PAYLOAD}")
           
           # Extract both the action and the intention token
           #INTENTION_TOKEN=$(echo $INTENTION | jq -r '.token')
