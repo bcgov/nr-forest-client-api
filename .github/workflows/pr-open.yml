@@ -181,18 +181,20 @@ jobs:
           ACTION_TOKEN=$(echo $INTENTION | jq -r '.actions.provision.token')
           
           # With the action token in hand, provision a secret id for our app role
-          WRAPPED_DATA=$(curl -s -X POST https://nr-broker.apps.silver.devops.gov.bc.ca/v1/provision/approle/secret-id \
-              -H 'x-broker-token: '"$ACTION_TOKEN"'' \
-              -H 'x-vault-role-id: '"${{ secrets.PROVISION_ROLE_ID }}"'')
-          WRAPPED_TOKEN=$(echo $WRAPPED_DATA | jq -r '.wrap_info.token')
+          #WRAPPED_DATA=$(curl -s -X POST https://nr-broker.apps.silver.devops.gov.bc.ca/v1/provision/approle/secret-id \
+          #    -H 'x-broker-token: '"$ACTION_TOKEN"'' \
+          #    -H 'x-vault-role-id: '"${{ secrets.PROVISION_ROLE_ID }}"'')
+          #WRAPPED_TOKEN=$(echo $WRAPPED_DATA | jq -r '.wrap_info.token')
           
           # Unwrap the token to get the secret id
-          SECRET_ID=$(VAULT_TOKEN=$WRAPPE_TOKEN vault unwrap -field=secret_id)
+          #SECRET_ID=$(curl -s -X PUT https://vault-iit.apps.silver.devops.gov.bc.ca/v1/sys/wrapping/unwrap \
+          #  -H "X-Vault-Request: true" \
+          #  -H "X-Vault-Token: '"$WRAPPED_VAULT_TOKEN"'")
           
           # Log into vault using the app role url, this will give us back the vault token we need to read the secrets
-          LOGIN=$(curl -s -X POST https://vault-iit.apps.silver.devops.gov.bc.ca/v1/auth/vs_apps_approle/login \
-              --data-raw '{ "role_id": "'$PROVISION_ROLE_ID'", "secret_id": "'$SECRET_ID'" }' \
-              --header 'Content-Type: application/json' | jq -r '.auth.client_token')
+          #LOGIN=$(curl -s -X POST https://vault-iit.apps.silver.devops.gov.bc.ca/v1/auth/vs_apps_approle/login \
+          #    --data-raw '{ "role_id": "'$PROVISION_ROLE_ID'", "secret_id": "'$SECRET_ID'" }' \
+          #    --header 'Content-Type: application/json' | jq -r '.auth.client_token')
           
           # Close the broker intention
           curl -s -X POST https://nr-broker.apps.silver.devops.gov.bc.ca/v1/intention/close \
@@ -200,7 +202,7 @@ jobs:
               -H "x-broker-token: $INTENTION_TOKEN"
           
           # Forward the vault token to be consumed
-          echo VAULT_TOKEN=${LOGIN} >> $GITHUB_OUTPUT
+          #echo VAULT_TOKEN=${LOGIN} >> $GITHUB_OUTPUT
 
       - name: Import Secrets
         id: secrets
