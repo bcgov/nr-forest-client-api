@@ -9,19 +9,16 @@ import ca.bc.gov.api.oracle.legacy.exception.NoSearchParameterFound;
 import ca.bc.gov.api.oracle.legacy.repository.ClientPublicViewRepository;
 import ca.bc.gov.api.oracle.legacy.util.ClientMapper;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.StringPath;
-import com.querydsl.jpa.hibernate.HibernateQuery;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 @Slf4j
@@ -30,36 +27,29 @@ public class ClientService {
 
   private final ClientPublicViewRepository clientPublicViewRepository;
 
-  public ClientPublicViewDto findByClientNumber(String clientNumber) {
+  public Mono<ClientPublicViewDto> findByClientNumber(String clientNumber) {
 
     if (!StringUtils.isNumeric(clientNumber)) {
-      throw new InvalidClientNumberException();
+      return Mono.error(new InvalidClientNumberException());
     }
 
-    Optional<ClientPublicViewEntity> optionalClient =
-        clientPublicViewRepository.findById(clientNumber);
-
-    if (optionalClient.isEmpty()) {
-      throw new ClientNotFoundException();
-    }
-
-    return ClientMapper.mapEntityToDto(optionalClient.get());
+    return Mono.justOrEmpty(clientPublicViewRepository.findById(clientNumber))
+        .switchIfEmpty(Mono.error(new ClientNotFoundException()))
+        .map(ClientMapper::mapEntityToDto);
   }
 
-  public List<ClientPublicViewDto> findAllNonIndividualClients(
+  public Mono<List<ClientPublicViewDto>> findAllNonIndividualClients(
       int page, int size, String sortBy) {
 
-    List<ClientPublicViewEntity> entities = clientPublicViewRepository.findByClientTypeCodeNot(
-        ClientPublicViewEntity.INDIVIDUAL,
-        PageRequest.of(page, size, Sort.by(sortBy)));
-
-    return entities
-        .stream()
+    return Flux.fromIterable(
+            clientPublicViewRepository.findByClientTypeCodeNot(
+                ClientPublicViewEntity.INDIVIDUAL,
+                PageRequest.of(page, size, Sort.by(sortBy))))
         .map(ClientMapper::mapEntityToDto)
-        .toList();
+        .collectList();
   }
 
-  public List<ClientPublicViewDto> searchByNames(
+  public Mono<List<ClientPublicViewDto>> searchByNames(
       String clientName,
       String clientFirstName,
       String clientMiddleName,
@@ -71,7 +61,7 @@ public class ClientService {
         && StringUtils.isBlank(clientFirstName)
         && StringUtils.isBlank(clientMiddleName)
         && CollectionUtils.isEmpty(clientTypeCodes)) {
-      throw new NoSearchParameterFound();
+      return Mono.error(new NoSearchParameterFound());
     }
 
     QClientPublicViewEntity clientEntity = QClientPublicViewEntity.clientPublicViewEntity;
@@ -93,10 +83,10 @@ public class ClientService {
     if (!CollectionUtils.isEmpty(clientTypeCodes)) {
       booleanBuilder.and(clientEntity.clientTypeCode.in(clientTypeCodes));
     }
-    
-    return clientPublicViewRepository.findAll(booleanBuilder, PageRequest.of(page, size))
-        .stream()
+
+    return Flux.fromIterable(
+            clientPublicViewRepository.findAll(booleanBuilder, PageRequest.of(page, size)))
         .map(ClientMapper::mapEntityToDto)
-        .toList();
+        .collectList();
   }
 }
