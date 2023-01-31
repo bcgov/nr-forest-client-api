@@ -1,4 +1,4 @@
-package ca.bc.gov.api.oracle.legacy.controller;
+package ca.bc.gov.api.oracle.legacy.handlers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-public class ClientControllerTest extends AbstractTestContainerIntegrationTest {
+public class ClientHandlerTest extends AbstractTestContainerIntegrationTest {
 
   @Autowired
   private WebTestClient webTestClient;
@@ -73,7 +73,7 @@ public class ClientControllerTest extends AbstractTestContainerIntegrationTest {
         .isNotNull()
         .isNotEmpty();
 
-    for(ClientPublicViewDto client : response) {
+    for (ClientPublicViewDto client : response) {
       assertNotEquals("I", client.clientTypeCode());
     }
   }
