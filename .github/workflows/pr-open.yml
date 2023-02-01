@@ -66,7 +66,7 @@ jobs:
             # Current changelog
             
             ${{ steps.changelog.outputs.clean_changelog }}
-          comment_includes: '# Current changelog'
+          comment_tag: '# Current changelog'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   pr-greeting:
@@ -159,14 +159,25 @@ jobs:
       name: dev
     env:
       DOMAIN: apps.silver.devops.gov.bc.ca
+      BROKER_URL: https://nr-broker.apps.silver.devops.gov.bc.ca
+      VAULT_ADDR: https://vault-iit.apps.silver.devops.gov.bc.ca
     steps:
       - uses: actions/checkout@v3
+      - name: Broker
+        id: broker
+        uses: bcgov-nr/action-vault-broker-approle@v0.0.4
+        with:
+          broker_jwt: ${{ secrets.BROKER_JWT }}
+          provision_role_id: ${{ secrets.PROVISION_ROLE_ID }}
+          project_name: client
+          app_name: app-client
+          environment: development
       - name: Import Secrets
         id: secrets
         uses: hashicorp/vault-action@v2.5.0
         with:
           url: https://vault-iit.apps.silver.devops.gov.bc.ca
-          token: ${{ secrets.VAULT_TOKEN }}
+          token: ${{ steps.broker.outputs.vault_token }}
           exportEnv: 'false'
           secrets: |
             apps/data/dev/client/app-client/db_proxy_read_only db_username | VAULT_DB_USER;
