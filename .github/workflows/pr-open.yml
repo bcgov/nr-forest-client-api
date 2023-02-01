@@ -194,8 +194,7 @@ jobs:
           verification_path: /health
           parameters:
             -p ZONE=${{ github.event.number }} -p NAME=${{ github.event.repository.name }}
-            -p PROMOTE=${{ github.repository }}/api:${{ github.event.number }}
-            -p NODE_ENV='development'
+            -p PROMOTE=${{ github.repository }}/api:${{ github.event.number }}            
             -p ORACLEDB_USER=${{ steps.secrets.outputs.VAULT_DB_USER }}
             -p ORACLEDB_PASSWORD=${{ steps.secrets.outputs.VAULT_DB_PASS }}
             -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }}
