@@ -53,17 +53,6 @@ parameters:
   - name: ORACLEDB_SERVICENAME
     description: Oracle database service name
     required: true
-  - name: NODE_ENV
-    description: environment mode
-    required: true
-  - name: API_URL
-    description: Url of the API in this environment
-    required: true
-    value: https://${NAME}-${ZONE}.api.gov.bc.ca
-  - name: X_API_KEY
-    description: The Gateway API Key
-    required: true
-    value: placeholder
 objects:
   - apiVersion: v1
     kind: Secret

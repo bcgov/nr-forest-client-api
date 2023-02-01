@@ -108,10 +108,7 @@ jobs:
           penetration_test: true
           parameters:
             -p ZONE=${{ env.ZONE }} -p NAME=${{ github.event.repository.name }}
-            -p PROMOTE=${{ github.repository }}/api:${{ env.ZONE }}
-            -p NODE_ENV='development'
-            -p API_URL='https://nr-forest-client-api-test.api.gov.bc.ca'
-            -p X_API_KEY=${{ secrets.GWA_X_API_KEY }}
+            -p PROMOTE=${{ github.repository }}/api:${{ env.ZONE }}            
             -p ORACLEDB_USER=${{ steps.secrets.outputs.VAULT_DB_USER }}
             -p ORACLEDB_PASSWORD=${{ steps.secrets.outputs.VAULT_DB_PASS }}
             -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }}
@@ -186,10 +183,7 @@ jobs:
           verification_path: /health
           parameters:
             -p ZONE=${{ env.ZONE }} -p NAME=${{ github.event.repository.name }}
-            -p PROMOTE=${{ github.repository }}/api:${{ env.PREV }}
-            -p NODE_ENV='production'
-            -p API_URL='https://nr-forest-client-api-prod.api.gov.bc.ca'
-            -p X_API_KEY=${{ secrets.GWA_X_API_KEY }}
+            -p PROMOTE=${{ github.repository }}/api:${{ env.PREV }}            
             -p ORACLEDB_USER=${{ steps.secrets.outputs.VAULT_DB_USER }}
             -p ORACLEDB_PASSWORD=${{ steps.secrets.outputs.VAULT_DB_PASS }}
             -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }}
