@@ -85,7 +85,7 @@ jobs:
           provision_role_id: ${{ secrets.PROVISION_ROLE_ID }}
           project_name: client
           app_name: app-client
-          environment: development
+          environment: test
       - name: Import Secrets
         id: secrets
         uses: hashicorp/vault-action@v2.5.0
@@ -177,7 +177,7 @@ jobs:
       - name: Deploys
         uses: bcgov-nr/action-deployer-openshift@v1.0.1
         with:
-          file: backend/openshift.deploy.yml
+          file: .github/openshift/deploy.backend.yml
           oc_namespace: ${{ secrets.OC_NAMESPACE }}
           oc_server: ${{ secrets.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
