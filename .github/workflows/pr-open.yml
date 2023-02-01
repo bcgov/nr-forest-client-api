@@ -186,7 +186,7 @@ jobs:
       - name: Deploys
         uses: bcgov-nr/action-deployer-openshift@v1.0.1
         with:
-          file: .github/openshift/deploy.backend.yml
+          file: openshift.deploy.yml
           oc_namespace: ${{ secrets.OC_NAMESPACE }}
           oc_server: ${{ secrets.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
