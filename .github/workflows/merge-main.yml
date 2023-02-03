@@ -65,10 +65,34 @@ jobs:
             -Dsonar.projectKey=bcgov_forest-client-api
           sonar_project_token: ${{ secrets.SONAR_TOKEN }}
 
+  trivy-repo:
+    name: Repository Report
+    needs:
+      - codeql
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run Trivy vulnerability scanner in repo mode
+        uses: aquasecurity/trivy-action@0.8.0
+        with:
+          scan-type: "fs"
+          format: "sarif"
+          output: "trivy-results.sarif"
+          ignore-unfixed: true
+          severity: "CRITICAL,HIGH"
+          security-checks: "vuln,secret,config"
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: "trivy-results.sarif"
+
   deploy-test:
     name: TEST Deployment
     needs:
-      - codeql
+      - trivy-repo
       - sonarcloud
     runs-on: ubuntu-22.04
     environment:
@@ -115,35 +139,44 @@ jobs:
             -p ORACLEDB_HOST=${{ secrets.ORACLEDB_HOST }}
             -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }}
 
-  # https://github.com/marketplace/actions/aqua-security-trivy
-  trivy-repo:
-    name: Repository Report
+  publish-test:
+    name: Publish Test Api
     needs:
-      - codeql
-    runs-on: ubuntu-22.04
+      - deploy-test
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Run Trivy vulnerability scanner in repo mode
-        uses: aquasecurity/trivy-action@0.8.0
+      - uses: actions/checkout@v3
         with:
-          scan-type: "fs"
-          format: "sarif"
-          output: "trivy-results.sarif"
-          ignore-unfixed: true
-          severity: "CRITICAL,HIGH"
-          security-checks: "vuln,secret,config"
+          fetch-depth: 0
 
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v2
+      - uses: actions/setup-node@v3
         with:
-          sarif_file: "trivy-results.sarif"
+          node-version: 10
+          TOKEN: ${ secrets.GITHUB_TOKEN }
+
+      - name: Get GWA Command Line
+        run: |
+          curl -L -O https://github.com/bcgov/gwa-cli/releases/download/v1.3.1/gwa_v1.3.1_linux_x64.zip
+          unzip gwa_v1.3.1_linux_x64.zip
+          export PATH=`pwd`:$PATH
+
+      - name: Apply Namespace Configuration
+        run: |
+          export PATH=`pwd`:$PATH
+          cd .github/gwa
+
+          gwa init -P \
+            --namespace=${{ env.NS }} \
+            --client-id=${{ secrets.GWA_ACCT_ID }} \
+            --client-secret=${{ secrets.GWA_ACCT_SECRET }}
+
+          gwa pg service-test.yaml
+
 
   deploy-prod:
     name: PROD Deployment
     needs:
-      - trivy-repo
+      - publish-test
     runs-on: ubuntu-22.04
     environment:
       name: prod
@@ -190,14 +223,13 @@ jobs:
             -p ORACLEDB_HOST=${{ secrets.ORACLEDB_HOST }}
             -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }}
 
-  publish-api:
-    name: Publish Api
+  publish-prod:
+    name: Publish Prod Api
     needs:
-      - deploy-test
       - deploy-prod
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -221,6 +253,5 @@ jobs:
             --namespace=${{ env.NS }} \
             --client-id=${{ secrets.GWA_ACCT_ID }} \
             --client-secret=${{ secrets.GWA_ACCT_SECRET }}
-
-          gwa pg service-test.yaml
+          
           gwa pg service-prod.yaml
