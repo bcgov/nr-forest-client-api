@@ -149,7 +149,7 @@ jobs:
   deploy-prod:
     name: PROD Deployment
     needs:
-      - publish-test
+      - deploy-test
     runs-on: ubuntu-22.04
     environment:
       name: prod
