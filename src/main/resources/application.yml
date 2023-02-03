@@ -5,7 +5,7 @@ spring:
   application:
     name: FSA Forest Client API
   main:
-    lazy-initialization: false
+    lazy-initialization: true
     banner-mode: "off"
     allow-bean-definition-overriding: true
   datasource:
@@ -18,7 +18,7 @@ spring:
       idleTimeout: 45000
       maxLifetime: 60000
       keepaliveTime: 30000
-      poolName: SimpleCachePool
+      poolName: ForestClientApiPool
       minimumIdle: 1
       maximumPoolSize: 3
 
@@ -30,10 +30,7 @@ management:
     web:
       base-path: /
       exposure:
-        include: "*"
-  httpexchanges:
-    recording:
-      include: principal,request-headers,response-headers,cookie-headers,time-taken,authorization-header,remote-address,session-id
+        include: health,metrics
 
 springdoc:
   swagger-ui:
