@@ -5,19 +5,6 @@ spring:
     lazy-initialization: false
     banner-mode: "off"
     allow-bean-definition-overriding: true
-  datasource:
-    driver-class-name: oracle.jdbc.OracleDriver
-    url: jdbc:oracle:thin://${ca.bc.gov.nrs.oracle.host}/${ca.bc.gov.nrs.oracle.service}
-    username: ${ca.bc.gov.nrs.oracle.username}
-    password: ${ca.bc.gov.nrs.oracle.password}
-    hikari:
-      connectionTimeout: 90000
-      idleTimeout: 45000
-      maxLifetime: 60000
-      keepaliveTime: 30000
-      poolName: SimpleCachePool
-      minimumIdle: 1
-      maximumPoolSize: 3
   r2dbc:
     url: r2dbcs:oracle://${ca.bc.gov.nrs.oracle.host}/${ca.bc.gov.nrs.oracle.service}
     username: ${ca.bc.gov.nrs.oracle.username}
