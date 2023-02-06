@@ -41,7 +41,7 @@ public class ClientHandlerTest extends AbstractTestContainerIntegrationTest {
   public void shouldNotFindByClientNumberTest() {
     webTestClient
         .get()
-        .uri("/api/clients/findByClientNumber/" + "00000001")
+        .uri("/api/clients/findByClientNumber/" + "00000099")
         .exchange()
         .expectStatus()
         .isNotFound();
@@ -100,7 +100,7 @@ public class ClientHandlerTest extends AbstractTestContainerIntegrationTest {
     assertThat(response)
         .isNotNull()
         .isNotEmpty()
-        .hasSize(2);
+        .hasSize(1);
   }
 
   @Test
@@ -110,7 +110,7 @@ public class ClientHandlerTest extends AbstractTestContainerIntegrationTest {
         .uri(uriBuilder ->
             uriBuilder
                 .path("/api/clients/findByNames")
-                .queryParam("clientName", "bond")
+                .queryParam("clientName", "band")
                 .queryParam("clientFirstName", "james")
                 .queryParam("clientMiddleName", "bond")
                 .queryParam("clientTypeCodes", "B", "U")

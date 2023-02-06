@@ -18,9 +18,22 @@ spring:
       idleTimeout: 45000
       maxLifetime: 60000
       keepaliveTime: 30000
-      poolName: ForestClientApiPool
+      poolName: ForestClientApiPool2
       minimumIdle: 1
       maximumPoolSize: 3
+  r2dbc:
+    url: r2dbcs:oracle:thin:@tcps://${ca.bc.gov.nrs.oracle.host}/${ca.bc.gov.nrs.oracle.service}
+    username: ${ca.bc.gov.nrs.oracle.username}
+    password: ${ca.bc.gov.nrs.oracle.password}
+    pool:
+      enabled: true
+      initialSize: 1
+      minIdle: 1
+      maxSize: 3
+      maxLifeTime: 60000
+      maxIdleTime: 45000
+      maxCreateConnectionTime: 90000
+      poolName: ForestClientApiPool
 
 management:
   endpoint:

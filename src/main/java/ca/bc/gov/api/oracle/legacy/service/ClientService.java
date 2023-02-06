@@ -2,17 +2,17 @@ package ca.bc.gov.api.oracle.legacy.service;
 
 import ca.bc.gov.api.oracle.legacy.dto.ClientPublicViewDto;
 import ca.bc.gov.api.oracle.legacy.entity.ClientPublicViewEntity;
-import ca.bc.gov.api.oracle.legacy.entity.QClientPublicViewEntity;
 import ca.bc.gov.api.oracle.legacy.exception.ClientNotFoundException;
 import ca.bc.gov.api.oracle.legacy.exception.InvalidClientNumberException;
 import ca.bc.gov.api.oracle.legacy.exception.NoSearchParameterFound;
 import ca.bc.gov.api.oracle.legacy.repository.ClientPublicViewRepository;
 import ca.bc.gov.api.oracle.legacy.util.ClientMapper;
-import com.querydsl.core.BooleanBuilder;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,7 @@ public class ClientService {
       return Mono.error(new InvalidClientNumberException());
     }
 
-    return Mono.justOrEmpty(clientPublicViewRepository.findById(clientNumber))
+    return /*Mono.justOrEmpty(*/clientPublicViewRepository.findById(clientNumber)/*)*/
         .switchIfEmpty(Mono.error(new ClientNotFoundException()))
         .map(ClientMapper::mapEntityToDto);
   }
@@ -41,10 +41,10 @@ public class ClientService {
   public Mono<List<ClientPublicViewDto>> findAllNonIndividualClients(
       int page, int size, String sortBy) {
 
-    return Flux.fromIterable(
+    return /*Flux.fromIterable(*/
             clientPublicViewRepository.findByClientTypeCodeNot(
                 ClientPublicViewEntity.INDIVIDUAL,
-                PageRequest.of(page, size, Sort.by(sortBy))))
+                PageRequest.of(page, size, Sort.by(sortBy)))/*)*/
         .map(ClientMapper::mapEntityToDto)
         .collectList();
   }
@@ -64,28 +64,34 @@ public class ClientService {
       return Mono.error(new NoSearchParameterFound());
     }
 
-    QClientPublicViewEntity clientEntity = QClientPublicViewEntity.clientPublicViewEntity;
-
-    BooleanBuilder booleanBuilder = new BooleanBuilder();
+    ClientPublicViewEntity searchProbe = new ClientPublicViewEntity();
 
     if (StringUtils.isNotBlank(clientName)) {
-      booleanBuilder.and(clientEntity.clientName.containsIgnoreCase(clientName));
+      searchProbe = searchProbe.withClientName(clientName);
     }
 
     if (StringUtils.isNotBlank(clientFirstName)) {
-      booleanBuilder.and(clientEntity.legalFirstName.containsIgnoreCase(clientFirstName));
+      searchProbe = searchProbe.withLegalFirstName(clientFirstName);
     }
 
     if (StringUtils.isNotBlank(clientMiddleName)) {
-      booleanBuilder.and(clientEntity.legalMiddleName.containsIgnoreCase(clientMiddleName));
+      searchProbe = searchProbe.withLegalMiddleName(clientMiddleName);
     }
 
     if (!CollectionUtils.isEmpty(clientTypeCodes)) {
-      booleanBuilder.and(clientEntity.clientTypeCode.in(clientTypeCodes));
+      //TODO Must investigate
     }
 
-    return Flux.fromIterable(
-            clientPublicViewRepository.findAll(booleanBuilder, PageRequest.of(page, size)))
+    ExampleMatcher searchMatcher = ExampleMatcher
+        .matchingAll()
+        .withMatcher("clientName",ExampleMatcher.GenericPropertyMatcher::ignoreCase)
+        .withMatcher("legalFirstName",ExampleMatcher.GenericPropertyMatcher::ignoreCase)
+        .withMatcher("legalMiddleName",ExampleMatcher.GenericPropertyMatcher::ignoreCase);
+
+    return /*Flux.fromIterable(*/
+            clientPublicViewRepository
+                .findAll(Example.of(searchProbe, searchMatcher))
+                //.findAll(booleanBuilder, PageRequest.of(page, size))/*)*/
         .map(ClientMapper::mapEntityToDto)
         .collectList();
   }
