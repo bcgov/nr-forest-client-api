@@ -11,13 +11,10 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -33,7 +30,8 @@ public class ClientService {
       return Mono.error(new InvalidClientNumberException());
     }
 
-    return /*Mono.justOrEmpty(*/clientPublicViewRepository.findById(clientNumber)/*)*/
+    return clientPublicViewRepository
+        .findById(clientNumber)
         .switchIfEmpty(Mono.error(new ClientNotFoundException()))
         .map(ClientMapper::mapEntityToDto);
   }
@@ -41,10 +39,11 @@ public class ClientService {
   public Mono<List<ClientPublicViewDto>> findAllNonIndividualClients(
       int page, int size, String sortBy) {
 
-    return /*Flux.fromIterable(*/
-            clientPublicViewRepository.findByClientTypeCodeNot(
-                ClientPublicViewEntity.INDIVIDUAL,
-                PageRequest.of(page, size, Sort.by(sortBy)))/*)*/
+    return clientPublicViewRepository
+        .findByClientTypeCodeNot(
+            ClientPublicViewEntity.INDIVIDUAL,
+            PageRequest.of(page, size, Sort.by(sortBy))
+        )
         .map(ClientMapper::mapEntityToDto)
         .collectList();
   }
@@ -64,35 +63,16 @@ public class ClientService {
       return Mono.error(new NoSearchParameterFound());
     }
 
-    ClientPublicViewEntity searchProbe = new ClientPublicViewEntity();
-
-    if (StringUtils.isNotBlank(clientName)) {
-      searchProbe = searchProbe.withClientName(clientName);
-    }
-
-    if (StringUtils.isNotBlank(clientFirstName)) {
-      searchProbe = searchProbe.withLegalFirstName(clientFirstName);
-    }
-
-    if (StringUtils.isNotBlank(clientMiddleName)) {
-      searchProbe = searchProbe.withLegalMiddleName(clientMiddleName);
-    }
-
-    if (!CollectionUtils.isEmpty(clientTypeCodes)) {
-      //TODO Must investigate
-    }
-
-    ExampleMatcher searchMatcher = ExampleMatcher
-        .matchingAll()
-        .withMatcher("clientName",ExampleMatcher.GenericPropertyMatcher::ignoreCase)
-        .withMatcher("legalFirstName",ExampleMatcher.GenericPropertyMatcher::ignoreCase)
-        .withMatcher("legalMiddleName",ExampleMatcher.GenericPropertyMatcher::ignoreCase);
-
-    return /*Flux.fromIterable(*/
-            clientPublicViewRepository
-                .findAll(Example.of(searchProbe, searchMatcher))
-                //.findAll(booleanBuilder, PageRequest.of(page, size))/*)*/
-        .map(ClientMapper::mapEntityToDto)
-        .collectList();
+    return
+        clientPublicViewRepository
+            .searchByNames(
+                clientName,
+                clientFirstName,
+                clientMiddleName,
+                clientTypeCodes,
+                PageRequest.of(page, size)
+            )
+            .map(ClientMapper::mapEntityToDto)
+            .collectList();
   }
 }

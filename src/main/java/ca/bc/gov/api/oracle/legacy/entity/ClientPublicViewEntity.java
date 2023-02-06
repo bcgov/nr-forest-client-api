@@ -15,7 +15,6 @@ import org.springframework.data.relational.core.mapping.Table;
 @AllArgsConstructor
 @With
 @Builder
-//@Entity
 @Table(name = "V_CLIENT_PUBLIC", schema = "THE")
 public class ClientPublicViewEntity {
 
