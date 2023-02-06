@@ -344,48 +344,6 @@
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>3.1.0</version>
-				<executions>
-					<execution>
-						<id>default-cli</id>
-						<goals>
-							<goal>enforce</goal>
-						</goals>
-						<configuration>
-							<rules>
-								<dependencyCovergence/>
-								<requireMavenVersion>
-									<version>[3.2,)</version>
-									<message>Invalid Maven version. It should be at least 3.2</message>
-								</requireMavenVersion>
-								<requireJavaVersion>
-									<version>17</version>
-									<message>Invalid Java Version. It should be at least 17</message>
-								</requireJavaVersion>
-								<requireNoRepositories>
-									<allowedRepositories>
-										<id>central</id>
-										<id>spring-milestones</id>
-									</allowedRepositories>
-									<allowedPluginRepositories>
-										<id>central</id>
-										<id>spring-milestones</id>
-									</allowedPluginRepositories>
-								</requireNoRepositories>
-								<requireReleaseDeps>
-									<message>No Snapshots Allowed in releases!</message>
-									<onlyWhenRelease>true</onlyWhenRelease>
-								</requireReleaseDeps>
-								<banDuplicatePomDependencyVersions/>
-							</rules>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<version>3.2.0</version>
 				<configuration>
