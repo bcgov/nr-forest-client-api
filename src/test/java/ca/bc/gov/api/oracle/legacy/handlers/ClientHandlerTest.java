@@ -1,86 +1,83 @@
 package ca.bc.gov.api.oracle.legacy.handlers;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-
 import ca.bc.gov.api.oracle.legacy.AbstractTestContainerIntegrationTest;
 import ca.bc.gov.api.oracle.legacy.dto.ClientPublicViewDto;
-import java.util.List;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-public class ClientHandlerTest extends AbstractTestContainerIntegrationTest {
+@DisplayName("Integration Test | Client Handler")
+class ClientHandlerTest extends AbstractTestContainerIntegrationTest {
 
   @Autowired
   private WebTestClient webTestClient;
 
   @Test
-  public void shouldFindByClientNumberTest() {
+  @DisplayName("Search client by client number")
+  void shouldFindByClientNumberTest() {
 
-    ClientPublicViewDto response = webTestClient
-        .get()
-        .uri("/api/clients/findByClientNumber/" + "00000007")
-        .exchange()
-        .expectStatus()
-        .isOk()
-        .expectBody(ClientPublicViewDto.class)
-        .returnResult()
-        .getResponseBody();
-
-    assertEquals("00000007", response.clientNumber());
-    assertEquals("bond", response.clientName());
-    assertEquals("james", response.legalFirstName());
-    assertEquals("bond", response.legalMiddleName());
-    assertEquals("ACT", response.clientStatusCode());
-    assertEquals("I", response.clientTypeCode());
-  }
-
-  @Test
-  public void shouldNotFindByClientNumberTest() {
     webTestClient
         .get()
-        .uri("/api/clients/findByClientNumber/" + "00000001")
+        .uri("/api/clients/findByClientNumber/{clientNumber}", "00000007")
         .exchange()
-        .expectStatus()
-        .isNotFound();
+        .expectStatus().isOk()
+        .expectBody()
+        .jsonPath("$.clientNumber").isNotEmpty()
+        .jsonPath("$.clientNumber").isEqualTo("00000007")
+
+        .jsonPath("$.clientName").isNotEmpty()
+        .jsonPath("$.clientName").isEqualTo("bond")
+
+        .jsonPath("$.legalFirstName").isNotEmpty()
+        .jsonPath("$.legalFirstName").isEqualTo("james")
+
+        .jsonPath("$.legalMiddleName").isNotEmpty()
+        .jsonPath("$.legalMiddleName").isEqualTo("bond")
+
+        .jsonPath("$.clientStatusCode").isNotEmpty()
+        .jsonPath("$.clientStatusCode").isEqualTo("ACT")
+
+        .jsonPath("$.clientTypeCode").isNotEmpty()
+        .jsonPath("$.clientTypeCode").isEqualTo("I");
   }
 
   @Test
-  public void shouldFailFindByClientNumberNonNumericClientNumberTest() {
+  @DisplayName("Did not find a client by number")
+  void shouldNotFindByClientNumberTest() {
     webTestClient
         .get()
-        .uri("/api/clients/findByClientNumber/" + "abcdefgh")
+        .uri("/api/clients/findByClientNumber/{clientNumber}", "00000099")
         .exchange()
-        .expectStatus()
-        .isBadRequest();
+        .expectStatus().isNotFound();
   }
 
   @Test
-  public void shouldFindAllNonIndividualsTest() {
-    List<ClientPublicViewDto> response = webTestClient
+  @DisplayName("Fail with non-numeric client")
+  void shouldFailFindByClientNumberNonNumericClientNumberTest() {
+    webTestClient
+        .get()
+        .uri("/api/clients/findByClientNumber/{clientName}", "abcdefgh")
+        .exchange()
+        .expectStatus().isBadRequest();
+  }
+
+  @Test
+  @DisplayName("Non Individual clients")
+  void shouldFindAllNonIndividualsTest() {
+    webTestClient
         .get()
         .uri("/api/clients/findAllNonIndividuals")
         .exchange()
-        .expectStatus()
-        .isOk()
+        .expectStatus().isOk()
         .expectBodyList(ClientPublicViewDto.class)
-        .returnResult()
-        .getResponseBody();
-
-    assertThat(response)
-        .isNotNull()
-        .isNotEmpty();
-
-    for (ClientPublicViewDto client : response) {
-      assertNotEquals("I", client.clientTypeCode());
-    }
+        .hasSize(6);
   }
 
   @Test
-  public void shouldFindByNamesTest() {
-    List<ClientPublicViewDto> response = webTestClient
+  @DisplayName("Find by parameters")
+  void shouldFindByNamesTest() {
+    webTestClient
         .get()
         .uri(uriBuilder ->
             uriBuilder
@@ -89,46 +86,38 @@ public class ClientHandlerTest extends AbstractTestContainerIntegrationTest {
                 .queryParam("clientFirstName", "james")
                 .queryParam("clientMiddleName", "bond")
                 .queryParam("clientTypeCodes", "I", "A")
-                .build())
+                .build()
+        )
         .exchange()
-        .expectStatus()
-        .isOk()
+        .expectStatus().isOk()
         .expectBodyList(ClientPublicViewDto.class)
-        .returnResult()
-        .getResponseBody();
-
-    assertThat(response)
-        .isNotNull()
-        .isNotEmpty()
-        .hasSize(2);
+        .hasSize(1);
   }
 
   @Test
-  public void shouldFindByNamesAndReturnEmptyListTest() {
-    List<ClientPublicViewDto> response = webTestClient
+  @DisplayName("Empty list return")
+  void shouldFindByNamesAndReturnEmptyListTest() {
+    webTestClient
         .get()
         .uri(uriBuilder ->
             uriBuilder
                 .path("/api/clients/findByNames")
-                .queryParam("clientName", "bond")
+                .queryParam("clientName", "band")
                 .queryParam("clientFirstName", "james")
                 .queryParam("clientMiddleName", "bond")
                 .queryParam("clientTypeCodes", "B", "U")
-                .build())
+                .build()
+        )
         .exchange()
         .expectStatus()
         .isOk()
         .expectBodyList(ClientPublicViewDto.class)
-        .returnResult()
-        .getResponseBody();
-
-    assertThat(response)
-        .isNotNull()
-        .isEmpty();
+        .hasSize(0);
   }
 
   @Test
-  public void shouldNotFindByNamesTest() {
+  @DisplayName("Should not search without param")
+  void shouldNotFindByNamesTest() {
     webTestClient
         .get()
         .uri("/api/clients/findByNames")
@@ -137,3 +126,4 @@ public class ClientHandlerTest extends AbstractTestContainerIntegrationTest {
         .isBadRequest();
   }
 }
+

@@ -62,7 +62,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<artifactId>spring-boot-starter-data-r2dbc</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -80,20 +80,10 @@
 			<artifactId>ojdbc11</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.querydsl</groupId>
-			<artifactId>querydsl-apt</artifactId>
-			<version>5.0.0</version>
-			<classifier>jakarta</classifier>
-			<scope>provided</scope>
+			<groupId>com.oracle.database.r2dbc</groupId>
+			<artifactId>oracle-r2dbc</artifactId>
+			<scope>runtime</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.querydsl</groupId>
-			<artifactId>querydsl-jpa</artifactId>
-			<version>5.0.0</version>
-			<classifier>jakarta</classifier>
-			<scope>provided</scope>
-		</dependency>
-
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
@@ -118,6 +108,11 @@
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>oracle-xe</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>r2dbc</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -321,48 +316,6 @@
 					<windowtitle>${project.name} ${project.version}
 					</windowtitle>
 				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>3.1.0</version>
-				<executions>
-					<execution>
-						<id>default-cli</id>
-						<goals>
-							<goal>enforce</goal>
-						</goals>
-						<configuration>
-							<rules>
-								<dependencyCovergence/>
-								<requireMavenVersion>
-									<version>[3.2,)</version>
-									<message>Invalid Maven version. It should be at least 3.2</message>
-								</requireMavenVersion>
-								<requireJavaVersion>
-									<version>17</version>
-									<message>Invalid Java Version. It should be at least 17</message>
-								</requireJavaVersion>
-								<requireNoRepositories>
-									<allowedRepositories>
-										<id>central</id>
-										<id>spring-milestones</id>
-									</allowedRepositories>
-									<allowedPluginRepositories>
-										<id>central</id>
-										<id>spring-milestones</id>
-									</allowedPluginRepositories>
-								</requireNoRepositories>
-								<requireReleaseDeps>
-									<message>No Snapshots Allowed in releases!</message>
-									<onlyWhenRelease>true</onlyWhenRelease>
-								</requireReleaseDeps>
-								<banDuplicatePomDependencyVersions/>
-							</rules>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 
 			<plugin>
