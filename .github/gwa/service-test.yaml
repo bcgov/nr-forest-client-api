@@ -1,15 +1,15 @@
 services:
-  - name: nrfc-api-test
-    host: nrfc-api-test-backend.d2723f-test.svc
+  - name: nr-forest-client-api-test
+    host: nr-forest-client-api-test-backend.d2723f-test.svc
     tags: [ns.nr-d2723f.test]
     port: 80
     protocol: http
     retries: 0
     routes:
-      - name: nrfc-api-test-swagger-route
+      - name: nr-forest-client-api-test-swagger-route
         tags: [ns.nr-d2723f.test]
         hosts:
-          - nrfc-api-test.api.gov.bc.ca
+          - nr-forest-client-api-test.api.gov.bc.ca
         paths:
           - /
         methods:
@@ -17,10 +17,10 @@ services:
         strip_path: false
         https_redirect_status_code: 426
         path_handling: v0
-      - name: nrfc-api-test-route
+      - name: nr-forest-client-api-test-route
         tags: [ns.nr-d2723f.test]
         hosts:
-          - nrfc-api-test.api.gov.bc.ca
+          - nr-forest-client-api-test.api.gov.bc.ca
         paths:
           - /api
         methods:
