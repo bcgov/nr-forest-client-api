@@ -205,3 +205,45 @@ objects:
       tls:
         termination: edge
         insecureEdgeTerminationPolicy: Redirect
+  - apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: allow-from-openshift-ingress
+      labels:
+        template: openshift-${ZONE}
+    spec:
+      podSelector: { }
+      ingress:
+        - from:
+            - namespaceSelector:
+                matchLabels:
+                  network.openshift.io/policy-group: ingress
+      policyTypes:
+        - Ingress
+  - apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: allow-same-namespace
+      labels:
+        template: quickstart-network-security-policy
+    spec:
+      podSelector: { }
+      ingress:
+        - from:
+            - podSelector: { }
+      policyTypes:
+        - Ingress
+  - apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: allow-traffic-from-gateway-to-your-api
+    spec:
+      podSelector:
+        matchLabels:
+          app: ${NAME}-${ZONE}
+      ingress:
+        - from:
+            - namespaceSelector:
+                matchLabels:
+                  environment: ${ZONE}
+                  name: 264e6f
