@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -48,7 +49,7 @@ public class ClientService {
         .collectList();
   }
 
-  public Mono<List<ClientPublicViewDto>> searchByNames(
+  public Flux<ClientPublicViewDto> searchByNames(
       String clientName,
       String clientFirstName,
       String clientMiddleName,
@@ -60,7 +61,7 @@ public class ClientService {
         && StringUtils.isBlank(clientFirstName)
         && StringUtils.isBlank(clientMiddleName)
         && CollectionUtils.isEmpty(clientTypeCodes)) {
-      return Mono.error(new NoSearchParameterFound());
+      return Flux.error(new NoSearchParameterFound());
     }
 
     return
@@ -72,7 +73,6 @@ public class ClientService {
                 clientTypeCodes,
                 PageRequest.of(page, size)
             )
-            .map(ClientMapper::mapEntityToDto)
-            .collectList();
+            .map(ClientMapper::mapEntityToDto);
   }
 }
