@@ -1,0 +1,187 @@
+{
+	"info": {
+		"_postman_id": "d504e9f6-5ba7-4596-9fd6-ff76d1b3546c",
+		"name": "FCA",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "findAllNonIndividuals",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response;\r",
+							"\r",
+							"pm.test(\"Status check test\", () => {\r",
+							"    responseData.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const jsonData = responseData.json();\r",
+							"\r",
+							"pm.test(\"List size check test\", () => {\r",
+							"    pm.expect(jsonData).to.be.an('array')\r",
+							"    const expectedSize = pm.iterationData.get(\"INDIVIDUALS_SIZE\");\r",
+							"    pm.expect(jsonData.length).to.equals(expectedSize);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validate client codes in list\", () => {\r",
+							"    const expectedClientCodes = pm.iterationData.get(\"INDIVIDUALS_CLIENT_TYPE_CODE\");\r",
+							"    const receivedClientCodes = jsonData.map(v => v.clientTypeCode);\r",
+							"    pm.expect(receivedClientCodes).to.include.members(expectedClientCodes);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"/*pm.request.url.query.add(\"page=0\");\r",
+							"pm.request.url.query.add(\"size=5\");\r",
+							"pm.request.url.query.add(\"sortedColumnName=clientName\");*/\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}{{basepath}}/findAllNonIndividuals?{{INDIVIDUALS_QUERY_STRING}}",
+					"host": [
+						"{{url}}{{basepath}}"
+					],
+					"path": [
+						"findAllNonIndividuals"
+					],
+					"query": [
+						{
+							"key": "sortedColumnName",
+							"value": "clientTypeCode",
+							"disabled": true
+						},
+						{
+							"key": "page",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "size",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "{{INDIVIDUALS_QUERY_STRING}}",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findByClientNumber",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response;\r",
+							"\r",
+							"pm.test(\"Status check test\", () => {\r",
+							"    responseData.to.have.status(pm.iterationData.get(\"FIND_CODE\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check body\", () => {\r",
+							"    const expectedBody = pm.iterationData.get(\"FIND_BODY\");\r",
+							"    pm.response.to.have.body(expectedBody);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}{{basepath}}/findByClientNumber/{{FIND_NUMBER}}",
+					"host": [
+						"{{url}}{{basepath}}"
+					],
+					"path": [
+						"findByClientNumber",
+						"{{FIND_NUMBER}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findByNames",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}{{basepath}}/findByNames",
+					"host": [
+						"{{url}}{{basepath}}"
+					],
+					"path": [
+						"findByNames"
+					],
+					"query": [
+						{
+							"key": "clientName",
+							"value": "\" \"",
+							"disabled": true
+						},
+						{
+							"key": "clientFirstName",
+							"value": null,
+							"disabled": true
+						},
+						{
+							"key": "clientMiddleName",
+							"value": null,
+							"disabled": true
+						},
+						{
+							"key": "clientTypeCodes",
+							"value": "A,B",
+							"disabled": true
+						},
+						{
+							"key": "page",
+							"value": "0",
+							"disabled": true
+						},
+						{
+							"key": "size",
+							"value": "20",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

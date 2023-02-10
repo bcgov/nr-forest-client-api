@@ -1,0 +1,26 @@
+[
+  {
+    "INDIVIDUALS_QUERY_STRING": "",
+    "INDIVIDUALS_SIZE": 10,
+    "INDIVIDUALS_CLIENT_TYPE_CODE": [],
+    "FIND_NUMBER": "00169564",
+    "FIND_BODY": {"clientNumber":"00169564","clientName":" ","clientStatusCode":"ACT","clientTypeCode":"C"},
+    "FIND_CODE": 200
+  },
+  {
+    "INDIVIDUALS_QUERY_STRING": "size=5",
+    "INDIVIDUALS_SIZE": 5,
+    "INDIVIDUALS_CLIENT_TYPE_CODE": [],
+    "FIND_NUMBER": "",
+    "FIND_BODY": "",
+    "FIND_CODE": 404
+  },
+  {
+    "INDIVIDUALS_QUERY_STRING": "sortedColumnName=clientTypeCode",
+    "INDIVIDUALS_SIZE": 10,
+    "INDIVIDUALS_CLIENT_TYPE_CODE": ["A"],
+    "FIND_NUMBER": "abc",
+    "FIND_BODY": "Invalid Client Number",
+    "FIND_CODE": 400
+  }
+]
