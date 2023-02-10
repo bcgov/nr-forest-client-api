@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "d504e9f6-5ba7-4596-9fd6-ff76d1b3546c",
-		"name": "FCA",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"_postman_id": "130659af-33cd-4fbf-b11c-6fd12a4af373",
+		"name": "nr-forest-client-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17369587"
 	},
 	"item": [
 		{
@@ -13,22 +14,21 @@
 					"script": {
 						"exec": [
 							"const responseData = pm.response;\r",
-							"\r",
-							"pm.test(\"Status check test\", () => {\r",
-							"    responseData.to.have.status(200);\r",
-							"});\r",
-							"\r",
 							"const jsonData = responseData.json();\r",
 							"\r",
+							"pm.test(\"Status check test\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
 							"pm.test(\"List size check test\", () => {\r",
-							"    pm.expect(jsonData).to.be.an('array')\r",
-							"    const expectedSize = pm.iterationData.get(\"INDIVIDUALS_SIZE\");\r",
+							"    pm.expect(jsonData).to.be.an('array');\r",
+							"    const expectedSize = parseInt(pm.variables.get(\"INDIVIDUALS_SIZE\"));\r",
 							"    pm.expect(jsonData.length).to.equals(expectedSize);\r",
 							"});\r",
 							"\r",
-							"pm.test(\"Validate client codes in list\", () => {\r",
-							"    const expectedClientCodes = pm.iterationData.get(\"INDIVIDUALS_CLIENT_TYPE_CODE\");\r",
-							"    const receivedClientCodes = jsonData.map(v => v.clientTypeCode);\r",
+							"pm.test(\"Validate client codes in list\", () => {    \r",
+							"    const expectedClientCodes = pm.variables.get(\"INDIVIDUALS_CLIENT_TYPE_CODE\");\r",
+							"    const receivedClientCodes = jsonData.map(value => value.clientTypeCode);    \r",
 							"    pm.expect(receivedClientCodes).to.include.members(expectedClientCodes);\r",
 							"});\r",
 							""
@@ -40,9 +40,6 @@
 					"listen": "prerequest",
 					"script": {
 						"exec": [
-							"/*pm.request.url.query.add(\"page=0\");\r",
-							"pm.request.url.query.add(\"size=5\");\r",
-							"pm.request.url.query.add(\"sortedColumnName=clientName\");*/\r",
 							""
 						],
 						"type": "text/javascript"
@@ -53,11 +50,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{url}}{{basepath}}/findAllNonIndividuals?{{INDIVIDUALS_QUERY_STRING}}",
+					"raw": "{{URL_FCA}}/api/clients/findAllNonIndividuals?{{INDIVIDUALS_QUERY_STRING}}",
 					"host": [
-						"{{url}}{{basepath}}"
+						"{{URL_FCA}}"
 					],
 					"path": [
+						"api",
+						"clients",
 						"findAllNonIndividuals"
 					],
 					"query": [
@@ -68,12 +67,12 @@
 						},
 						{
 							"key": "page",
-							"value": "1",
+							"value": "0",
 							"disabled": true
 						},
 						{
 							"key": "size",
-							"value": "1",
+							"value": "10",
 							"disabled": true
 						},
 						{
@@ -94,14 +93,23 @@
 						"exec": [
 							"const responseData = pm.response;\r",
 							"\r",
-							"pm.test(\"Status check test\", () => {\r",
-							"    responseData.to.have.status(pm.iterationData.get(\"FIND_CODE\"));\r",
+							"pm.test(\"Status check test (\"+pm.variables.get(\"FIND_CODE\")+\")\", () => {\r",
+							"    responseData.to.have.status(parseInt(pm.variables.get(\"FIND_CODE\")));\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Check body\", () => {\r",
-							"    const expectedBody = pm.iterationData.get(\"FIND_BODY\");\r",
+							"    const expectedBody = pm.variables.get(\"FIND_BODY\");\r",
 							"    pm.response.to.have.body(expectedBody);\r",
 							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -111,11 +119,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{url}}{{basepath}}/findByClientNumber/{{FIND_NUMBER}}",
+					"raw": "{{URL_FCA}}/api/clients/findByClientNumber/{{FIND_NUMBER}}",
 					"host": [
-						"{{url}}{{basepath}}"
+						"{{URL_FCA}}"
 					],
 					"path": [
+						"api",
+						"clients",
 						"findByClientNumber",
 						"{{FIND_NUMBER}}"
 					]
@@ -130,6 +140,38 @@
 					"listen": "test",
 					"script": {
 						"exec": [
+							"const responseData = pm.response;\r",
+							"\r",
+							"pm.test(\"Status check test (\"+pm.variables.get(\"BYNAME_CODE\")+\")\", () => {\r",
+							"    responseData.to.have.status(parseInt(pm.variables.get(\"BYNAME_CODE\")));\r",
+							"});\r",
+							"\r",
+							"if(parseInt(pm.variables.get(\"BYNAME_CODE\")) == 200){\r",
+							"\r",
+							"    const jsonData = responseData.json();\r",
+							"    console.log(jsonData);\r",
+							"        \r",
+							"    pm.test(\"List size check test\", () => {\r",
+							"        pm.expect(jsonData).to.be.an('array');\r",
+							"        const expectedSize = parseInt(pm.variables.get(\"BYNAME_SIZE\"));\r",
+							"        pm.expect(jsonData.length).to.equals(expectedSize);\r",
+							"    });\r",
+							"\r",
+							"    pm.test(\"Validate client codes in list\", () => {    \r",
+							"        const expectedClientNumbers = pm.variables.get(\"BYNAME_CODES\");\r",
+							"        const receivedClientNumbers = jsonData.map(value => value.clientNumber);    \r",
+							"        pm.expect(receivedClientNumbers).to.include.members(expectedClientNumbers);\r",
+							"    });\r",
+							"\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
 							""
 						],
 						"type": "text/javascript"
@@ -140,11 +182,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{url}}{{basepath}}/findByNames",
+					"raw": "{{URL_FCA}}/api/clients/findByNames?{{BYNAME_QUERY_STRING}}",
 					"host": [
-						"{{url}}{{basepath}}"
+						"{{URL_FCA}}"
 					],
 					"path": [
+						"api",
+						"clients",
 						"findByNames"
 					],
 					"query": [
@@ -155,12 +199,12 @@
 						},
 						{
 							"key": "clientFirstName",
-							"value": null,
+							"value": "james",
 							"disabled": true
 						},
 						{
 							"key": "clientMiddleName",
-							"value": null,
+							"value": "",
 							"disabled": true
 						},
 						{
@@ -177,11 +221,48 @@
 							"key": "size",
 							"value": "20",
 							"disabled": true
+						},
+						{
+							"key": "{{BYNAME_QUERY_STRING}}",
+							"value": null
 						}
 					]
 				}
 			},
 			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"utils = {    ",
+					"    readOrSet:function(key,fallbackScope,conversionFn){        ",
+					"        const variable = pm.variables.get(key);",
+					"        if(!variable){",
+					"            pm.variables.set(key,conversionFn(fallbackScope.get(key)));",
+					"        }",
+					"    },",
+					"    copyFromTo:function(origin,destination,scope,fn){        ",
+					"        const variable = scope.get(origin);        ",
+					"        if(variable){            ",
+					"            scope.set(destination,fn(variable));",
+					"        }",
+					"    }",
+					"};"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }
