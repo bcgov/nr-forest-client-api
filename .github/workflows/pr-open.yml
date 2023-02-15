@@ -112,6 +112,7 @@ jobs:
         with:
           package: api
           build_context: ./
+          build_file: Dockerfile
           tag: ${{ github.event.number }}
           tag_fallback: test
           token: ${{ secrets.GITHUB_TOKEN }}
