@@ -100,7 +100,6 @@ jobs:
     environment:
       name: dev
     runs-on: ubuntu-latest
-    if: github.actor != 'dependabot[bot]'
     permissions:
       contents: read
       packages: write
@@ -153,7 +152,7 @@ jobs:
     needs:
       - build-backend
       - tests-backend
-    if: always() && (needs.build-backend.result == 'success') && github.actor != 'dependabot[bot]'
+    if: always() && (needs.build-backend.result == 'success')
     runs-on: ubuntu-22.04
     timeout-minutes: 15
     environment:
@@ -185,7 +184,7 @@ jobs:
             apps/data/dev/client/app-client/db_proxy_read_only db_password | VAULT_DB_PASS;
 
       - name: Deploys
-        uses: bcgov-nr/action-deployer-openshift@v1.0.1
+        uses: bcgov-nr/action-deployer-openshift@v1.0.2
         with:
           file: openshift.deploy.yml
           oc_namespace: ${{ secrets.OC_NAMESPACE }}
