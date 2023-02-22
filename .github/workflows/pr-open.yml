@@ -6,6 +6,7 @@ on:
 env:
   REGISTRY: ghcr.io
   NAME: nr-forest-client-api
+  DOMAIN: apps.silver.devops.gov.bc.ca
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -72,7 +73,6 @@ jobs:
   pr-greeting:
     name: PR Greeting
     env:
-      DOMAIN: apps.silver.devops.gov.bc.ca
       PREFIX: ${{ github.event.repository.name }}-${{ github.event.number }}
     runs-on: ubuntu-22.04
     permissions:
@@ -200,3 +200,26 @@ jobs:
             -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }}
             -p ORACLEDB_HOST=${{ secrets.ORACLEDB_HOST }}
             -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }}
+
+  postman:
+    name: Smoke Test
+    env:
+      COMPONENT: backend
+      ZONE: ${{ github.event.number }}
+    needs:
+      - deploy-dev
+    environment:
+      name: dev
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - uses: matt-ball/newman-action@master
+        with:
+          collection: postman/FCA.postman_collection.json
+          envVar: '[{"URL_FCA":"https://${{ env.NAME }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}"}]'
+          iterationData: postman/FCA_postman_tests.json
