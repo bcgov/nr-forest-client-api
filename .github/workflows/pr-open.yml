@@ -97,8 +97,6 @@ jobs:
     env:
       COMPONENT: backend
       ZONE: ${{ github.event.number }}
-    environment:
-      name: dev
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -158,6 +156,15 @@ jobs:
           summary: Pull Request Tests
           detailed_summary: true
           job_name: Tests
+
+      - name: Add coverage to PR
+        id: jacoco
+        uses: madrapps/jacoco-report@v1.3
+        with:
+          paths: target/coverage-reports/merged-test-report/jacoco.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage-overall: 75
+          min-coverage-changed-files: 75
 
   deploy-dev:
     name: DEV Deployment
@@ -235,7 +242,7 @@ jobs:
           collection: postman/FCA.postman_collection.json
           envVar: '[{"key":"URL_FCA","value":"https://${{ env.NAME }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}"}]'
           iterationData: postman/FCA_postman_tests_dev.json
-          reporters: cli,junit
+          reporters: '["cli", "junit"]'
           reporter: '{ "junit" : { "export" : "./postman/report.xml" } }'
 
       - name: Publish Postman Test Report
