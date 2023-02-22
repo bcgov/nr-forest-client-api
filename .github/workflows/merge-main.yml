@@ -121,7 +121,7 @@ jobs:
             apps/data/test/client/app-client/db_proxy_read_only db_username | VAULT_DB_USER;
             apps/data/test/client/app-client/db_proxy_read_only db_password | VAULT_DB_PASS;
       - name: Deploys
-        uses: bcgov-nr/action-deployer-openshift@v1.0.1
+        uses: bcgov-nr/action-deployer-openshift@v1.0.2
         with:
           file: openshift.deploy.yml
           oc_namespace: ${{ secrets.OC_NAMESPACE }}
@@ -178,7 +178,7 @@ jobs:
             apps/data/prod/client/app-client/db_proxy_read_only db_username | VAULT_DB_USER;
             apps/data/prod/client/app-client/db_proxy_read_only db_password | VAULT_DB_PASS;
       - name: Deploys
-        uses: bcgov-nr/action-deployer-openshift@v1.0.1
+        uses: bcgov-nr/action-deployer-openshift@v1.0.2
         with:
           file: openshift.deploy.yml
           oc_namespace: ${{ secrets.OC_NAMESPACE }}
