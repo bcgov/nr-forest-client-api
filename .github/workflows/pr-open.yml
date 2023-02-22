@@ -6,6 +6,7 @@ on:
 env:
   REGISTRY: ghcr.io
   NAME: nr-forest-client-api
+  DOMAIN: apps.silver.devops.gov.bc.ca
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -72,7 +73,6 @@ jobs:
   pr-greeting:
     name: PR Greeting
     env:
-      DOMAIN: apps.silver.devops.gov.bc.ca
       PREFIX: ${{ github.event.repository.name }}-${{ github.event.number }}
     runs-on: ubuntu-22.04
     permissions:
@@ -92,13 +92,12 @@ jobs:
             Once merged, code will be promoted and handed off to following workflow run.
             [Main Merge Workflow](https://github.com/${{ github.repository }}/actions/workflows/merge-main.yml)
 
+
   build-backend:
     name: Backend Image Build
     env:
       COMPONENT: backend
       ZONE: ${{ github.event.number }}
-    environment:
-      name: dev
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -119,6 +118,9 @@ jobs:
   tests-backend:
     name: Backend Unit Tests
     runs-on: ubuntu-22.04
+    permissions:
+      checks: write
+      pull-requests: write
     needs:
       - build-backend
     steps:
@@ -147,12 +149,30 @@ jobs:
         with:
           path: '**/checkstyle-result.xml'
 
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v3
+        if: success() || failure() # always run even if the previous step fails
+        with:
+          report_paths: 'target/**/TEST-*.xml'
+          commit: ${{ github.event.pull_request.head.sha }}
+          summary: Pull Request Tests
+          detailed_summary: true
+          job_name: Tests
+
+      - name: Add coverage to PR
+        id: jacoco
+        uses: madrapps/jacoco-report@v1.3
+        with:
+          paths: target/coverage-reports/merged-test-report/jacoco.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage-overall: 75
+          min-coverage-changed-files: 75
+
   deploy-dev:
     name: DEV Deployment
     needs:
       - build-backend
       - tests-backend
-    if: always() && (needs.build-backend.result == 'success')
     runs-on: ubuntu-22.04
     timeout-minutes: 15
     environment:
@@ -200,3 +220,40 @@ jobs:
             -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }}
             -p ORACLEDB_HOST=${{ secrets.ORACLEDB_HOST }}
             -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }}
+
+  postman:
+    name: Smoke Test
+    env:
+      COMPONENT: backend
+      ZONE: ${{ github.event.number }}
+    needs:
+      - deploy-dev
+    environment:
+      name: dev
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      checks: write
+      pull-requests: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - uses: matt-ball/newman-action@master
+        with:
+          collection: postman/FCA.postman_collection.json
+          envVar: '[{"key":"URL_FCA","value":"https://${{ env.NAME }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}"}]'
+          iterationData: postman/FCA_postman_tests_dev.json
+          reporters: '["cli", "junit"]'
+          reporter: '{ "junit" : { "export" : "./postman/report.xml" } }'
+
+      - name: Publish Postman Test Report
+        uses: mikepenz/action-junit-report@v3
+        if: success() || failure() # always run even if the previous step fails
+        with:
+          report_paths: 'postman/report.xml'
+          commit: ${{ github.event.pull_request.head.sha }}
+          summary: Postman Tests
+          detailed_summary: true
+          job_name: Postman

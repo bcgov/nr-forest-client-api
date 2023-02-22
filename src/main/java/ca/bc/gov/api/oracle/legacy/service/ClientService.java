@@ -1,5 +1,8 @@
 package ca.bc.gov.api.oracle.legacy.service;
 
+import static org.springframework.data.relational.core.query.Criteria.where;
+import static org.springframework.data.relational.core.query.Query.query;
+
 import ca.bc.gov.api.oracle.legacy.dto.ClientPublicViewDto;
 import ca.bc.gov.api.oracle.legacy.entity.ClientPublicViewEntity;
 import ca.bc.gov.api.oracle.legacy.exception.ClientNotFoundException;
@@ -13,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
+import org.springframework.data.relational.core.query.Criteria;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import reactor.core.publisher.Flux;
@@ -24,6 +29,7 @@ import reactor.core.publisher.Mono;
 public class ClientService {
 
   private final ClientPublicViewRepository clientPublicViewRepository;
+  private final R2dbcEntityTemplate template;
 
   public Mono<ClientPublicViewDto> findByClientNumber(String clientNumber) {
 
@@ -64,14 +70,34 @@ public class ClientService {
       return Flux.error(new NoSearchParameterFound());
     }
 
+    Criteria queryCriteria = Criteria.empty();
+    if (StringUtils.isNotBlank(clientName)) {
+      queryCriteria = queryCriteria
+          .and(where("clientName").is(clientName).ignoreCase(true));
+    }
+
+    if (StringUtils.isNotBlank(clientFirstName)) {
+      queryCriteria = queryCriteria
+          .and(where("legalFirstName").is(clientFirstName).ignoreCase(true));
+    }
+
+    if (StringUtils.isNotBlank(clientMiddleName)) {
+      queryCriteria = queryCriteria
+          .and(where("legalMiddleName").is(clientMiddleName).ignoreCase(true));
+    }
+
+    if (!CollectionUtils.isEmpty(clientTypeCodes)) {
+      queryCriteria = queryCriteria
+          .and(where("clientTypeCode").in(clientTypeCodes));
+    }
+
     return
-        clientPublicViewRepository
-            .searchByNames(
-                clientName,
-                clientFirstName,
-                clientMiddleName,
-                clientTypeCodes,
-                PageRequest.of(page, size)
+        template
+            .select(
+                query(queryCriteria)
+                    .limit(size)
+                    .offset((long) page * size),
+                ClientPublicViewEntity.class
             )
             .map(ClientMapper::mapEntityToDto);
   }

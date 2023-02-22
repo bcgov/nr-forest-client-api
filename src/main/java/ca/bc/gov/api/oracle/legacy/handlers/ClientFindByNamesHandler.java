@@ -48,8 +48,10 @@ public class ClientFindByNamesHandler implements BaseHandler {
                             .queryParam("clientMiddleName")
                             .orElse(StringUtils.EMPTY),
                         serverRequest
-                            .queryParams()
-                            .get("clientTypeCodes"),
+                            .queryParam("clientTypeCodes")
+                            .map(data -> data.split(","))
+                            .map(List::of)
+                            .orElse(List.of()),
                         Integer
                             .parseInt(
                                 serverRequest

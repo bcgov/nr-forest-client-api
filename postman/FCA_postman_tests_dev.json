@@ -1,0 +1,124 @@
+[
+  {
+    "INDIVIDUALS_QUERY_STRING": "",
+    "INDIVIDUALS_SIZE": 10,
+    "INDIVIDUALS_CLIENT_TYPE_CODE": [],
+    "FIND_NUMBER": "00001356",
+    "FIND_BODY": {
+      "clientNumber": "00001356",
+      "clientName": "BALFOUR FOREST PRODUCTS INC.",
+      "clientStatusCode": "ACT",
+      "clientTypeCode": "U"
+    },
+    "FIND_CODE": 200,
+    "BYNAME_QUERY_STRING": "clientTypeCodes=G",
+    "BYNAME_CODE": 200,
+    "BYNAME_SIZE": 10,
+    "BYNAME_CODES": [
+      "00035374",
+      "00034554",
+      "00034560",
+      "00034561",
+      "00028771",
+      "00027792",
+      "00030587",
+      "00028537",
+      "00027541",
+      "00030643"
+    ]
+  },
+  {
+    "INDIVIDUALS_QUERY_STRING": "size=5",
+    "INDIVIDUALS_SIZE": 5,
+    "INDIVIDUALS_CLIENT_TYPE_CODE": [],
+    "FIND_NUMBER": "",
+    "FIND_BODY": "",
+    "FIND_CODE": 404,
+    "BYNAME_QUERY_STRING": "clientName=BALFOUR FOREST PRODUCTS INC.",
+    "BYNAME_CODE": 200,
+    "BYNAME_SIZE": 1,
+    "BYNAME_CODES": [
+      "00001356"
+    ]
+  },
+  {
+    "INDIVIDUALS_QUERY_STRING": "sortedColumnName=clientTypeCode",
+    "INDIVIDUALS_SIZE": 10,
+    "INDIVIDUALS_CLIENT_TYPE_CODE": [
+      "A"
+    ],
+    "FIND_NUMBER": "abc",
+    "FIND_BODY": "Invalid Client Number",
+    "FIND_CODE": 400,
+    "BYNAME_QUERY_STRING": "clientFirstName=james",
+    "BYNAME_CODE": 200,
+    "BYNAME_SIZE": 10,
+    "BYNAME_CODES": [
+      "00006076",
+      "00013086",
+      "00017923",
+      "00033262",
+      "00020414",
+      "00049755",
+      "00049811",
+      "00041691",
+      "00041865",
+      "00054979"
+    ]
+  },
+  {
+    "INDIVIDUALS_QUERY_STRING": "",
+    "INDIVIDUALS_SIZE": 10,
+    "INDIVIDUALS_CLIENT_TYPE_CODE": [],
+    "FIND_NUMBER": "00001356",
+    "FIND_BODY": {
+      "clientNumber": "00001356",
+      "clientName": "BALFOUR FOREST PRODUCTS INC.",
+      "clientStatusCode": "ACT",
+      "clientTypeCode": "U"
+    },
+    "FIND_CODE": 200,
+    "BYNAME_QUERY_STRING": "clientFirstName=james&page=0&size=1",
+    "BYNAME_CODE": 200,
+    "BYNAME_SIZE": 1,
+    "BYNAME_CODES": [
+      "00006076"
+    ]
+  },
+  {
+    "INDIVIDUALS_QUERY_STRING": "",
+    "INDIVIDUALS_SIZE": 10,
+    "INDIVIDUALS_CLIENT_TYPE_CODE": [],
+    "FIND_NUMBER": "00001356",
+    "FIND_BODY": {
+      "clientNumber": "00001356",
+      "clientName": "BALFOUR FOREST PRODUCTS INC.",
+      "clientStatusCode": "ACT",
+      "clientTypeCode": "U"
+    },
+    "FIND_CODE": 200,
+    "BYNAME_QUERY_STRING": "clientName=MEGIVERN&clientMiddleName=Fabiana&clientFirstName=JAMES",
+    "BYNAME_CODE": 200,
+    "BYNAME_SIZE": 1,
+    "BYNAME_CODES": [
+      "00013086"
+    ]
+  },
+  {
+    "INDIVIDUALS_QUERY_STRING": "",
+    "INDIVIDUALS_SIZE": 10,
+    "INDIVIDUALS_CLIENT_TYPE_CODE": [],
+    "FIND_NUMBER": "00001356",
+    "FIND_BODY": {
+      "clientNumber": "00001356",
+      "clientName": "BALFOUR FOREST PRODUCTS INC.",
+      "clientStatusCode": "ACT",
+      "clientTypeCode": "U"
+    },
+    "FIND_CODE": 200,
+    "BYNAME_QUERY_STRING": "",
+    "BYNAME_CODE": 400,
+    "BYNAME_SIZE": 0,
+    "BYNAME_CODES": []
+  }
+]
