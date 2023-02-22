@@ -92,6 +92,7 @@ jobs:
             Once merged, code will be promoted and handed off to following workflow run.
             [Main Merge Workflow](https://github.com/${{ github.repository }}/actions/workflows/merge-main.yml)
 
+
   build-backend:
     name: Backend Image Build
     env:
@@ -119,6 +120,7 @@ jobs:
     runs-on: ubuntu-22.04
     permissions:
       checks: write
+      pull-requests: write
     needs:
       - build-backend
     steps:
@@ -171,7 +173,6 @@ jobs:
     needs:
       - build-backend
       - tests-backend
-    if: always() && (needs.build-backend.result == 'success')
     runs-on: ubuntu-22.04
     timeout-minutes: 15
     environment:
