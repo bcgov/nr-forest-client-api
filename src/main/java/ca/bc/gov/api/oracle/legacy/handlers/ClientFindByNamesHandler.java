@@ -49,7 +49,7 @@ public class ClientFindByNamesHandler implements BaseHandler {
                             .orElse(StringUtils.EMPTY),
                         serverRequest
                             .queryParam("clientTypeCodes")
-                            .map(data -> data.split("\\s*,\\s*"))
+                            .map(data -> data.split(","))
                             .map(List::of)
                             .orElse(List.of()),
                         Integer
