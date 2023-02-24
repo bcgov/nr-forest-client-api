@@ -49,6 +49,6 @@ jobs:
       - name: Retag
         id: retag
         run: |
-          docker tag docker.io/library/${{ github.event.repository.name }}:${{ steps.versioning.outputs.version }} ghcr.io/${{ github.repository }}:${{ github.event.number }}
+          docker tag docker.io/library/${{ github.event.repository.name }}:${{ steps.versioning.outputs.version }} ghcr.io/${{ github.repository }}:${{ github.event.number }}-native
           docker image push ghcr.io/${{ github.repository }}:${{ github.event.number }}-native
           
