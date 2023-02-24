@@ -103,7 +103,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Broker
         id: broker
-        uses: bcgov-nr/action-vault-broker-approle@v0.0.4
+        uses: bcgov-nr/action-vault-broker-approle@v0.0.5
         with:
           broker_jwt: ${{ secrets.BROKER_JWT }}
           provision_role_id: ${{ secrets.PROVISION_ROLE_ID }}
@@ -160,7 +160,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Broker
         id: broker
-        uses: bcgov-nr/action-vault-broker-approle@v0.0.4
+        uses: bcgov-nr/action-vault-broker-approle@v0.0.5
         with:
           broker_jwt: ${{ secrets.BROKER_JWT }}
           provision_role_id: ${{ secrets.PROVISION_ROLE_ID }}
