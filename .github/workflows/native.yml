@@ -15,8 +15,19 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
     steps:
       - uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - uses: graalvm/setup-graalvm@v1
         with:
           version: '22.3.0'
@@ -24,8 +35,20 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build App
+      - name: Get version
         run: |
-          ./mvnw clean package spring-boot:repackage -DskipTests -Dtests.skip=true -Dskip.unit.tests=true
-          ./mvnw spring-boot:process-aot -DskipTests -Dtests.skip=true -Dskip.unit.tests=true
-          ./mvnw spring-boot:build-image -DskipTests -Dtests.skip=true -Dskip.unit.tests=true
+          VERSION=$( mvn help:evaluate -Dexpression=project.version -q -DforceStdout )
+          echo "::set-output name=version::$VERSION"
+          echo version=$VERSION >> $GITHUB_OUTPUT
+        id: versioning
+
+      - name: Build App
+        id: nativebuild
+        run: ./mvnw clean package spring-boot:repackage spring-boot:process-aot spring-boot:build-image -DskipTests -Dtests.skip=true -Dskip.unit.tests=true
+
+      - name: Retag
+        id: retag
+        run: |
+          docker tag docker.io/library/${{ github.event.repository.name }}:${{ steps.versioning.outputs.version }} ghcr.io/${{ github.repository }}:${{ github.event.number }}
+          docker image push ghcr.io/${{ github.repository }}:${{ github.event.number }}-native
+          
