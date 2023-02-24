@@ -26,5 +26,6 @@ jobs:
 
       - name: Build App
         run: |
-          ./mvnw spring-boot:process-aot
-          ./mvnw spring-boot:build-image
+          ./mvnw clean package spring-boot:repackage -DskipTests -Dtests.skip=true -Dskip.unit.tests=true
+          ./mvnw spring-boot:process-aot -DskipTests -Dtests.skip=true -Dskip.unit.tests=true
+          ./mvnw spring-boot:build-image -DskipTests -Dtests.skip=true -Dskip.unit.tests=true
