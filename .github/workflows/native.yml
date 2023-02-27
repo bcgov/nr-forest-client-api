@@ -50,12 +50,12 @@ jobs:
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
-          images: docker.io/library/${{ github.event.repository.name }}:${{ steps.versioning.outputs.version }}
+          images: ${{ github.event.repository.name }}:${{ steps.versioning.outputs.version }}
 
       - name: Build and push Docker image
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: docker.io/library/${{ github.event.repository.name }}:${{ steps.versioning.outputs.version }}
+          image: ${{ github.event.repository.name }}:${{ steps.versioning.outputs.version }}
           tags: ${{ steps.build-image.outputs.tags }}
           registry: ghcr.io
           username: ${{ github.actor }}
