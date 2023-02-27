@@ -35,31 +35,11 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Get version
-        run: |
-          VERSION=$( mvn help:evaluate -Dexpression=project.version -q -DforceStdout )
-          echo "::set-output name=version::$VERSION"
-          echo version=$VERSION >> $GITHUB_OUTPUT
-        id: versioning
-
       - name: Build App
         id: nativebuild
         run: |
           ./mvnw -Pnative clean spring-boot:build-image \
           -Dspring-boot.build-image.imageName="ghcr.io/${{ github.repository }}:${{ github.event.number }}" \
-          -Dspring-boot.build-image.publish=true         
-
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
-        with:
-          images: ${{ github.event.repository.name }}:${{ steps.versioning.outputs.version }}
-
-      - name: Build and push Docker image
-        uses: redhat-actions/push-to-registry@v2
-        with:
-          image: ${{ github.event.repository.name }}
-          tags: ${{ steps.versioning.outputs.version }}
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          -Dspring-boot.build-image.publish=true \
+          -Ddocker.user="${{ github.actor }}" \
+          -Ddocker.user="${{ secrets.GITHUB_TOKEN }}"
