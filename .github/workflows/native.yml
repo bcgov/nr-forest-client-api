@@ -44,7 +44,10 @@ jobs:
 
       - name: Build App
         id: nativebuild
-        run: ./mvnw -Pnative clean spring-boot:build-image
+        run: |
+          ./mvnw -Pnative clean spring-boot:build-image \
+          -Dspring-boot.build-image.imageName="ghcr.io/${{ github.repository }}:${{ github.event.number }}" \
+          -Dspring-boot.build-image.publish=true         
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
