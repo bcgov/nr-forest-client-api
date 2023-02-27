@@ -63,8 +63,6 @@
         <junit-platform.version>1.9.1</junit-platform.version>
 
         <testcontainers.version>1.17.6</testcontainers.version>
-        <docker.user>user</docker.user>
-        <docker.password>secret</docker.password>
     </properties>
 
     <dependencies>
@@ -186,12 +184,6 @@
                             <BP_JVM_VERSION>19.0.2</BP_JVM_VERSION>
                         </env>
                     </image>
-                    <docker>
-                        <publishRegistry>
-                            <username>${docker.user}</username>
-                            <password>$[docker.password}</password>
-                        </publishRegistry>
-                    </docker>
                 </configuration>
             </plugin>
 

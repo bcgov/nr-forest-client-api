@@ -21,13 +21,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Log in to the Container registry
-        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
       - uses: graalvm/setup-graalvm@v1
         with:
           version: '22.3.0'
@@ -37,9 +30,15 @@ jobs:
 
       - name: Build App
         id: nativebuild
+        run: ./mvnw -Pnative clean spring-boot:build-image -Dspring-boot.build-image.imageName="ghcr.io/${{ github.repository }}:${{ github.event.number }}"
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pushing
         run: |
-          ./mvnw -Pnative clean spring-boot:build-image \
-          -Dspring-boot.build-image.imageName="ghcr.io/${{ github.repository }}:${{ github.event.number }}" \
-          -Dspring-boot.build-image.publish=true \
-          -Ddocker.user="${{ github.actor }}" \
-          -Ddocker.user="${{ secrets.GITHUB_TOKEN }}"
+          docker push ghcr.io/${{ github.repository }}:${{ github.event.number }}
