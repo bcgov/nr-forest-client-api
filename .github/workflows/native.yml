@@ -55,8 +55,8 @@ jobs:
       - name: Build and push Docker image
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: ${{ github.event.repository.name }}:${{ steps.versioning.outputs.version }}
-          tags: ${{ steps.build-image.outputs.tags }}
+          image: ${{ github.event.repository.name }}
+          tags: ${{ steps.versioning.outputs.version }}
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
