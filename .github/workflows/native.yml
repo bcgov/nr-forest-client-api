@@ -53,13 +53,10 @@ jobs:
           images: docker.io/library/${{ github.event.repository.name }}:${{ steps.versioning.outputs.version }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        uses: redhat-actions/push-to-registry@v2
         with:
-          push: true
-          tags: ghcr.io/${{ github.repository }}:${{ github.event.number }}-native
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-
-          
+          image: docker.io/library/${{ github.event.repository.name }}:${{ steps.versioning.outputs.version }}
+          tags: ${{ steps.build-image.outputs.tags }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
