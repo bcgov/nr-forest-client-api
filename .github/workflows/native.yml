@@ -44,7 +44,7 @@ jobs:
 
       - name: Build App
         id: nativebuild
-        run: ./mvnw clean package spring-boot:repackage spring-boot:process-aot spring-boot:build-image -DskipTests -Dtests.skip=true -Dskip.unit.tests=true
+        run: ./mvnw -Pnative clean package
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
@@ -52,16 +52,9 @@ jobs:
         with:
           images: docker.io/library/${{ github.event.repository.name }}:${{ steps.versioning.outputs.version }}
 
-      - name: Retag
-        id: retag
-        run: |
-          echo "FROM docker.io/library/${{ github.event.repository.name }}:${{ steps.versioning.outputs.version }}" > TempDockerFile
-
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
-          context: .
-          file: TempDockerFile
           push: true
           tags: ghcr.io/${{ github.repository }}:${{ github.event.number }}-native
           labels: ${{ steps.meta.outputs.labels }}
