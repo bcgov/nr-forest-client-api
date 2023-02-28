@@ -169,6 +169,7 @@ jobs:
       - name: Tests
         run: |
           cd api
+          chmod +x ./mvnw
           ./mvnw verify -P all-tests checkstyle:checkstyle -Dcheckstyle.skip=false
 
       - name: Archive CycloneDX
