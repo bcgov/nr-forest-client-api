@@ -180,6 +180,8 @@ objects:
                       key: oracle-service
                 - name: ORACLEDB_PORT
                   value: "1543"
+                - name: javax.net.ssl.trustStore
+                  value: /cert/oracle.cer
               ports:
                 - containerPort: 3001
                   protocol: TCP
