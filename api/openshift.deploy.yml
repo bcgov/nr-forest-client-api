@@ -38,6 +38,9 @@ parameters:
   - name: PROMOTE
     description: Image (namespace/name:tag) to promote/import
     value: bcgov/nr-old-growth:prod-backend
+  - name: PROMOTEINIT
+    description: Image (namespace/name:tag) to promote/import
+    value: bcgov/nr-old-growth:prod-backend
   - name: ORACLEDB_USER
     description: Oracle database user name
     required: true
@@ -80,6 +83,22 @@ objects:
           from:
             kind: DockerImage
             name: ${REGISTRY}/${PROMOTE}
+          referencePolicy:
+            type: Local
+  - apiVersion: v1
+    kind: ImageStream
+    metadata:
+      labels:
+        app: ${NAME}-${ZONE}
+      name: ${NAME}-${ZONE}-init
+    spec:
+      lookupPolicy:
+        local: false
+      tags:
+        - name: ${IMAGE_TAG}
+          from:
+            kind: DockerImage
+            name: ${REGISTRY}/${PROMOTEINIT}
           referencePolicy:
             type: Local
   - apiVersion: v1
