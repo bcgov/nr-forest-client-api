@@ -30,7 +30,10 @@ jobs:
 
       - name: Build App
         id: nativebuild
-        run: ./mvnw -Pnative clean spring-boot:build-image -Dspring-boot.build-image.imageName="ghcr.io/${{ github.repository }}:${{ github.event.number }}"
+        run: |
+          ./mvnw -Pnative clean spring-boot:build-image \
+          -Dspring-boot.build-image.imageName="ghcr.io/${{ github.repository }}:${{ github.event.number }}" \
+          -Doci.revision=${{ github.event.number }}
 
       - name: Log in to the Container registry
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
@@ -39,10 +42,5 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Publish to Registry
-        uses: elgohr/Publish-Docker-Github-Action@v5
-        with:
-          name: ${{ github.repository }}:${{ github.event.number }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          registry: ghcr.io
+      - name: Pushing
+        run: docker push ghcr.io/${{ github.repository }}:${{ github.event.number }}
