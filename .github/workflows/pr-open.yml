@@ -132,6 +132,7 @@ jobs:
       - name: Build App
         run: |
           cd api
+          chmod +x ./mvnw
           ./mvnw -Pnative clean spring-boot:build-image \
           -Dspring-boot.build-image.imageName="${{ env.NAME }}" \
           -Doci.revision=${{ github.event.number }}
