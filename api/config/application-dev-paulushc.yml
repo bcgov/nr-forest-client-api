@@ -1,0 +1,15 @@
+ca:
+  bc:
+    gov:
+      nrs:
+        oracle:
+          service: legacy
+          database: legacy
+          host: 127.0.0.1
+          username: THE
+          password: legacy
+logging:
+  level:
+    org.springframework.r2dbc: DEBUG
+    io.r2dbc.postgresql.QUERY: DEBUG
+    io.r2dbc.postgresql.PARAM: DEBUG

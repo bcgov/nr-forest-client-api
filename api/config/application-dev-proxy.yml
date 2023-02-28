@@ -1,0 +1,16 @@
+logging:
+  level:
+    org.springframework.r2dbc: DEBUG
+    io.r2dbc.postgresql.QUERY: DEBUG
+    io.r2dbc.postgresql.PARAM: DEBUG
+
+ca:
+  bc:
+    gov:
+      nrs:
+        oracle:
+          service: fortmp1.nrs.bcgov
+          database: fortmp1.nrs.bcgov
+          host: nrcdb03.bcgov:1521
+          username: proxy_fsa_client_read_only_user
+          password: gYaSn9uDhu7VOH4u

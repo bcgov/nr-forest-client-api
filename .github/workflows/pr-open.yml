@@ -92,6 +92,21 @@ jobs:
             Once merged, code will be promoted and handed off to following workflow run.
             [Main Merge Workflow](https://github.com/${{ github.repository }}/actions/workflows/merge-main.yml)
 
+  build-init:
+    name: Build Cert Extractor
+    runs-on: ubuntu-22.04
+    permissions:
+      packages: write    
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: bcgov-nr/action-builder-ghcr@v1.1.0
+        with:
+          package: init
+          tag: ${{ github.event.number }}
+          tag_fallback: test
+          token: ${{ secrets.GITHUB_TOKEN }}
+          triggers: init/
 
   build-backend:
     name: Backend Image Build
@@ -116,6 +131,7 @@ jobs:
 
       - name: Build App
         run: |
+          cd api
           ./mvnw -Pnative clean spring-boot:build-image \
           -Dspring-boot.build-image.imageName="${{ env.NAME }}" \
           -Doci.revision=${{ github.event.number }}
@@ -150,25 +166,27 @@ jobs:
           cache: "maven"
 
       - name: Tests
-        run: ./mvnw verify -P all-tests checkstyle:checkstyle -Dcheckstyle.skip=false
+        run: |
+          cd api
+          ./mvnw verify -P all-tests checkstyle:checkstyle -Dcheckstyle.skip=false
 
       - name: Archive CycloneDX
         uses: actions/upload-artifact@v3
         with:
           name: cyclone
-          path: target/bom.json
+          path: api/target/bom.json
           retention-days: 5
 
       - name: Use Checkstyle report
         uses: jwgmeligmeyling/checkstyle-github-action@master
         with:
-          path: '**/checkstyle-result.xml'
+          path: 'api/**/checkstyle-result.xml'
 
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v3
         if: success() || failure() # always run even if the previous step fails
         with:
-          report_paths: 'target/**/TEST-*.xml'
+          report_paths: 'api/target/**/TEST-*.xml'
           commit: ${{ github.event.pull_request.head.sha }}
           summary: Pull Request Tests
           detailed_summary: true
@@ -178,16 +196,38 @@ jobs:
         id: jacoco
         uses: madrapps/jacoco-report@v1.3
         with:
-          paths: target/coverage-reports/merged-test-report/jacoco.xml
+          paths: api/target/coverage-reports/merged-test-report/jacoco.xml
           token: ${{ secrets.GITHUB_TOKEN }}
           min-coverage-overall: 75
           min-coverage-changed-files: 75
+  
+  deploy-init:
+    name: Deploy Init
+    needs:
+      - build-init
+    environment: dev
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploys
+        uses: bcgov-nr/action-deployer-openshift@v1.0.2
+        with:
+          file: init/openshift.deploy.yml
+          oc_namespace: ${{ secrets.OC_NAMESPACE }}
+          oc_server: ${{ secrets.OC_SERVER }}
+          oc_token: ${{ secrets.OC_TOKEN }}
+          overwrite: false
+          parameters: 
+            -p ZONE=${{ github.event.number }} 
+            -p NAME=${{ github.event.repository.name }}
+            -p PROMOTE=${{ github.repository }}/init:${{ github.event.number }}
 
   deploy-dev:
     name: DEV Deployment
     needs:
       - build-backend
       - tests-backend
+      - deploy-init
     runs-on: ubuntu-22.04
     timeout-minutes: 15
     environment:
@@ -221,7 +261,7 @@ jobs:
       - name: Deploys
         uses: bcgov-nr/action-deployer-openshift@v1.0.2
         with:
-          file: openshift.deploy.yml
+          file: api/openshift.deploy.yml
           oc_namespace: ${{ secrets.OC_NAMESPACE }}
           oc_server: ${{ secrets.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}

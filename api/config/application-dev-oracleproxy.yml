@@ -1,0 +1,10 @@
+ca:
+  bc:
+    gov:
+      nrs:
+        oracle:
+          service: fortmp1.nrs.bcgov
+          database: fortmp1.nrs.bcgov
+          host: nrcdb03.bcgov
+          username: proxy_fsa_client_read_only_user
+          password: gYaSn9uDhu7VOH4u

@@ -1,0 +1,9 @@
+ca:
+  bc:
+    gov:
+      nrs:
+        vault:
+          uri: http://127.0.0.1:8200
+          token: thetoken
+          key: app/dev/client/app-client
+          backend: secret

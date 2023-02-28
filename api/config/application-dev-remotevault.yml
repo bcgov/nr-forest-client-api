@@ -1,0 +1,9 @@
+ca:
+  bc:
+    gov:
+      nrs:
+        vault:
+          uri: https://vault-iit.apps.silver.devops.gov.bc.ca
+          token: hvs.CAESIL9wlKubM1S9mtMtPvpRdUe5WwjAo2NCOnj12bfTiAvMGh4KHGh2cy5hWkdzUnl0OTVFWnloOTdxZmpia3MwQlk
+          key: dev/client/app-client
+          backend: apps

@@ -110,6 +110,44 @@ objects:
             app: ${NAME}-${ZONE}
             deploymentconfig: ${NAME}-${ZONE}-${COMPONENT}
         spec:
+          volumes:
+            - name: certs
+              emptyDir: {}
+          initContainers:
+            - name: ${NAME}-init
+              image: ${NAME}-${ZONE}-cert:${IMAGE_TAG}
+              imagePullPolicy: Always
+              env:
+                - name: ORACLEDB_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-${ZONE}-${COMPONENT}
+                      key: oracle-user
+                - name: ORACLEDB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-${ZONE}-${COMPONENT}
+                      key: oracle-password
+                - name: ORACLEDB_DATABASE
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-${ZONE}-${COMPONENT}
+                      key: oracle-database
+                - name: ORACLEDB_HOST
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-${ZONE}-${COMPONENT}
+                      key: oracle-host
+                - name: ORACLEDB_SERVICENAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-${ZONE}-${COMPONENT}
+                      key: oracle-service
+                - name: ORACLEDB_PORT
+                  value: "1543"
+              volumeMounts:
+                - mountPath: /cert
+                  name: certs
           containers:
             - image: ${NAME}-${ZONE}-${COMPONENT}:${IMAGE_TAG}
               imagePullPolicy: Always
@@ -142,9 +180,6 @@ objects:
                       key: oracle-service
                 - name: ORACLEDB_PORT
                   value: "1543"
-                - name: NODE_ENV
-                  value: ${NODE_ENV}
-
               ports:
                 - containerPort: 3001
                   protocol: TCP
@@ -161,7 +196,7 @@ objects:
                   path: /health
                   port: 3001
                   scheme: HTTP
-                initialDelaySeconds: 240
+                initialDelaySeconds: 3
                 periodSeconds: 15
                 timeoutSeconds: 5
               livenessProbe:
@@ -171,9 +206,12 @@ objects:
                   path: /health
                   port: 3001
                   scheme: HTTP
-                initialDelaySeconds: 240
+                initialDelaySeconds: 3
                 periodSeconds: 30
                 timeoutSeconds: 5
+              volumeMounts:
+                - mountPath: /cert
+                  name: certs
   - apiVersion: v1
     kind: Service
     metadata:
