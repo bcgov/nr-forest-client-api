@@ -115,7 +115,7 @@ objects:
               emptyDir: {}
           initContainers:
             - name: ${NAME}-init
-              image: ${NAME}-${ZONE}-cert:${IMAGE_TAG}
+              image: ${NAME}-${ZONE}-init:${IMAGE_TAG}
               imagePullPolicy: Always
               env:
                 - name: ORACLEDB_USER
