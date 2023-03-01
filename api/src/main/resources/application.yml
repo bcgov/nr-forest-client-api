@@ -33,6 +33,7 @@ management:
         include: health,metrics
 
 springdoc:
+  enable-native-support: true
   swagger-ui:
     path: /
   webjars:
