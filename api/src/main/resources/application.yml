@@ -51,7 +51,7 @@ ca:
           service: ${ORACLEDB_SERVICENAME:fsa-forest}
           database: ${ORACLEDB_DATABASE:fsa-forest}
           host: ${ORACLEDB_HOST:localhost}
-          post: ${ORACLEDB_PORT:1521}
+          port: ${ORACLEDB_PORT:1521}
           username: ${ORACLEDB_USER:user}
           password: ${ORACLEDB_PASSWORD:passwd}
           keystore: ${ORACLEDB_KEYSTORE:jssecacerts.jks}
