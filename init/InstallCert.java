@@ -125,6 +125,7 @@ public class InstallCert {
     TrustManagerFactory tmf =
         TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
     tmf.init(ks);
+    
     X509TrustManager defaultTrustManager = (X509TrustManager) tmf.getTrustManagers()[0];
     SavingTrustManager tm = new SavingTrustManager(defaultTrustManager);
     context.init(null, new TrustManager[] {tm}, null);
@@ -180,10 +181,9 @@ public class InstallCert {
       System.out.println();
     }
 
-    int k;
+    int k = 0;
     if (isQuiet) {
-      System.out.println("Adding first certificate to trusted keystore");
-      k = 0;
+      System.out.println("Adding first certificate to trusted keystore");      
     } else {
       System.out.println("Enter certificate to add to trusted keystore or 'q' to quit: [1]");
       String line = reader.readLine().trim();
@@ -195,18 +195,28 @@ public class InstallCert {
       }
     }
 
-    X509Certificate cert = chain[k];
-    String alias = host + "-" + (k + 1);
-    ks.setCertificateEntry(alias, cert);
+    if (isQuiet) {
+      for (int c = 0; c < chain.length; c++){
+        X509Certificate cert = chain[c];
+        System.out.println(String.valueOf(cert.getSubjectDN()));
+        String alias = String.valueOf(cert.getSubjectDN()).replace("CN=","");
+        ks.setCertificateEntry(alias, cert);
+
+        System.out.println();
+        System.out.println(cert);
+        System.out.println();
+        System.out.println("Added certificate to keystore 'jssecacerts' using alias '" + alias + "'");
+      }
+    }else{
+      X509Certificate cert = chain[k];
+      String alias = host + "-" + (k + 1);
+      ks.setCertificateEntry(alias, cert);
+    }
 
     OutputStream out = new FileOutputStream("jssecacerts");
     ks.store(out, passphrase);
     out.close();
 
-    System.out.println();
-    System.out.println(cert);
-    System.out.println();
-    System.out.println("Added certificate to keystore 'jssecacerts' using alias '" + alias + "'");
   }
 
   private static final char[] HEXDIGITS = "0123456789abcdef".toCharArray();

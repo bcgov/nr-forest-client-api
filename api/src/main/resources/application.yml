@@ -9,7 +9,7 @@ spring:
     banner-mode: "off"
     allow-bean-definition-overriding: true
   r2dbc:
-    url: r2dbcs:oracle:thin:@tcps://${ca.bc.gov.nrs.oracle.host}/${ca.bc.gov.nrs.oracle.service}
+    url: r2dbcs:oracle:thin:@tcps://${ca.bc.gov.nrs.oracle.host}:${ca.bc.gov.nrs.oracle.port}/${ca.bc.gov.nrs.oracle.service}?javax.net.ssl.trustStore=${ca.bc.gov.nrs.oracle.keystore}&javax.net.ssl.trustStorePassword=${ca.bc.gov.nrs.oracle.secret}&javax.net.ssl.keyStore=${ca.bc.gov.nrs.oracle.keystore}&javax.net.ssl.keyStorePassword=${ca.bc.gov.nrs.oracle.secret}&oracle.net.ssl_certificate_alias=${ca.bc.gov.nrs.oracle.host}&oracle.net.ssl_server_dn_match=false
     username: ${ca.bc.gov.nrs.oracle.username}
     password: ${ca.bc.gov.nrs.oracle.password}
     pool:
@@ -50,7 +50,10 @@ ca:
         oracle:
           service: ${ORACLEDB_SERVICENAME:fsa-forest}
           database: ${ORACLEDB_DATABASE:fsa-forest}
-          host: ${ORACLEDB_HOST:localhost}:${ORACLEDB_PORT:1521}
+          host: ${ORACLEDB_HOST:localhost}
+          post: ${ORACLEDB_PORT:1521}
           username: ${ORACLEDB_USER:user}
           password: ${ORACLEDB_PASSWORD:passwd}
+          keystore: ${ORACLEDB_KEYSTORE:jssecacerts.jks}
+          secret: ${ORACLEDB_SECRET:changeit}
           schema: THE

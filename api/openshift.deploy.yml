@@ -56,6 +56,11 @@ parameters:
   - name: ORACLEDB_SERVICENAME
     description: Oracle database service name
     required: true
+  - name: ORACLEDB_KEYSTORE
+    description: Oracle database keystore file
+  - name: ORACLEDB_SECRET
+    description: Oracle database keystore secret/password
+    required: true
 objects:
   - apiVersion: v1
     kind: Secret
@@ -69,6 +74,7 @@ objects:
       oracle-database: "${ORACLEDB_DATABASE}"
       oracle-host: "${ORACLEDB_HOST}"
       oracle-service: "${ORACLEDB_SERVICENAME}"
+      oracle-secret: "${ORACLEDB_SECRET}"
   - apiVersion: v1
     kind: ImageStream
     metadata:
@@ -134,34 +140,14 @@ objects:
               emptyDir: {}
           initContainers:
             - name: ${NAME}-init
-              image: ${NAME}-${ZONE}-init:${IMAGE_TAG}
+              image: ${REGISTRY}/${NAME}/init:${ZONE}
               imagePullPolicy: Always
               env:
-                - name: ORACLEDB_USER
-                  valueFrom:
-                    secretKeyRef:
-                      name: ${NAME}-${ZONE}-${COMPONENT}
-                      key: oracle-user
-                - name: ORACLEDB_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: ${NAME}-${ZONE}-${COMPONENT}
-                      key: oracle-password
-                - name: ORACLEDB_DATABASE
-                  valueFrom:
-                    secretKeyRef:
-                      name: ${NAME}-${ZONE}-${COMPONENT}
-                      key: oracle-database
                 - name: ORACLEDB_HOST
                   valueFrom:
                     secretKeyRef:
                       name: ${NAME}-${ZONE}-${COMPONENT}
                       key: oracle-host
-                - name: ORACLEDB_SERVICENAME
-                  valueFrom:
-                    secretKeyRef:
-                      name: ${NAME}-${ZONE}-${COMPONENT}
-                      key: oracle-service
                 - name: ORACLEDB_PORT
                   value: "1543"
               volumeMounts:
@@ -199,8 +185,13 @@ objects:
                       key: oracle-service
                 - name: ORACLEDB_PORT
                   value: "1543"
-                - name: javax.net.ssl.trustStore
-                  value: /cert/oracle.cer
+                - name: ORACLEDB_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-${ZONE}-${COMPONENT}
+                      key: oracle-secret
+                - name: ORACLEDB_KEYSTORE
+                  value: /cert/jssecacerts
               ports:
                 - containerPort: 3001
                   protocol: TCP
