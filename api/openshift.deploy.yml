@@ -121,7 +121,7 @@ objects:
               emptyDir: {}
           initContainers:
             - name: ${NAME}-init
-              image: ${REGISTRY}/${NAME}/init:${ZONE}
+              image: ${REGISTRY}/bcgov/${NAME}/init:${ZONE}
               imagePullPolicy: Always
               env:
                 - name: ORACLEDB_HOST
