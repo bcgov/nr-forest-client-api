@@ -9,4 +9,7 @@ public class ClientNotFoundException extends ResponseStatusException {
   public ClientNotFoundException() {
     super(HttpStatus.NOT_FOUND, "Client not found");
   }
+  public ClientNotFoundException(String message) {
+    super(HttpStatus.NOT_FOUND, message);
+  }
 }

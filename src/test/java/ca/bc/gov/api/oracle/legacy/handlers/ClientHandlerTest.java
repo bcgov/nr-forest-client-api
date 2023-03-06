@@ -125,5 +125,42 @@ class ClientHandlerTest extends AbstractTestContainerIntegrationTest {
         .expectStatus()
         .isBadRequest();
   }
+
+  @Test
+  @DisplayName("Lookup for acronyms")
+  void shouldSearchForAcronym(){
+
+    webTestClient
+        .get()
+        .uri(uriBuilder ->
+            uriBuilder
+                .path("/api/clients/findByAcronym")
+                .queryParam("acronym", "DOUG FUNNY")
+                .build()
+        )
+        .exchange()
+        .expectStatus().isOk()
+        .expectBody()
+        .jsonPath("$.clientNumber").isNotEmpty()
+        .jsonPath("$.clientNumber").isEqualTo("00000002")
+
+        .jsonPath("$.clientName").isNotEmpty()
+        .jsonPath("$.clientName").isEqualTo("FUNNY")
+
+        .jsonPath("$.legalFirstName").isNotEmpty()
+        .jsonPath("$.legalFirstName").isEqualTo("THOMAS")
+
+        .jsonPath("$.legalMiddleName").isNotEmpty()
+        .jsonPath("$.legalMiddleName").isEqualTo("Yansi")
+
+        .jsonPath("$.clientStatusCode").isNotEmpty()
+        .jsonPath("$.clientStatusCode").isEqualTo("ACT")
+
+        .jsonPath("$.clientTypeCode").isNotEmpty()
+        .jsonPath("$.clientTypeCode").isEqualTo("I");
+
+    //
+
+  }
 }
 

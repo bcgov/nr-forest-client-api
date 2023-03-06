@@ -8,6 +8,7 @@ import ca.bc.gov.api.oracle.legacy.entity.ClientPublicViewEntity;
 import ca.bc.gov.api.oracle.legacy.exception.ClientNotFoundException;
 import ca.bc.gov.api.oracle.legacy.exception.InvalidClientNumberException;
 import ca.bc.gov.api.oracle.legacy.exception.NoSearchParameterFound;
+import ca.bc.gov.api.oracle.legacy.repository.ClientDoingBusinessAsRepository;
 import ca.bc.gov.api.oracle.legacy.repository.ClientPublicViewRepository;
 import ca.bc.gov.api.oracle.legacy.util.ClientMapper;
 import java.util.List;
@@ -29,9 +30,12 @@ import reactor.core.publisher.Mono;
 public class ClientService {
 
   private final ClientPublicViewRepository clientPublicViewRepository;
+  private final ClientDoingBusinessAsRepository doingBusinessAsRepository;
   private final R2dbcEntityTemplate template;
 
   public Mono<ClientPublicViewDto> findByClientNumber(String clientNumber) {
+
+    log.info("Searching for client with number {}", clientNumber);
 
     if (!StringUtils.isNumeric(clientNumber)) {
       return Mono.error(new InvalidClientNumberException());
@@ -39,12 +43,16 @@ public class ClientService {
 
     return clientPublicViewRepository
         .findById(clientNumber)
+        .doOnNext(entity -> log.info("Found client with number {} as {}", clientNumber, entity))
         .switchIfEmpty(Mono.error(new ClientNotFoundException()))
         .map(ClientMapper::mapEntityToDto);
   }
 
-  public Mono<List<ClientPublicViewDto>> findAllNonIndividualClients(
+  public Flux<ClientPublicViewDto> findAllNonIndividualClients(
       int page, int size, String sortBy) {
+
+    log.info("Searching all non individual clients on page {} with size {} sorting by {}", page,
+        size, sortBy);
 
     return clientPublicViewRepository
         .findByClientTypeCodeNot(
@@ -52,7 +60,7 @@ public class ClientService {
             PageRequest.of(page, size, Sort.by(sortBy))
         )
         .map(ClientMapper::mapEntityToDto)
-        .collectList();
+        .doOnNext(dto -> log.info("Found entry {}",dto));
   }
 
   public Flux<ClientPublicViewDto> searchByNames(
@@ -100,5 +108,19 @@ public class ClientService {
                 ClientPublicViewEntity.class
             )
             .map(ClientMapper::mapEntityToDto);
+  }
+
+  public Mono<ClientPublicViewDto> searchByAcronym(String acronym) {
+
+    log.info("Searching for client by acronym {}",acronym);
+
+    return doingBusinessAsRepository
+        .findByName(acronym)
+        .doOnNext(entity -> log.info("Found entity with acronym {} with number {}", acronym,
+            entity.getClientNumber()))
+        .switchIfEmpty(
+            Mono.error(new ClientNotFoundException("No client found with the acronym " + acronym))
+        )
+        .flatMap(entity -> findByClientNumber(entity.getClientNumber()));
   }
 }

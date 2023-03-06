@@ -3,6 +3,7 @@ package ca.bc.gov.api.oracle.legacy.routes;
 import static org.springdoc.webflux.core.fn.SpringdocRouteBuilder.route;
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 
+import ca.bc.gov.api.oracle.legacy.handlers.ClientAcronmHandler;
 import ca.bc.gov.api.oracle.legacy.handlers.ClientFindByNamesHandler;
 import ca.bc.gov.api.oracle.legacy.handlers.ClientFindByNumberHandler;
 import ca.bc.gov.api.oracle.legacy.handlers.ClientFindNonIndividualsHandler;
@@ -20,6 +21,8 @@ public class ClientRouter implements BaseRouter {
   private final ClientFindByNumberHandler clientFindByNumberHandler;
 
   private final ClientFindByNamesHandler clientFindByNamesHandler;
+
+  private final ClientAcronmHandler clientAcronmHandler;
 
   @Override
   public String basePath() {
@@ -54,6 +57,11 @@ public class ClientRouter implements BaseRouter {
             accept(MediaType.ALL),
             clientFindByNamesHandler::handle,
             clientFindByNamesHandler.documentation(routeTagName()))
+        .GET(
+            "/findByAcronym",
+            accept(MediaType.ALL),
+            clientAcronmHandler::handle,
+            clientAcronmHandler.documentation(routeTagName()))
         .build();
   }
 
