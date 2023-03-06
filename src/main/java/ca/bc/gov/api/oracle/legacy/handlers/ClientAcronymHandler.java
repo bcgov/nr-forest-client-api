@@ -24,7 +24,7 @@ import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
-public class ClientAcronmHandler implements BaseHandler {
+public class ClientAcronymHandler implements BaseHandler {
 
   private final ClientService service;
 
@@ -50,7 +50,7 @@ public class ClientAcronmHandler implements BaseHandler {
     return ops -> ops
         .tag(tag)
         .description("Search a client by it's acronym")
-        .beanClass(ClientAcronmHandler.class)
+        .beanClass(ClientAcronymHandler.class)
         .beanMethod("handle")
         .operationId("handle")
         .requestBody(requestBodyBuilder())
