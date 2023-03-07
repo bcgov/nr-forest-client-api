@@ -7,7 +7,9 @@ import ca.bc.gov.api.oracle.legacy.handlers.ClientAcronymHandler;
 import ca.bc.gov.api.oracle.legacy.handlers.ClientFindByNamesHandler;
 import ca.bc.gov.api.oracle.legacy.handlers.ClientFindByNumberHandler;
 import ca.bc.gov.api.oracle.legacy.handlers.ClientFindNonIndividualsHandler;
+import ca.bc.gov.api.oracle.legacy.handlers.ClientLocationListHandler;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.RouterFunction;
@@ -23,6 +25,8 @@ public class ClientRouter implements BaseRouter {
   private final ClientFindByNamesHandler clientFindByNamesHandler;
 
   private final ClientAcronymHandler clientAcronymHandler;
+
+  private final ClientLocationListHandler clientLocationListHandler;
 
   @Override
   public String basePath() {
@@ -62,7 +66,11 @@ public class ClientRouter implements BaseRouter {
             accept(MediaType.ALL),
             clientAcronymHandler::handle,
             clientAcronymHandler.documentation(routeTagName()))
+        .GET(
+            "/{clientNumber}/locations",
+            accept(MediaType.ALL),
+            clientLocationListHandler::handle,
+            clientLocationListHandler.documentation(routeTagName()))
         .build();
   }
-
 }
