@@ -36,7 +36,7 @@ public class ClientRouter implements BaseRouter {
 
   @Override
   public String routeTagDescription() {
-    return "The FSA Client API endpoint, responsible for returning client data";
+    return "FSA Client API that provides data for the client details";
   }
 
   @Override
