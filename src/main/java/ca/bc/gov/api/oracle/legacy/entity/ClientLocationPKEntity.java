@@ -12,7 +12,7 @@ import org.springframework.data.relational.core.mapping.Column;
 @AllArgsConstructor
 @With
 @Builder
-public class ClientLocationPKEntity {
+public class ClientLocationIdEntity {
   @Column("CLIENT_NUMBER")
   private String clientNumber;
   @Column("CLIENT_LOCN_CODE")
