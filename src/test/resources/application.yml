@@ -6,7 +6,7 @@ spring:
     banner-mode: "off"
     allow-bean-definition-overriding: true
   r2dbc:
-    url: r2dbcs:oracle://${ca.bc.gov.nrs.oracle.host}/${ca.bc.gov.nrs.oracle.service}
+    url: r2dbc:oracle://${ca.bc.gov.nrs.oracle.host}:${ca.bc.gov.nrs.oracle.port}/${ca.bc.gov.nrs.oracle.database}
     username: ${ca.bc.gov.nrs.oracle.username}
     password: ${ca.bc.gov.nrs.oracle.password}
     pool:
@@ -39,9 +39,10 @@ ca:
     gov:
       nrs:
         oracle:
-          service: ${ORACLEDB_SERVICENAME:fsa-forest}
-          database: ${ORACLEDB_DATABASE:fsa-forest}
-          host: ${ORACLEDB_HOST:localhost}:${ORACLEDB_PORT:1521}
+          service: ${ORACLEDB_SERVICENAME:XEPDB1}
+          database: ${ORACLEDB_DATABASE:XEPDB1}
+          host: ${ORACLEDB_HOST:localhost}
+          port: ${ORACLEDB_PORT:1521}
           username: ${ORACLEDB_USER:user}
           password: ${ORACLEDB_PASSWORD:passwd}
           schema: THE
