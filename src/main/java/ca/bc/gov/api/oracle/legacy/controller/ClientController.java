@@ -31,7 +31,7 @@ import reactor.core.publisher.Mono;
     name = "Client API",
     description = "Deals with client data checks and validation"
 )
-@RequestMapping("/api/clients")
+@RequestMapping(value = "/api/clients",produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class ClientController {
 
@@ -215,9 +215,11 @@ public class ClientController {
               description = "Returns a client based on it's acronym",
               content = @Content(
                   mediaType = MediaType.APPLICATION_JSON_VALUE,
-                  schema = @Schema(
-                      name = "ClientView",
-                      implementation = ClientPublicViewDto.class
+                  array = @ArraySchema(
+                      schema = @Schema(
+                          name = "ClientView",
+                          implementation = ClientPublicViewDto.class
+                      )
                   )
               )
           ),
@@ -241,7 +243,7 @@ public class ClientController {
           )
       }
   )
-  public Mono<ClientPublicViewDto> findByAcronym(
+  public Flux<ClientPublicViewDto> findByAcronym(
       @Parameter(
           description = "The acronym to look for",
           example = "Baxter")

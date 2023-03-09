@@ -28,13 +28,18 @@
     ],
     "BYACRONYM_QUERY_STRING": "acronym=TEST",
     "BYACRONYM_CODE": 200,
-    "BYACRONYM_NUMBER": "00000002",
+    "BYACRONYM_NUMBER": [
+      "00152207",
+      "00014992",
+      "00169575",
+      "00180622"
+    ],
     "LOCATIONS_NUMBER": "00001356",
     "LOCATIONS_QUERY_STRING": "page=0",
     "LOCATIONS_CODE": 200,
     "LOCATIONS_SIZE": 1,
     "LOCATIONS_POSTALCODES": [
-      "V9T6J9"
+      "P8G 9Z9"
     ]
   },
   {
@@ -49,6 +54,21 @@
     "BYNAME_SIZE": 1,
     "BYNAME_CODES": [
       "00001356"
+    ],
+    "BYACRONYM_QUERY_STRING": "acronym=TEST",
+    "BYACRONYM_CODE": 200,
+    "BYACRONYM_NUMBER": [
+      "00152207",
+      "00014992",
+      "00169575",
+      "00180622"
+    ],
+    "LOCATIONS_NUMBER": "00001356",
+    "LOCATIONS_QUERY_STRING": "",
+    "LOCATIONS_CODE": 200,
+    "LOCATIONS_SIZE": 1,
+    "LOCATIONS_POSTALCODES": [
+      "P8G 9Z9"
     ]
   },
   {
@@ -74,6 +94,21 @@
       "00041691",
       "00041865",
       "00054979"
+    ],
+    "BYACRONYM_QUERY_STRING": "acronym=TEST",
+    "BYACRONYM_CODE": 200,
+    "BYACRONYM_NUMBER": [
+      "00152207",
+      "00014992",
+      "00169575",
+      "00180622"
+    ],
+    "LOCATIONS_NUMBER": "00001356",
+    "LOCATIONS_QUERY_STRING": "page=0&size=2",
+    "LOCATIONS_CODE": 200,
+    "LOCATIONS_SIZE": 1,
+    "LOCATIONS_POSTALCODES": [
+      "P8G 9Z9"
     ]
   },
   {
@@ -93,7 +128,20 @@
     "BYNAME_SIZE": 1,
     "BYNAME_CODES": [
       "00006076"
-    ]
+    ],
+    "BYACRONYM_QUERY_STRING": "acronym=TEST",
+    "BYACRONYM_CODE": 200,
+    "BYACRONYM_NUMBER": [
+      "00152207",
+      "00014992",
+      "00169575",
+      "00180622"
+    ],
+    "LOCATIONS_NUMBER": "00001356",
+    "LOCATIONS_QUERY_STRING": "page=1",
+    "LOCATIONS_CODE": 200,
+    "LOCATIONS_SIZE": 0,
+    "LOCATIONS_POSTALCODES": []
   },
   {
     "INDIVIDUALS_QUERY_STRING": "",
@@ -112,7 +160,20 @@
     "BYNAME_SIZE": 1,
     "BYNAME_CODES": [
       "00013086"
-    ]
+    ],
+    "BYACRONYM_QUERY_STRING": "acronym=TEST",
+    "BYACRONYM_CODE": 200,
+    "BYACRONYM_NUMBER": [
+      "00152207",
+      "00014992",
+      "00169575",
+      "00180622"
+    ],
+    "LOCATIONS_NUMBER": "00001356",
+    "LOCATIONS_QUERY_STRING": "page=1",
+    "LOCATIONS_CODE": 200,
+    "LOCATIONS_SIZE": 0,
+    "LOCATIONS_POSTALCODES": []
   },
   {
     "INDIVIDUALS_QUERY_STRING": "",
@@ -129,6 +190,19 @@
     "BYNAME_QUERY_STRING": "",
     "BYNAME_CODE": 400,
     "BYNAME_SIZE": 0,
-    "BYNAME_CODES": []
+    "BYNAME_CODES": [],
+    "BYACRONYM_QUERY_STRING": "acronym=TEST",
+    "BYACRONYM_CODE": 200,
+    "BYACRONYM_NUMBER": [
+      "00152207",
+      "00014992",
+      "00169575",
+      "00180622"
+    ],
+    "LOCATIONS_NUMBER": "00001356",
+    "LOCATIONS_QUERY_STRING": "page=1",
+    "LOCATIONS_CODE": 200,
+    "LOCATIONS_SIZE": 0,
+    "LOCATIONS_POSTALCODES": []
   }
 ]

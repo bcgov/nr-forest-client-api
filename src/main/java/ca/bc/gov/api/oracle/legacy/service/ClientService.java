@@ -110,12 +110,12 @@ public class ClientService {
             .map(ClientMapper::mapEntityToDto);
   }
 
-  public Mono<ClientPublicViewDto> searchByAcronym(String acronym) {
+  public Flux<ClientPublicViewDto> searchByAcronym(String acronym) {
 
     log.info("Searching for client by acronym {}",acronym);
 
     if(StringUtils.isBlank(acronym))
-      return Mono.error(new NoSearchParameterFound("acronym"));
+      return Flux.error(new NoSearchParameterFound("acronym"));
 
     return doingBusinessAsRepository
         .findByName(acronym)
