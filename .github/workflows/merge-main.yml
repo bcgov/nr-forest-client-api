@@ -138,6 +138,7 @@ jobs:
             -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }}
             -p ORACLEDB_HOST=${{ secrets.ORACLEDB_HOST }}
             -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }}
+            -p ORACLEDB_SECRET=${{ secrets.ORACLEDB_SECRET }}
       - name: Publish API
         uses: bcgov-nr/action-gwa-publish@v0.1.0
         with:
@@ -195,6 +196,7 @@ jobs:
             -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }}
             -p ORACLEDB_HOST=${{ secrets.ORACLEDB_HOST }}
             -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }}
+            -p ORACLEDB_SECRET=${{ secrets.ORACLEDB_SECRET }}
       - name: Publish API
         uses: bcgov-nr/action-gwa-publish@v0.1.0
         with:

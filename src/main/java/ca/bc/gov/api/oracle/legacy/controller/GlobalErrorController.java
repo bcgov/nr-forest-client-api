@@ -1,4 +1,4 @@
-package ca.bc.gov.api.oracle.legacy.handlers;
+package ca.bc.gov.api.oracle.legacy.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
@@ -29,9 +29,9 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @Component
 @Order(-2)
-public class GlobalErrorHandler extends AbstractErrorWebExceptionHandler {
+public class GlobalErrorController extends AbstractErrorWebExceptionHandler {
 
-  public GlobalErrorHandler(
+  public GlobalErrorController(
       ErrorAttributes errorAttributes,
       WebProperties webProperties,
       ApplicationContext applicationContext,
