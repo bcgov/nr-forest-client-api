@@ -23,16 +23,14 @@ spring:
     validate-on-migrate: true
     user: ${ca.bc.gov.nrs.oracle.username}
     password: ${ca.bc.gov.nrs.oracle.password}
-    url: jdbc:oracle:thin:@${ca.bc.gov.nrs.oracle.host}/${ca.bc.gov.nrs.oracle.service}
+    url: jdbc:oracle:thin:@${ca.bc.gov.nrs.oracle.host}:${ca.bc.gov.nrs.oracle.port}/${ca.bc.gov.nrs.oracle.service}
 logging:
   level:
     org:
       springframework.test: OFF
-      testcontainers: OFF
-    com.github.dockerjava: OFF
+      testcontainers: DEBUG
+    com.github.dockerjava: DEBUG
     org.springframework.r2dbc: DEBUG
-    io.r2dbc.postgresql.QUERY: DEBUG
-    io.r2dbc.postgresql.PARAM: DEBUG
 
 ca:
   bc:
