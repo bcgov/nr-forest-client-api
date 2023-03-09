@@ -1,4 +1,4 @@
-package ca.bc.gov.api.oracle.legacy.handlers;
+package ca.bc.gov.api.oracle.legacy.controller;
 
 import ca.bc.gov.api.oracle.legacy.AbstractTestContainerIntegrationTest;
 import ca.bc.gov.api.oracle.legacy.dto.ClientPublicViewDto;
@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 @DisplayName("Integration Test | Client Handler")
-class ClientHandlerTest extends AbstractTestContainerIntegrationTest {
+class ClientControllerIntegrationTest extends AbstractTestContainerIntegrationTest {
 
   @Autowired
   private WebTestClient webTestClient;

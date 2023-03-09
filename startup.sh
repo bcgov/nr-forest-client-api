@@ -1,8 +1,10 @@
 #!/bin/sh
 
+mkdir -p /cert/certs
+rm -rf /cert/certs/*
+
+echo "I will try to get the ${ORACLEDB_HOST}-1 cert"
+echo "Connecting to ${ORACLEDB_HOST}:${ORACLEDB_PORT}"
 java --source 17 InstallCert.java --quiet "${ORACLEDB_HOST}:${ORACLEDB_PORT}"
-keytool -exportcert -alias "${ORACLEDB_HOST}-1" -keystore jssecacerts -storepass changeit -file oracle.cer
-keytool -importcert -alias orakey -noprompt -cacerts -storepass changeit -file oracle.cer
 
-java -Djava.security.egd=file:/dev/./urandom -jar /app/service.jar
-
+cp jssecacerts /cert/jssecacerts

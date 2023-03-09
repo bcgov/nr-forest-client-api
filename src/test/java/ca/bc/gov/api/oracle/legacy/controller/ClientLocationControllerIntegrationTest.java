@@ -1,4 +1,4 @@
-package ca.bc.gov.api.oracle.legacy.handlers;
+package ca.bc.gov.api.oracle.legacy.controller;
 
 import ca.bc.gov.api.oracle.legacy.AbstractTestContainerIntegrationTest;
 import ca.bc.gov.api.oracle.legacy.dto.ClientLocationDto;
@@ -15,7 +15,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.util.UriBuilder;
 
 @DisplayName("Integration Test | Client Location Handler")
-class ClientLocationHandlerTest extends AbstractTestContainerIntegrationTest {
+class ClientLocationControllerIntegrationTest extends AbstractTestContainerIntegrationTest {
 
   @Autowired
   private WebTestClient webTestClient;
