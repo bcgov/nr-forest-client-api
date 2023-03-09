@@ -16,6 +16,16 @@
     "BYNAME_SIZE": 1,
     "BYNAME_CODES": [
       "00001351"
+    ],
+    "BYACRONYM_QUERY_STRING": "acronym=BAXTER'S FAMILY",
+    "BYACRONYM_CODE": 200,
+    "BYACRONYM_NUMBER": "00000001",
+    "LOCATIONS_NUMBER": "00000001",
+    "LOCATIONS_QUERY_STRING": "",
+    "LOCATIONS_CODE": 200,
+    "LOCATIONS_SIZE": 1,
+    "LOCATIONS_POSTALCODES": [
+      "V9T6J9"
     ]
   },
   {
@@ -30,6 +40,16 @@
     "BYNAME_SIZE": 1,
     "BYNAME_CODES": [
       "00001356"
+    ],
+    "BYACRONYM_QUERY_STRING": "acronym=DOUG FUNNY",
+    "BYACRONYM_CODE": 200,
+    "BYACRONYM_NUMBER": "00000002",
+    "LOCATIONS_NUMBER": "00000001",
+    "LOCATIONS_QUERY_STRING": "page=0",
+    "LOCATIONS_CODE": 200,
+    "LOCATIONS_SIZE": 1,
+    "LOCATIONS_POSTALCODES": [
+      "V9T6J9"
     ]
   },
   {
@@ -48,6 +68,15 @@
       "00000001",
       "00000007",
       "00000008"
+    ],
+    "BYACRONYM_QUERY_STRING": "acronym=Baxter",
+    "BYACRONYM_CODE": 404,
+    "LOCATIONS_NUMBER": "00000001",
+    "LOCATIONS_QUERY_STRING": "page=0&size=2",
+    "LOCATIONS_CODE": 200,
+    "LOCATIONS_SIZE": 1,
+    "LOCATIONS_POSTALCODES": [
+      "V9T6J9"
     ]
   },
   {
@@ -67,7 +96,14 @@
     "BYNAME_SIZE": 1,
     "BYNAME_CODES": [
       "00000001"
-    ]
+    ],
+    "BYACRONYM_QUERY_STRING": "acronym=",
+    "BYACRONYM_CODE": 400,
+    "LOCATIONS_NUMBER": "00000001",
+    "LOCATIONS_QUERY_STRING": "page=1",
+    "LOCATIONS_CODE": 200,
+    "LOCATIONS_SIZE": 0,
+    "LOCATIONS_POSTALCODES": []
   },
   {
     "INDIVIDUALS_QUERY_STRING": "",
@@ -86,7 +122,14 @@
     "BYNAME_SIZE": 1,
     "BYNAME_CODES": [
       "00000002"
-    ]
+    ],
+    "BYACRONYM_QUERY_STRING": "",
+    "BYACRONYM_CODE": 400,
+    "LOCATIONS_NUMBER": "00000001",
+    "LOCATIONS_QUERY_STRING": "page=1&size=1",
+    "LOCATIONS_CODE": 200,
+    "LOCATIONS_SIZE": 0,
+    "LOCATIONS_POSTALCODES": []
   },
   {
     "INDIVIDUALS_QUERY_STRING": "",
@@ -103,6 +146,13 @@
     "BYNAME_QUERY_STRING": "",
     "BYNAME_CODE": 400,
     "BYNAME_SIZE": 0,
-    "BYNAME_CODES": []
+    "BYNAME_CODES": [],
+    "BYACRONYM_QUERY_STRING": "acronym=Invalid",
+    "BYACRONYM_CODE": 404,
+    "LOCATIONS_NUMBER": "00000001",
+    "LOCATIONS_QUERY_STRING": "page=99",
+    "LOCATIONS_CODE": 200,
+    "LOCATIONS_SIZE": 0,
+    "LOCATIONS_POSTALCODES": []
   }
 ]

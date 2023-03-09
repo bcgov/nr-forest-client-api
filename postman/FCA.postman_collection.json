@@ -230,6 +230,144 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "findByAcronym",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response;\r",
+							"\r",
+							"pm.test(\"Status check test (\"+pm.variables.get(\"BYACRONYM_CODE\")+\")\", () => {\r",
+							"    responseData.to.have.status(parseInt(pm.variables.get(\"BYACRONYM_CODE\")));\r",
+							"});\r",
+							"\r",
+							"if(parseInt(pm.variables.get(\"BYACRONYM_CODE\")) == 200){\r",
+							"\r",
+							"    const jsonData = responseData.json();\r",
+							"    console.log(jsonData);\r",
+							"\r",
+							"    pm.test('Must have a body',() =>{\r",
+							"        pm.expect(jsonData).to.not.be.undefined;\r",
+							"        pm.expect(jsonData).to.not.be.null;\r",
+							"        pm.expect(jsonData).to.be.an('object');\r",
+							"    });\r",
+							"\r",
+							"    \r",
+							"    pm.test(\"CLient Number match\", function () {        \r",
+							"        pm.expect(jsonData.clientNumber).to.eql(pm.variables.get(\"BYACRONYM_NUMBER\"));\r",
+							"    });\r",
+							"    \r",
+							"\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//pm.environment.set(\"BYACRONYM_QUERY_STRING\",\"acronym=TEST\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL_FCA}}/api/clients/findByAcronym?{{BYACRONYM_QUERY_STRING}}",
+					"host": [
+						"{{URL_FCA}}"
+					],
+					"path": [
+						"api",
+						"clients",
+						"findByAcronym"
+					],
+					"query": [
+						{
+							"key": "{{BYACRONYM_QUERY_STRING}}",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "listLocations",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//pm.environment.set(\"LOCATIONS_NUMBER\",\"00000001\");\r",
+							"//pm.environment.set(\"LOCATIONS_QUERY_STRING\",\"\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response;\r",
+							"\r",
+							"pm.test(\"Status check test (\"+pm.variables.get(\"LOCATIONS_CODE\")+\")\", () => {\r",
+							"    responseData.to.have.status(parseInt(pm.variables.get(\"LOCATIONS_CODE\")));\r",
+							"});\r",
+							"\r",
+							"if(parseInt(pm.variables.get(\"LOCATIONS_CODE\")) == 200){\r",
+							"\r",
+							"    const jsonData = responseData.json();\r",
+							"    console.log(jsonData);\r",
+							"        \r",
+							"    pm.test(\"List size check test\", () => {\r",
+							"        pm.expect(jsonData).to.be.an('array');\r",
+							"        const expectedSize = parseInt(pm.variables.get(\"LOCATIONS_SIZE\"));\r",
+							"        pm.expect(jsonData.length).to.equals(expectedSize);\r",
+							"    });\r",
+							"\r",
+							"    pm.test(\"Validate client postal codes in list\", () => {    \r",
+							"        const expectedPostalCodes = pm.variables.get(\"LOCATIONS_POSTALCODES\");\r",
+							"        const receivedPostalCodes = jsonData.map(value => value.postalCode);    \r",
+							"        pm.expect(receivedPostalCodes).to.include.members(expectedPostalCodes);\r",
+							"    });\r",
+							"\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL_FCA}}/api/clients/{{LOCATIONS_NUMBER}}/locations?{{LOCATIONS_QUERY_STRING}}",
+					"host": [
+						"{{URL_FCA}}"
+					],
+					"path": [
+						"api",
+						"clients",
+						"{{LOCATIONS_NUMBER}}",
+						"locations"
+					],
+					"query": [
+						{
+							"key": "{{LOCATIONS_QUERY_STRING}}",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [

@@ -114,6 +114,9 @@ public class ClientService {
 
     log.info("Searching for client by acronym {}",acronym);
 
+    if(StringUtils.isBlank(acronym))
+      return Mono.error(new NoSearchParameterFound("acronym"));
+
     return doingBusinessAsRepository
         .findByName(acronym)
         .doOnNext(entity -> log.info("Found entity with acronym {} with number {}", acronym,
