@@ -16,7 +16,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +30,6 @@ import reactor.core.publisher.Mono;
     name = "Client API",
     description = "Deals with client data checks and validation"
 )
-@CrossOrigin(maxAge = 3600, value = "*")
 @RequestMapping("/api/clients")
 @RequiredArgsConstructor
 public class ClientController {
