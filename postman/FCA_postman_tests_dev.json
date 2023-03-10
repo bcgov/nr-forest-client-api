@@ -37,7 +37,7 @@
     "LOCATIONS_NUMBER": "00001356",
     "LOCATIONS_QUERY_STRING": "page=0",
     "LOCATIONS_CODE": 200,
-    "LOCATIONS_SIZE": 1,
+    "LOCATIONS_SIZE": 4,
     "LOCATIONS_POSTALCODES": [
       "V2L3J5",
       "V2L4T3",
@@ -69,9 +69,9 @@
     "LOCATIONS_NUMBER": "00001356",
     "LOCATIONS_QUERY_STRING": "",
     "LOCATIONS_CODE": 200,
-    "LOCATIONS_SIZE": 1,
+    "LOCATIONS_SIZE": 4,
     "LOCATIONS_POSTALCODES": [
-        "V2L3J5",
+      "V2L3J5",
       "V2L4T3",
       "V0C2K0",
       "V2L4T3"
@@ -112,11 +112,9 @@
     "LOCATIONS_NUMBER": "00001356",
     "LOCATIONS_QUERY_STRING": "page=0&size=2",
     "LOCATIONS_CODE": 200,
-    "LOCATIONS_SIZE": 1,
+    "LOCATIONS_SIZE": 2,
     "LOCATIONS_POSTALCODES": [
-        "V2L3J5",
-      "V2L4T3",
-      "V0C2K0",
+      "V2L3J5",
       "V2L4T3"
     ]
   },
