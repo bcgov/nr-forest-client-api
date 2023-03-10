@@ -55,6 +55,62 @@ class ClientServiceIntegrationTest extends AbstractTestContainerIntegrationTest 
 
   }
 
+  @ParameterizedTest
+  @MethodSource("byAcronym")
+  @DisplayName("Search by acronym")
+  void shouldSearchByAcronym(
+      String acronym,
+      boolean error,
+      String errorMessage,
+      ClientPublicViewDto success
+  ) {
+    StepVerifier.FirstStep<ClientPublicViewDto> test =
+        StepVerifier.create(service.searchByAcronym(acronym));
+
+    if (error) {
+
+      test
+          .expectErrorMessage(errorMessage)
+          .verify();
+    } else {
+      test
+          .expectNext(success)
+          .verifyComplete();
+    }
+  }
+
+  private static Stream<Arguments> byAcronym() {
+    ClientPublicViewDto clientPublicViewDto = new ClientPublicViewDto(
+        "00000002",
+        "FUNNY",
+        "THOMAS",
+        "Yansi",
+        "ACT",
+        "I"
+    );
+    return
+        Stream.of(
+            Arguments.of(
+                "DOUG FUNNY",
+                false,
+                null,
+                clientPublicViewDto
+            ),
+            Arguments.of(
+                "Charles",
+                true,
+                "404 NOT_FOUND \"No client found with the acronym Charles\"",
+                null
+            ),
+            Arguments.of(
+                null,
+                true,
+                "400 BAD_REQUEST \"No acronym parameter found\"",
+                null
+            )
+        );
+  }
+
   private static Stream<Arguments> byNames() {
     ClientPublicViewDto clientPublicViewDto = new ClientPublicViewDto(
         "00000007",
