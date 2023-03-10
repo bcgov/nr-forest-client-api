@@ -235,7 +235,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - uses: matt-ball/newman-action@master
+      - name: API Health check
+        uses: matt-ball/newman-action@master
+        with:
+          collection: postman/FCA.postman_collection.json
+          envVar: '[{"key":"URL_FCA","value":"https://${{ env.NAME }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}"}]'
+          iterationData: postman/FCA_postman_tests_dev.json
+          reporters: '["cli"]'
+          folder: 'general'
+
+      - name: Postman Smoke Test
+        uses: matt-ball/newman-action@master
         with:
           collection: postman/FCA.postman_collection.json
           envVar: '[{"key":"URL_FCA","value":"https://${{ env.NAME }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}"}]'
@@ -243,7 +253,7 @@ jobs:
           reporters: '["cli", "junit"]'
           reporter: '{ "junit" : { "export" : "./postman/report.xml" } }'
 
-      - name: Publish Postman Test Report
+      - name: Postman Smoke Test Report
         uses: mikepenz/action-junit-report@v3
         if: success() || failure() # always run even if the previous step fails
         with:
@@ -251,4 +261,4 @@ jobs:
           commit: ${{ github.event.pull_request.head.sha }}
           summary: Postman Tests
           detailed_summary: true
-          job_name: Postman
+          job_name: Postman Smoke Test Report
