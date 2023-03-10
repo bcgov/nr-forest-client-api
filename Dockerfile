@@ -1,5 +1,4 @@
 FROM eclipse-temurin:17-jdk-alpine
-LABEL maintainer="Paulo Gomes da Cruz Junior <paulo.cruz@encora.com>"
 
 WORKDIR /app
 
