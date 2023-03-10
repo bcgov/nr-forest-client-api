@@ -11,6 +11,6 @@ public class NoSearchParameterFound extends ResponseStatusException {
   }
 
   public NoSearchParameterFound(String param) {
-    super(HttpStatus.BAD_REQUEST, "No "+param+" parameter found");
+    super(HttpStatus.BAD_REQUEST, "No " + param + " parameter found");
   }
 }

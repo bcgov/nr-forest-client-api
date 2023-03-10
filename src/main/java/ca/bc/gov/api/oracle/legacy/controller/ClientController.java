@@ -31,7 +31,7 @@ import reactor.core.publisher.Mono;
     name = "Client API",
     description = "Deals with client data checks and validation"
 )
-@RequestMapping(value = "/api/clients",produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/clients", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class ClientController {
 

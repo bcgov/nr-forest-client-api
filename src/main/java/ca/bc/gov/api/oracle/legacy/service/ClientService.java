@@ -60,7 +60,7 @@ public class ClientService {
             PageRequest.of(page, size, Sort.by(sortBy))
         )
         .map(ClientMapper::mapEntityToDto)
-        .doOnNext(dto -> log.info("Found entry {}",dto));
+        .doOnNext(dto -> log.info("Found entry {}", dto));
   }
 
   public Flux<ClientPublicViewDto> searchByNames(
@@ -112,10 +112,11 @@ public class ClientService {
 
   public Flux<ClientPublicViewDto> searchByAcronym(String acronym) {
 
-    log.info("Searching for client by acronym {}",acronym);
+    log.info("Searching for client by acronym {}", acronym);
 
-    if(StringUtils.isBlank(acronym))
+    if (StringUtils.isBlank(acronym)) {
       return Flux.error(new NoSearchParameterFound("acronym"));
+    }
 
     return doingBusinessAsRepository
         .findByName(acronym)
