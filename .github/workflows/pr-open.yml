@@ -242,7 +242,7 @@ jobs:
           envVar: '[{"key":"URL_FCA","value":"https://${{ env.NAME }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}"}]'
           iterationData: postman/FCA_postman_tests_dev.json
           reporters: '["cli"]'
-          folder: 'general'
+          folder: '["general"]'
 
       - name: Postman Smoke Test
         uses: matt-ball/newman-action@master
