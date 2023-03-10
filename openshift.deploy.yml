@@ -276,5 +276,5 @@ objects:
         - from:
             - namespaceSelector:
                 matchLabels:
-                  environment: ${ZONE}
+                  environment: prod
                   name: 264e6f
