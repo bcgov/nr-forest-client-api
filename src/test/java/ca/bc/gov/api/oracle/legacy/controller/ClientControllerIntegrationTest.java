@@ -141,23 +141,23 @@ class ClientControllerIntegrationTest extends AbstractTestContainerIntegrationTe
         .exchange()
         .expectStatus().isOk()
         .expectBody()
-        .jsonPath("$.clientNumber").isNotEmpty()
-        .jsonPath("$.clientNumber").isEqualTo("00000002")
+        .jsonPath("$[0].clientNumber").isNotEmpty()
+        .jsonPath("$[0].clientNumber").isEqualTo("00000002")
 
-        .jsonPath("$.clientName").isNotEmpty()
-        .jsonPath("$.clientName").isEqualTo("FUNNY")
+        .jsonPath("$[0].clientName").isNotEmpty()
+        .jsonPath("$[0].clientName").isEqualTo("FUNNY")
 
-        .jsonPath("$.legalFirstName").isNotEmpty()
-        .jsonPath("$.legalFirstName").isEqualTo("THOMAS")
+        .jsonPath("$[0].legalFirstName").isNotEmpty()
+        .jsonPath("$[0].legalFirstName").isEqualTo("THOMAS")
 
-        .jsonPath("$.legalMiddleName").isNotEmpty()
-        .jsonPath("$.legalMiddleName").isEqualTo("Yansi")
+        .jsonPath("$[0].legalMiddleName").isNotEmpty()
+        .jsonPath("$[0].legalMiddleName").isEqualTo("Yansi")
 
-        .jsonPath("$.clientStatusCode").isNotEmpty()
-        .jsonPath("$.clientStatusCode").isEqualTo("ACT")
+        .jsonPath("$[0].clientStatusCode").isNotEmpty()
+        .jsonPath("$[0].clientStatusCode").isEqualTo("ACT")
 
-        .jsonPath("$.clientTypeCode").isNotEmpty()
-        .jsonPath("$.clientTypeCode").isEqualTo("I");
+        .jsonPath("$[0].clientTypeCode").isNotEmpty()
+        .jsonPath("$[0].clientTypeCode").isEqualTo("I");
 
     //
 

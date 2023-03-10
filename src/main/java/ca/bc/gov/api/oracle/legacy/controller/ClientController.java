@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +31,7 @@ import reactor.core.publisher.Mono;
     name = "Client API",
     description = "Deals with client data checks and validation"
 )
-@RequestMapping("/api/clients")
+@RequestMapping(value = "/api/clients", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class ClientController {
 
@@ -214,9 +215,11 @@ public class ClientController {
               description = "Returns a client based on it's acronym",
               content = @Content(
                   mediaType = MediaType.APPLICATION_JSON_VALUE,
-                  schema = @Schema(
-                      name = "ClientView",
-                      implementation = ClientPublicViewDto.class
+                  array = @ArraySchema(
+                      schema = @Schema(
+                          name = "ClientView",
+                          implementation = ClientPublicViewDto.class
+                      )
                   )
               )
           ),
@@ -240,11 +243,12 @@ public class ClientController {
           )
       }
   )
-  public Mono<ClientPublicViewDto> findByAcronym(
+  public Flux<ClientPublicViewDto> findByAcronym(
       @Parameter(
           description = "The acronym to look for",
           example = "Baxter")
       @RequestParam(value = "acronym")
+      @NotNull
       String acronym
   ) {
     return clientService.searchByAcronym(acronym);

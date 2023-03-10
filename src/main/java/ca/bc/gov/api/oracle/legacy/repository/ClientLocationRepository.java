@@ -15,6 +15,10 @@ public interface ClientLocationRepository extends
     ReactiveQueryByExampleExecutor<ClientLocationEntity> {
 
   Flux<ClientLocationEntity> findByClientNumber(String clientNumber, Pageable page);
-  Mono<ClientLocationEntity> findByClientNumberAndLocationCode(String clientNumber, String locationCode);
+
+  Mono<ClientLocationEntity> findByClientNumberAndLocationCode(
+      String clientNumber,
+      String locationCode
+  );
 
 }

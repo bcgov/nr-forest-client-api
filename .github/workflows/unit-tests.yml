@@ -27,7 +27,7 @@ jobs:
       - uses: bcgov-nr/action-test-and-analyse-java@v0.1.0
         with:
           commands: |
-            mvn -B verify -P all-tests checkstyle:checkstyle -Dcheckstyle.skip=false --file pom.xml
+            mvn -B verify -Pall-tests checkstyle:checkstyle -Dcheckstyle.skip=false --file pom.xml
           dir: .
           java-cache: maven
           java-distribution: temurin
@@ -36,6 +36,40 @@ jobs:
             -Dsonar.organization=bcgov-sonarcloud
             -Dsonar.projectKey=bcgov_forest-client-api
           sonar_project_token: ${{ secrets.SONAR_TOKEN }}
+      - name: Archive CycloneDX
+        continue-on-error: true
+        uses: actions/upload-artifact@v3
+        with:
+          name: cyclone
+          path: target/bom.json
+          retention-days: 5
+
+      - name: Use Checkstyle report
+        continue-on-error: true
+        uses: jwgmeligmeyling/checkstyle-github-action@master
+        with:
+          path: '**/checkstyle-result.xml'
+
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v3
+        continue-on-error: true
+        if: success() || failure() # always run even if the previous step fails
+        with:
+          report_paths: 'target/**/TEST-*.xml'
+          commit: ${{ github.event.pull_request.head.sha }}
+          summary: Pull Request Tests
+          detailed_summary: true
+          job_name: Tests
+
+      - name: Add coverage to PR
+        id: jacoco
+        continue-on-error: true
+        uses: madrapps/jacoco-report@v1.3
+        with:
+          paths: target/coverage-reports/merged-test-report/jacoco.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage-overall: 75
+          min-coverage-changed-files: 75
 
   # https://github.com/marketplace/actions/aqua-security-trivy
   trivy:

@@ -1,6 +1,5 @@
 package ca.bc.gov.api.oracle.legacy.entity;
 
-import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,26 +26,4 @@ public class ClientDoingBusinessAsEntity {
 
   @Column("DOING_BUSINESS_AS_NAME")
   private String name;
-
-  @Column("UPDATE_TIMESTAMP")
-  private LocalDate updatedAt;
-
-  @Column("UPDATE_USERID")
-  private String updatedBy;
-
-  @Column("UPDATE_ORG_UNIT")
-  Long updatedByOrg;
-
-  @Column("ADD_TIMESTAMP")
-  private LocalDate createdAt;
-
-  @Column("ADD_USERID")
-  private String createdBy;
-
-  @Column("ADD_ORG_UNIT")
-  Long createdByOrg;
-
-  @Column("REVISION_COUNT")
-  Long revision;
-
 }
