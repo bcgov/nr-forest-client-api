@@ -36,6 +36,36 @@ jobs:
             -Dsonar.organization=bcgov-sonarcloud
             -Dsonar.projectKey=bcgov_forest-client-api
           sonar_project_token: ${{ secrets.SONAR_TOKEN }}
+      - name: Archive CycloneDX
+        uses: actions/upload-artifact@v3
+        with:
+          name: cyclone
+          path: target/bom.json
+          retention-days: 5
+
+      - name: Use Checkstyle report
+        uses: jwgmeligmeyling/checkstyle-github-action@master
+        with:
+          path: '**/checkstyle-result.xml'
+
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v3
+        if: success() || failure() # always run even if the previous step fails
+        with:
+          report_paths: 'target/**/TEST-*.xml'
+          commit: ${{ github.event.pull_request.head.sha }}
+          summary: Pull Request Tests
+          detailed_summary: true
+          job_name: Tests
+
+      - name: Add coverage to PR
+        id: jacoco
+        uses: madrapps/jacoco-report@v1.3
+        with:
+          paths: target/coverage-reports/merged-test-report/jacoco.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage-overall: 75
+          min-coverage-changed-files: 75
 
   # https://github.com/marketplace/actions/aqua-security-trivy
   trivy:
