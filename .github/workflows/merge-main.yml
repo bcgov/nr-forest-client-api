@@ -152,6 +152,7 @@ jobs:
     env:
       COMPONENT: backend
       ZONE: test
+      DOMAIN: apps.silver.devops.gov.bc.ca
     needs:
       - deploy-test
     environment:
@@ -245,6 +246,7 @@ jobs:
     env:
       COMPONENT: backend
       ZONE: prod
+      DOMAIN: apps.silver.devops.gov.bc.ca
     needs:
       - deploy-prod
     environment:
