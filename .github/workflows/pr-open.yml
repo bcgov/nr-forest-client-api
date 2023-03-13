@@ -221,6 +221,7 @@ jobs:
     env:
       COMPONENT: backend
       ZONE: ${{ github.event.number }}
+      DOMAIN: apps.silver.devops.gov.bc.ca
     needs:
       - deploy-dev
     environment:
