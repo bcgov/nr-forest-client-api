@@ -220,6 +220,7 @@ jobs:
     name: Smoke Test
     env:
       COMPONENT: backend
+      DOMAIN: apps.silver.devops.gov.bc.ca
       ZONE: ${{ github.event.number }}
     needs:
       - deploy-dev
