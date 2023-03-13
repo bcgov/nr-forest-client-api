@@ -147,25 +147,6 @@ jobs:
           client_secret: ${{ secrets.GWA_ACCT_SECRET }}
           file: .github/gwa/service-test.yaml
 
-  smoke-dev:
-    name: Smoke Test @ Test Env
-    env:
-      COMPONENT: backend
-      ZONE: test
-    needs:
-      - deploy-test
-    environment:
-      name: test
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-      checks: write
-      pull-requests: write
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
       - name: Postman Smoke Test on Openshift
         uses: matt-ball/newman-action@master
         with:
@@ -192,6 +173,7 @@ jobs:
     env:
       ZONE: prod
       PREV: test
+      DOMAIN: apps.silver.devops.gov.bc.ca
     steps:
       - uses: actions/checkout@v3
       - name: Broker
@@ -239,25 +221,6 @@ jobs:
           client_id: ${{ secrets.GWA_ACCT_ID }}
           client_secret: ${{ secrets.GWA_ACCT_SECRET }}
           file: .github/gwa/service-prod.yaml
-
-  smoke-prod:
-    name: Smoke Test @ Prod Env
-    env:
-      COMPONENT: backend
-      ZONE: prod
-    needs:
-      - deploy-prod
-    environment:
-      name: prod
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-      checks: write
-      pull-requests: write
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
 
       - name: Postman Smoke Test on Openshift
         uses: matt-ball/newman-action@master
