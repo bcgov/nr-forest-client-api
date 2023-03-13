@@ -10,7 +10,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  NAME: nr-forest-client-api
+  NAME: ${{ github.event.repository.name }}
   NS: nr-d2723f
 
 concurrency:

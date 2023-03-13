@@ -5,7 +5,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  NAME: nr-forest-client-api
+  NAME: ${{ github.event.repository.name }}
   DOMAIN: apps.silver.devops.gov.bc.ca
 
 concurrency:
