@@ -10,7 +10,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  NAME: nr-forest-client-api
+  NAME: ${{ github.event.repository.name }}
   NS: nr-d2723f
 
 concurrency:
@@ -99,6 +99,7 @@ jobs:
       name: test
     env:
       ZONE: test
+      DOMAIN: apps.silver.devops.gov.bc.ca
     steps:
       - uses: actions/checkout@v3
       - name: Broker
@@ -159,7 +160,7 @@ jobs:
         uses: matt-ball/newman-action@master
         with:
           collection: postman/FCA.postman_collection.json
-          envVar: '[{"key":"URL_FCA","value":"https://nr-forest-client-api-test.api.gov.bc.ca"}]'
+          envVar: '[{"key":"URL_FCA","value":"https://${{ env.NAME }}-test.api.gov.bc.ca"}]'
           reporters: '["cli"]'
           folder: '["general"]'
 
@@ -234,6 +235,6 @@ jobs:
         uses: matt-ball/newman-action@master
         with:
           collection: postman/FCA.postman_collection.json
-          envVar: '[{"key":"URL_FCA","value":"https://nr-forest-client-api-prod.api.gov.bc.ca"}]'
+          envVar: '[{"key":"URL_FCA","value":"https://${{ env.NAME }}-prod.api.gov.bc.ca"}]'
           reporters: '["cli"]'
           folder: '["general"]'
