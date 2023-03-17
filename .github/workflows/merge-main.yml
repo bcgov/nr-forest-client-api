@@ -177,6 +177,23 @@ jobs:
       DOMAIN: apps.silver.devops.gov.bc.ca
     steps:
       - uses: actions/checkout@v3
+
+      - name: Promoting API
+        uses: shrink/actions-docker-registry-tag@v3
+        with:
+          registry: ghcr.io
+          repository: ${{ github.repository }}/api
+          target: ${{ env.PREV }}
+          tags: ${{ env.ZONE }}
+
+      - name: Promoting Init
+        uses: shrink/actions-docker-registry-tag@v3
+        with:
+          registry: ghcr.io
+          repository: ${{ github.repository }}/init
+          target: ${{ env.PREV }}
+          tags: ${{ env.ZONE }}
+
       - name: Broker
         id: broker
         uses: bcgov-nr/action-vault-broker-approle@v0.0.5
@@ -208,7 +225,7 @@ jobs:
           verification_path: /health
           parameters:
             -p ZONE=${{ env.ZONE }} -p NAME=${{ github.event.repository.name }}
-            -p PROMOTE=${{ github.repository }}/api:${{ env.PREV }}            
+            -p PROMOTE=${{ github.repository }}/api:${{ env.ZONE }}            
             -p ORACLEDB_USER=${{ steps.secrets.outputs.VAULT_DB_USER }}
             -p ORACLEDB_PASSWORD=${{ steps.secrets.outputs.VAULT_DB_PASS }}
             -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }}
