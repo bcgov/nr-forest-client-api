@@ -86,7 +86,8 @@ class ClientServiceIntegrationTest extends AbstractTestContainerIntegrationTest 
         "THOMAS",
         "Yansi",
         "ACT",
-        "I"
+        "I",
+        List.of("DOUG FUNNY")
     );
     return
         Stream.of(
@@ -118,7 +119,8 @@ class ClientServiceIntegrationTest extends AbstractTestContainerIntegrationTest 
         "james",
         "bond",
         "ACT",
-        "I"
+        "I",
+        List.of()
     );
 
     return

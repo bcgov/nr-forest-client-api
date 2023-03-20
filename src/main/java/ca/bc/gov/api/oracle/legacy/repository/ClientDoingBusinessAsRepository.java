@@ -12,5 +12,6 @@ public interface ClientDoingBusinessAsRepository extends
     ReactiveQueryByExampleExecutor<ClientDoingBusinessAsEntity> {
 
   Flux<ClientDoingBusinessAsEntity> findByName(String name);
+  Flux<ClientDoingBusinessAsEntity> findByClientNumber(String clientNumber);
 
 }
