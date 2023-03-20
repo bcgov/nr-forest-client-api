@@ -9,10 +9,6 @@ env:
   REGISTRY: ghcr.io
   NAME: ${{ github.event.repository.name }}
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   # Clean up OpenShift when PR closed, no conditions
   cleanup-openshift:
