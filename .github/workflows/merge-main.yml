@@ -95,6 +95,9 @@ jobs:
       - trivy-repo
       - sonarcloud
     runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+      discussions: write
     environment:
       name: test
     env:
@@ -186,33 +189,27 @@ jobs:
           name: ${{ steps.changelog.outputs.tag }}
           body: ${{ steps.changelog.outputs.clean_changelog }}
 
-      - name: Exporting version
-        run: echo "version=${{ steps.changelog.outputs.tag }}" >> $GITHUB_OUTPUT
-
-  image-promotions:
-    name: Promote images to PROD
-    needs:
-      - deploy-test
-    runs-on: ubuntu-22.04
-    permissions:
-      contents: write
-      discussions: write
-    strategy:
-      matrix:
-        component: [ api, init ]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - uses: shrink/actions-docker-registry-tag@v3
+      - name: Promoting API
+        uses: shrink/actions-docker-registry-tag@v3
         with:
           registry: ghcr.io
-          repository: ${{ github.repository }}/${{ matrix.component }}
+          repository: ${{ github.repository }}/api
           target: test
           tags: |
             prod
-            ${{ steps.deploy-test.outputs.version }}
             latest
+            ${{ steps.changelog.outputs.tag }}            
+
+      - name: Promoting Init
+        uses: shrink/actions-docker-registry-tag@v3
+        with:
+          registry: ghcr.io
+          repository: ${{ github.repository }}/init
+          target: test
+          tags: |
+            prod
+            latest
+            ${{ steps.changelog.outputs.tag }}
 
   deploy-prod:
     name: PROD Deployment
