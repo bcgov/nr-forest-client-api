@@ -82,7 +82,7 @@ jobs:
           output: "trivy-results.sarif"
           ignore-unfixed: true
           severity: "CRITICAL,HIGH"
-          security-checks: "vuln,secret,config"
+          scanners: "vuln,secret,config"
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v2
@@ -164,15 +164,68 @@ jobs:
           reporters: '["cli"]'
           folder: '["general"]'
 
+      - name: Conventional Changelog Update
+        uses: TriPSs/conventional-changelog-action@v3
+        id: changelog
+        continue-on-error: true
+        with:
+          github-token: ${{ github.token }}
+          output-file: 'CHANGELOG.md'
+          skip-version-file: 'true'
+          skip-commit: 'true'
+          git-push: 'true'
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        if: ${{ steps.changelog.outputs.tag != '' }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          token: ${{ github.token }}
+          tag_name: ${{ steps.changelog.outputs.tag }}
+          name: ${{ steps.changelog.outputs.tag }}
+          body: ${{ steps.changelog.outputs.clean_changelog }}
+
+      - name: Exporting version
+        run: echo "version=${{ steps.changelog.outputs.tag }}" >> $GITHUB_OUTPUT
+
   image-promotions:
     name: Promote images to PROD
     needs:
       - deploy-test
     runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+      discussions: write
     strategy:
       matrix:
         component: [ api, init ]
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Conventional Changelog Update
+        uses: TriPSs/conventional-changelog-action@v3
+        id: changelog
+        continue-on-error: true
+        with:
+          github-token: ${{ github.token }}
+          output-file: 'CHANGELOG.md'
+          skip-version-file: 'true'
+          skip-commit: 'true'
+          git-push: 'true'
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        if: ${{ steps.changelog.outputs.tag != '' }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          token: ${{ github.token }}
+          tag_name: ${{ steps.changelog.outputs.tag }}
+          name: ${{ steps.changelog.outputs.tag }}
+          body: ${{ steps.changelog.outputs.clean_changelog }}
+
       - uses: shrink/actions-docker-registry-tag@v3
         with:
           registry: ghcr.io
@@ -180,10 +233,19 @@ jobs:
           target: test
           tags: prod
 
+      - uses: shrink/actions-docker-registry-tag@v3
+        if: ${{ steps.deploy-test.outputs.version != '' }}
+        with:
+          registry: ghcr.io
+          repository: ${{ github.repository }}/${{ matrix.component }}
+          target: test
+          tags: ${{ steps.deploy-test.outputs.version }}
+
   deploy-prod:
     name: PROD Deployment
     needs:
       - deploy-test
+      - image-promotions
     runs-on: ubuntu-22.04
     environment:
       name: prod
