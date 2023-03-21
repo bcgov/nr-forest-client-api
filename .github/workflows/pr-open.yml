@@ -9,7 +9,7 @@ env:
   DOMAIN: apps.silver.devops.gov.bc.ca
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event.number }}
   cancel-in-progress: true
 
 jobs:

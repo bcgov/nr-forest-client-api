@@ -8,7 +8,8 @@
       "clientNumber": "00001356",
       "clientName": "BALFOUR FOREST PRODUCTS INC.",
       "clientStatusCode": "ACT",
-      "clientTypeCode": "U"
+      "clientTypeCode": "U",
+      "acronyms": []
     },
     "FIND_CODE": 200,
     "BYNAME_QUERY_STRING": "clientTypeCodes=G",
@@ -88,7 +89,8 @@
       "clientNumber": "00001356",
       "clientName": "BALFOUR FOREST PRODUCTS INC.",
       "clientStatusCode": "ACT",
-      "clientTypeCode": "U"
+      "clientTypeCode": "U",
+      "acronyms": []
     },
     "FIND_CODE": 200,
     "BYNAME_QUERY_STRING": "clientFirstName=james&page=0&size=1",
@@ -114,7 +116,8 @@
       "clientNumber": "00001356",
       "clientName": "BALFOUR FOREST PRODUCTS INC.",
       "clientStatusCode": "ACT",
-      "clientTypeCode": "U"
+      "clientTypeCode": "U",
+      "acronyms": []
     },
     "FIND_CODE": 200,
     "BYNAME_QUERY_STRING": "clientName=FUNNY&clientMiddleName=Yansi&clientFirstName=THOMAS",
@@ -140,7 +143,8 @@
       "clientNumber": "00001356",
       "clientName": "BALFOUR FOREST PRODUCTS INC.",
       "clientStatusCode": "ACT",
-      "clientTypeCode": "U"
+      "clientTypeCode": "U",
+      "acronyms": []
     },
     "FIND_CODE": 200,
     "BYNAME_QUERY_STRING": "",
