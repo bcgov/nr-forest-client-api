@@ -204,42 +204,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Conventional Changelog Update
-        uses: TriPSs/conventional-changelog-action@v3
-        id: changelog
-        continue-on-error: true
-        with:
-          github-token: ${{ github.token }}
-          output-file: 'CHANGELOG.md'
-          skip-version-file: 'true'
-          skip-commit: 'true'
-          git-push: 'true'
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
-        if: ${{ steps.changelog.outputs.tag != '' }}
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          token: ${{ github.token }}
-          tag_name: ${{ steps.changelog.outputs.tag }}
-          name: ${{ steps.changelog.outputs.tag }}
-          body: ${{ steps.changelog.outputs.clean_changelog }}
-
       - uses: shrink/actions-docker-registry-tag@v3
         with:
           registry: ghcr.io
           repository: ${{ github.repository }}/${{ matrix.component }}
           target: test
-          tags: prod
-
-      - uses: shrink/actions-docker-registry-tag@v3
-        if: ${{ steps.deploy-test.outputs.version != '' }}
-        with:
-          registry: ghcr.io
-          repository: ${{ github.repository }}/${{ matrix.component }}
-          target: test
-          tags: ${{ steps.deploy-test.outputs.version }}
+          tags: |
+            prod
+            ${{ steps.deploy-test.outputs.version }}
+            latest
 
   deploy-prod:
     name: PROD Deployment
