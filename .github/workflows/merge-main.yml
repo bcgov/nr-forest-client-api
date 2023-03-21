@@ -164,7 +164,6 @@ jobs:
           reporters: '["cli"]'
           folder: '["general"]'
 
-
   image-promotions:
     name: Promote images to PROD
     needs:
