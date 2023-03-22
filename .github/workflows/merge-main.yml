@@ -215,7 +215,6 @@ jobs:
     name: PROD Deployment
     needs:
       - deploy-test
-      - image-promotions
     runs-on: ubuntu-22.04
     environment:
       name: prod
