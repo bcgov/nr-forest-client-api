@@ -195,10 +195,15 @@ jobs:
           registry: ghcr.io
           repository: ${{ github.repository }}/api
           target: test
-          tags: |
-            prod
-            latest
-            ${{ steps.changelog.outputs.tag }}            
+          tags: ${{ steps.changelog.outputs.tag }}
+
+      - name: Promoting API
+        uses: shrink/actions-docker-registry-tag@v3
+        with:
+          registry: ghcr.io
+          repository: ${{ github.repository }}/api
+          target: ${{ steps.changelog.outputs.tag }}
+          tags: prod
 
       - name: Promoting Init
         uses: shrink/actions-docker-registry-tag@v3
@@ -206,10 +211,15 @@ jobs:
           registry: ghcr.io
           repository: ${{ github.repository }}/init
           target: test
-          tags: |
-            prod
-            latest
-            ${{ steps.changelog.outputs.tag }}
+          tags: ${{ steps.changelog.outputs.tag }}
+
+      - name: Promoting Init
+        uses: shrink/actions-docker-registry-tag@v3
+        with:
+          registry: ghcr.io
+          repository: ${{ github.repository }}/init
+          target: ${{ steps.changelog.outputs.tag }}
+          tags: prod
 
   deploy-prod:
     name: PROD Deployment
