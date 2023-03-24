@@ -189,6 +189,21 @@ jobs:
           name: ${{ steps.changelog.outputs.tag }}
           body: ${{ steps.changelog.outputs.clean_changelog }}
 
+      - name: Log in to the Container registry
+        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Promoting API
+        uses: shrink/actions-docker-registry-tag@v3
+        with:
+          registry: ghcr.io
+          repository: ${{ github.repository }}/api
+          target: test
+          tags: prod
+
       - name: Promoting API
         uses: shrink/actions-docker-registry-tag@v3
         with:
@@ -197,12 +212,12 @@ jobs:
           target: test
           tags: ${{ steps.changelog.outputs.tag }}
 
-      - name: Promoting API
+      - name: Promoting Init
         uses: shrink/actions-docker-registry-tag@v3
         with:
           registry: ghcr.io
-          repository: ${{ github.repository }}/api
-          target: ${{ steps.changelog.outputs.tag }}
+          repository: ${{ github.repository }}/init
+          target: test
           tags: prod
 
       - name: Promoting Init
@@ -212,14 +227,6 @@ jobs:
           repository: ${{ github.repository }}/init
           target: test
           tags: ${{ steps.changelog.outputs.tag }}
-
-      - name: Promoting Init
-        uses: shrink/actions-docker-registry-tag@v3
-        with:
-          registry: ghcr.io
-          repository: ${{ github.repository }}/init
-          target: ${{ steps.changelog.outputs.tag }}
-          tags: prod
 
   deploy-prod:
     name: PROD Deployment
