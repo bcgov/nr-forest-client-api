@@ -4,7 +4,7 @@ metadata:
   name: ${NAME}
   annotations:
     description: "Nr-Forest-Client-Api"
-    tags: "nrfc-api"
+    tags: "nr-forest-client-api"
     iconClass: icon-js
 labels:
   app: ${NAME}-${ZONE}
@@ -29,9 +29,9 @@ parameters:
   - name: CPU_LIMIT
     value: 25m
   - name: MEMORY_REQUEST
-    value: 50Mi
+    value: 75Mi
   - name: MEMORY_LIMIT
-    value: 150Mi
+    value: 75Mi
   - name: REGISTRY
     description: Container registry to import from (internal is image-registry.openshift-image-registry.svc:5000)
     value: ghcr.io
