@@ -6,17 +6,21 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.With;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+@Data
+@With
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-@Builder
-@With
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @Table(name = "FOREST_CLIENT", schema = "THE")
 public class ForestClientEntity extends ForestClientBaseEntity {
 

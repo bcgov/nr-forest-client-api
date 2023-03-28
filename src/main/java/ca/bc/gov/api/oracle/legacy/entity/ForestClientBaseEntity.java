@@ -5,15 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 
+@Data
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-@Builder
-@With
-public class ForestClientBaseEntity {
+public abstract class ForestClientBaseEntity {
   @Id
   @Column("CLIENT_NUMBER")
   private String clientNumber;
