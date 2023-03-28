@@ -16,20 +16,20 @@ import org.springframework.data.relational.core.mapping.Column;
 public abstract class ForestClientBaseEntity {
   @Id
   @Column("CLIENT_NUMBER")
-  private String clientNumber;
+  protected String clientNumber;
 
   @Column("CLIENT_NAME")
-  private String clientName;
+  protected String clientName;
 
   @Column("LEGAL_FIRST_NAME")
-  private String legalFirstName;
+  protected String legalFirstName;
 
   @Column("LEGAL_MIDDLE_NAME")
-  private String legalMiddleName;
+  protected String legalMiddleName;
 
   @Column("CLIENT_STATUS_CODE")
-  private String clientStatusCode;
+  protected String clientStatusCode;
 
   @Column("CLIENT_TYPE_CODE")
-  private String clientTypeCode;
+  protected String clientTypeCode;
 }

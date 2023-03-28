@@ -18,7 +18,6 @@ import org.springframework.data.relational.core.mapping.Table;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "V_CLIENT_PUBLIC", schema = "THE")
 public class ClientPublicViewEntity extends ForestClientBaseEntity {
   public static final String INDIVIDUAL = "I";
