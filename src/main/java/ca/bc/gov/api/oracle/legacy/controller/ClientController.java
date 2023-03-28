@@ -40,7 +40,7 @@ public class ClientController {
 
   @GetMapping("/findByClientNumber/{clientNumber}")
   @Operation(
-      summary = "Search clients by client number",
+      summary = "Search clients by client number. It will return active and inactive",
       responses = {
           @ApiResponse(
               responseCode = "200",
@@ -85,7 +85,7 @@ public class ClientController {
 
   @GetMapping("/findAllNonIndividuals")
   @Operation(
-      summary = "Search all non-individual client",
+      summary = "Search all non-individual client. It will return active and inactive",
       responses = {
           @ApiResponse(
               responseCode = "200",
@@ -122,7 +122,9 @@ public class ClientController {
 
   @GetMapping("/findByNames")
   @Operation(
-      summary = "Search a client by it's name (including first, middle and last) and client type",
+      summary = """
+        Search a client by it's name (including first, middle and last) and client type. 
+        It will return active and inactive""",
       responses = {
           @ApiResponse(
               responseCode = "200",
@@ -208,7 +210,7 @@ public class ClientController {
 
   @GetMapping("/findByAcronym")
   @Operation(
-      summary = "Search a client by it's acronym",
+      summary = "Search a client by it's acronym. It will return active and inactive",
       responses = {
           @ApiResponse(
               responseCode = "200",
