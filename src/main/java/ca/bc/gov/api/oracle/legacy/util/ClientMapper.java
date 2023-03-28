@@ -10,17 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ClientMapper {
-  public static ClientPublicViewDto mapEntityToDto(ClientPublicViewEntity clientEntity) {
-    return ClientPublicViewDto
-        .builder()
-        .clientNumber(clientEntity.getClientNumber())
-        .clientName(clientEntity.getClientName())
-        .legalFirstName(clientEntity.getLegalFirstName())
-        .legalMiddleName(clientEntity.getLegalMiddleName())
-        .clientStatusCode(clientEntity.getClientStatusCode())
-        .clientTypeCode(clientEntity.getClientTypeCode())
-        .build();
-  }
 
   public static ClientPublicViewDto mapEntityToDto(ForestClientEntity clientEntity) {
     return ClientPublicViewDto

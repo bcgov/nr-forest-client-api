@@ -16,26 +16,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @With
 @Builder
 @Table(name = "V_CLIENT_PUBLIC", schema = "THE")
-public class ClientPublicViewEntity {
+public class ClientPublicViewEntity extends ForestClientBaseEntity {
 
   public static final String INDIVIDUAL = "I";
-
-  @Id
-  @Column("CLIENT_NUMBER")
-  private String clientNumber;
-
-  @Column("CLIENT_NAME")
-  private String clientName;
-
-  @Column("LEGAL_FIRST_NAME")
-  private String legalFirstName;
-
-  @Column("LEGAL_MIDDLE_NAME")
-  private String legalMiddleName;
-
-  @Column("CLIENT_STATUS_CODE")
-  private String clientStatusCode;
-
-  @Column("CLIENT_TYPE_CODE")
-  private String clientTypeCode;
 }

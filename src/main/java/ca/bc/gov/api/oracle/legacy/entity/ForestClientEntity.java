@@ -18,26 +18,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @Builder
 @With
 @Table(name = "FOREST_CLIENT", schema = "THE")
-public class ForestClientEntity {
-
-  @Id
-  @Column("CLIENT_NUMBER")
-  private String clientNumber;
-
-  @Column("CLIENT_NAME")
-  private String clientName;
-
-  @Column("LEGAL_FIRST_NAME")
-  private String legalFirstName;
-
-  @Column("LEGAL_MIDDLE_NAME")
-  private String legalMiddleName;
-
-  @Column("CLIENT_STATUS_CODE")
-  private String clientStatusCode;
-
-  @Column("CLIENT_TYPE_CODE")
-  private String clientTypeCode;
+public class ForestClientEntity extends ForestClientBaseEntity {
 
   @Column("BIRTHDATE")
   private LocalDate birthdate;
@@ -86,6 +67,4 @@ public class ForestClientEntity {
 
   @Column("REVISION_COUNT")
   private Long revisionCount;
-
-
 }
