@@ -135,7 +135,7 @@ class ClientControllerIntegrationTest extends AbstractTestContainerIntegrationTe
         .uri(uriBuilder ->
             uriBuilder
                 .path("/api/clients/findByAcronym")
-                .queryParam("acronym", "DOUG FUNNY")
+                .queryParam("acronym", "DOUG")
                 .build()
         )
         .exchange()

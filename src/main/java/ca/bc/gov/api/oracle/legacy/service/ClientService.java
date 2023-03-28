@@ -4,16 +4,15 @@ import static org.springframework.data.relational.core.query.Criteria.where;
 import static org.springframework.data.relational.core.query.Query.query;
 
 import ca.bc.gov.api.oracle.legacy.dto.ClientPublicViewDto;
-import ca.bc.gov.api.oracle.legacy.entity.ClientDoingBusinessAsEntity;
 import ca.bc.gov.api.oracle.legacy.entity.ClientPublicViewEntity;
+import ca.bc.gov.api.oracle.legacy.entity.ForestClientEntity;
 import ca.bc.gov.api.oracle.legacy.exception.ClientNotFoundException;
 import ca.bc.gov.api.oracle.legacy.exception.InvalidClientNumberException;
 import ca.bc.gov.api.oracle.legacy.exception.NoSearchParameterFound;
-import ca.bc.gov.api.oracle.legacy.repository.ClientDoingBusinessAsRepository;
 import ca.bc.gov.api.oracle.legacy.repository.ClientPublicViewRepository;
+import ca.bc.gov.api.oracle.legacy.repository.ForestClientRepository;
 import ca.bc.gov.api.oracle.legacy.util.ClientMapper;
 import java.util.List;
-import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -31,8 +30,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ClientService {
 
-  private final ClientPublicViewRepository clientPublicViewRepository;
-  private final ClientDoingBusinessAsRepository doingBusinessAsRepository;
+  private final ForestClientRepository clientRepository;
   private final R2dbcEntityTemplate template;
 
   public Mono<ClientPublicViewDto> findByClientNumber(String clientNumber) {
@@ -43,12 +41,12 @@ public class ClientService {
       return Mono.error(new InvalidClientNumberException());
     }
 
-    return clientPublicViewRepository
+    return clientRepository
         .findById(clientNumber)
         .doOnNext(entity -> log.info("Found client with number {} as {}", clientNumber, entity))
         .switchIfEmpty(Mono.error(new ClientNotFoundException()))
-        .map(ClientMapper::mapEntityToDto)
-        .flatMap(fillAcronyms());
+        .map(ClientMapper::mapEntityToDto);
+
   }
 
   public Flux<ClientPublicViewDto> findAllNonIndividualClients(
@@ -57,13 +55,12 @@ public class ClientService {
     log.info("Searching all non individual clients on page {} with size {} sorting by {}", page,
         size, sortBy);
 
-    return clientPublicViewRepository
+    return clientRepository
         .findByClientTypeCodeNot(
             ClientPublicViewEntity.INDIVIDUAL,
             PageRequest.of(page, size, Sort.by(sortBy))
         )
         .map(ClientMapper::mapEntityToDto)
-        .flatMap(fillAcronyms())
         .doOnNext(dto -> log.info("Found entry {}", dto));
   }
 
@@ -110,10 +107,9 @@ public class ClientService {
                 query(queryCriteria)
                     .limit(size)
                     .offset((long) page * size),
-                ClientPublicViewEntity.class
+                ForestClientEntity.class
             )
             .map(ClientMapper::mapEntityToDto)
-            .flatMap(fillAcronyms())
             .doOnNext(dto -> log.info("Found entry {}", dto));
   }
 
@@ -125,23 +121,14 @@ public class ClientService {
       return Flux.error(new NoSearchParameterFound("acronym"));
     }
 
-    return doingBusinessAsRepository
-        .findByName(acronym)
+    return clientRepository
+        .findByClientAcronym(acronym)
         .doOnNext(entity -> log.info("Found entity with acronym {} with number {}", acronym,
             entity.getClientNumber()))
         .switchIfEmpty(
             Mono.error(new ClientNotFoundException("No client found with the acronym " + acronym))
         )
-        .flatMap(entity -> findByClientNumber(entity.getClientNumber()));
+        .map(ClientMapper::mapEntityToDto);
   }
 
-  private Function<ClientPublicViewDto, Mono<ClientPublicViewDto>> fillAcronyms() {
-    return clientPublicViewDto ->
-        doingBusinessAsRepository
-            .findByClientNumber(clientPublicViewDto.clientNumber())
-            .map(ClientDoingBusinessAsEntity::getName)
-            .collectList()
-            .map(clientPublicViewDto::withAcronyms)
-            .switchIfEmpty(Mono.just(clientPublicViewDto));
-  }
 }

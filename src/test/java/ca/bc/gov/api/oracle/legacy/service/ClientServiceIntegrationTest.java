@@ -87,12 +87,12 @@ class ClientServiceIntegrationTest extends AbstractTestContainerIntegrationTest 
         "Yansi",
         "ACT",
         "I",
-        List.of("DOUG FUNNY")
+        List.of("DOUG")
     );
     return
         Stream.of(
             Arguments.of(
-                "DOUG FUNNY",
+                "DOUG",
                 false,
                 null,
                 clientPublicViewDto
