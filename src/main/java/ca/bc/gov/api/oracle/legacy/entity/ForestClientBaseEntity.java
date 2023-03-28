@@ -5,31 +5,31 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
-import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 
-@Data
-@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class ForestClientBaseEntity {
+@Data
+@Builder
+@With
+public class ForestClientBaseEntity {
   @Id
   @Column("CLIENT_NUMBER")
-  protected String clientNumber;
+  private String clientNumber;
 
   @Column("CLIENT_NAME")
-  protected String clientName;
+  private String clientName;
 
   @Column("LEGAL_FIRST_NAME")
-  protected String legalFirstName;
+  private String legalFirstName;
 
   @Column("LEGAL_MIDDLE_NAME")
-  protected String legalMiddleName;
+  private String legalMiddleName;
 
   @Column("CLIENT_STATUS_CODE")
-  protected String clientStatusCode;
+  private String clientStatusCode;
 
   @Column("CLIENT_TYPE_CODE")
-  protected String clientTypeCode;
+  private String clientTypeCode;
 }

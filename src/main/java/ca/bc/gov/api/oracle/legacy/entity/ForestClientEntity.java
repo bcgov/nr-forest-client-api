@@ -1,6 +1,8 @@
 package ca.bc.gov.api.oracle.legacy.entity;
 
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,26 +31,7 @@ public class ClientPublicViewEntity extends ForestClientBaseEntity {
 @Builder
 @With
 @Table(name = "FOREST_CLIENT", schema = "THE")
-public class ForestClientEntity {
-
-  @Id
-  @Column("CLIENT_NUMBER")
-  private String clientNumber;
-
-  @Column("CLIENT_NAME")
-  private String clientName;
-
-  @Column("LEGAL_FIRST_NAME")
-  private String legalFirstName;
-
-  @Column("LEGAL_MIDDLE_NAME")
-  private String legalMiddleName;
-
-  @Column("CLIENT_STATUS_CODE")
-  private String clientStatusCode;
-
-  @Column("CLIENT_TYPE_CODE")
-  private String clientTypeCode;
+public class ForestClientEntity extends ForestClientBaseEntity {
 
   @Column("CLIENT_ID_TYPE_CODE")
   private String clientIdTypeCode;
