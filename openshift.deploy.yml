@@ -118,7 +118,7 @@ objects:
         spec:
           volumes:
             - name: certs
-              emptyDir: { }
+              emptyDir: {}
           initContainers:
             - name: ${NAME}-init
               image: ${REGISTRY}/bcgov/${NAME}/init:${ZONE}
@@ -131,6 +131,13 @@ objects:
                       key: oracle-host
                 - name: ORACLEDB_PORT
                   value: "1543"
+              resources:
+                limits:
+                  cpu: ${CPU_LIMIT}
+                  memory: ${MEMORY_LIMIT}
+                requests:
+                  cpu: ${CPU_REQUEST}
+                  memory: ${MEMORY_REQUEST}
               volumeMounts:
                 - mountPath: /cert
                   name: certs
@@ -243,7 +250,7 @@ objects:
       labels:
         template: openshift-${ZONE}
     spec:
-      podSelector: { }
+      podSelector: {}
       ingress:
         - from:
             - namespaceSelector:
@@ -258,10 +265,10 @@ objects:
       labels:
         template: quickstart-network-security-policy
     spec:
-      podSelector: { }
+      podSelector: {}
       ingress:
         - from:
-            - podSelector: { }
+            - podSelector: {}
       policyTypes:
         - Ingress
   - apiVersion: networking.k8s.io/v1
