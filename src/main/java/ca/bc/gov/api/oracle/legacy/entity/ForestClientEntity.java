@@ -23,10 +23,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @ToString(callSuper = true)
 @Table(name = "FOREST_CLIENT", schema = "THE")
 public class ForestClientEntity extends ForestClientBaseEntity {
-
-  @Column("BIRTHDATE")
-  private LocalDate birthdate;
-
+  
   @Column("CLIENT_ID_TYPE_CODE")
   private String clientIdTypeCode;
 
