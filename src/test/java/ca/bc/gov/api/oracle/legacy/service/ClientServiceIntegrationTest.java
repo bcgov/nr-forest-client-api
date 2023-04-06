@@ -87,7 +87,7 @@ class ClientServiceIntegrationTest extends AbstractTestContainerIntegrationTest 
         "Yansi",
         "ACT",
         "I",
-        List.of("DOUG")
+        "DOUG"
     );
     return
         Stream.of(
@@ -120,7 +120,7 @@ class ClientServiceIntegrationTest extends AbstractTestContainerIntegrationTest 
         "bond",
         "ACT",
         "I",
-        List.of()
+        null
     );
 
     return
@@ -129,7 +129,7 @@ class ClientServiceIntegrationTest extends AbstractTestContainerIntegrationTest 
                 "bond",
                 "james",
                 "bond",
-                List.of("I","A"),
+                List.of("I", "A"),
                 false,
                 null,
                 clientPublicViewDto
@@ -138,7 +138,7 @@ class ClientServiceIntegrationTest extends AbstractTestContainerIntegrationTest 
                 null,
                 "james",
                 "bond",
-                List.of("I","A"),
+                List.of("I", "A"),
                 false,
                 null,
                 clientPublicViewDto
@@ -147,7 +147,7 @@ class ClientServiceIntegrationTest extends AbstractTestContainerIntegrationTest 
                 "bond",
                 null,
                 "bond",
-                List.of("I","A"),
+                List.of("I", "A"),
                 false,
                 null,
                 clientPublicViewDto
@@ -156,7 +156,7 @@ class ClientServiceIntegrationTest extends AbstractTestContainerIntegrationTest 
                 "bond",
                 "james",
                 null,
-                List.of("I","A"),
+                List.of("I", "A"),
                 false,
                 null,
                 clientPublicViewDto

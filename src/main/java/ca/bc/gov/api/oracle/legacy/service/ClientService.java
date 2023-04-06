@@ -3,13 +3,12 @@ package ca.bc.gov.api.oracle.legacy.service;
 import static org.springframework.data.relational.core.query.Criteria.where;
 import static org.springframework.data.relational.core.query.Query.query;
 
+import ca.bc.gov.api.oracle.legacy.ApplicationConstants;
 import ca.bc.gov.api.oracle.legacy.dto.ClientPublicViewDto;
-import ca.bc.gov.api.oracle.legacy.entity.ClientPublicViewEntity;
 import ca.bc.gov.api.oracle.legacy.entity.ForestClientEntity;
 import ca.bc.gov.api.oracle.legacy.exception.ClientNotFoundException;
 import ca.bc.gov.api.oracle.legacy.exception.InvalidClientNumberException;
 import ca.bc.gov.api.oracle.legacy.exception.NoSearchParameterFound;
-import ca.bc.gov.api.oracle.legacy.repository.ClientPublicViewRepository;
 import ca.bc.gov.api.oracle.legacy.repository.ForestClientRepository;
 import ca.bc.gov.api.oracle.legacy.util.ClientMapper;
 import java.util.List;
@@ -30,7 +29,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ClientService {
 
-  private final ForestClientRepository clientRepository;
+  private final ForestClientRepository forestClientRepository;
   private final R2dbcEntityTemplate template;
 
   public Mono<ClientPublicViewDto> findByClientNumber(String clientNumber) {
@@ -41,12 +40,11 @@ public class ClientService {
       return Mono.error(new InvalidClientNumberException());
     }
 
-    return clientRepository
+    return forestClientRepository
         .findById(clientNumber)
         .doOnNext(entity -> log.info("Found client with number {} as {}", clientNumber, entity))
         .switchIfEmpty(Mono.error(new ClientNotFoundException()))
         .map(ClientMapper::mapEntityToDto);
-
   }
 
   public Flux<ClientPublicViewDto> findAllNonIndividualClients(
@@ -55,9 +53,9 @@ public class ClientService {
     log.info("Searching all non individual clients on page {} with size {} sorting by {}", page,
         size, sortBy);
 
-    return clientRepository
+    return forestClientRepository
         .findByClientTypeCodeNot(
-            ClientPublicViewEntity.INDIVIDUAL,
+            ApplicationConstants.INDIVIDUAL,
             PageRequest.of(page, size, Sort.by(sortBy))
         )
         .map(ClientMapper::mapEntityToDto)
@@ -121,7 +119,7 @@ public class ClientService {
       return Flux.error(new NoSearchParameterFound("acronym"));
     }
 
-    return clientRepository
+    return forestClientRepository
         .findByClientAcronym(acronym)
         .doOnNext(entity -> log.info("Found entity with acronym {} with number {}", acronym,
             entity.getClientNumber()))

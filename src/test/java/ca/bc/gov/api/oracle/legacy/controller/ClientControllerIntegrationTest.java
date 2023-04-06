@@ -71,7 +71,7 @@ class ClientControllerIntegrationTest extends AbstractTestContainerIntegrationTe
         .exchange()
         .expectStatus().isOk()
         .expectBodyList(ClientPublicViewDto.class)
-        .hasSize(6);
+        .hasSize(7);
   }
 
   @Test

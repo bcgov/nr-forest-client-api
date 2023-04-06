@@ -1,8 +1,6 @@
 package ca.bc.gov.api.oracle.legacy.entity;
 
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,16 +12,44 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+<<<<<<<< HEAD:src/main/java/ca/bc/gov/api/oracle/legacy/entity/ClientPublicViewEntity.java
 @Data
 @With
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
+@NoArgsConstructor
+@Table(name = "V_CLIENT_PUBLIC", schema = "THE")
+public class ClientPublicViewEntity extends ForestClientBaseEntity {
+  public static final String INDIVIDUAL = "I";
+========
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@Builder
+@With
 @Table(name = "FOREST_CLIENT", schema = "THE")
-public class ForestClientEntity extends ForestClientBaseEntity {
-  
+public class ForestClientEntity {
+
+  @Id
+  @Column("CLIENT_NUMBER")
+  private String clientNumber;
+
+  @Column("CLIENT_NAME")
+  private String clientName;
+
+  @Column("LEGAL_FIRST_NAME")
+  private String legalFirstName;
+
+  @Column("LEGAL_MIDDLE_NAME")
+  private String legalMiddleName;
+
+  @Column("CLIENT_STATUS_CODE")
+  private String clientStatusCode;
+
+  @Column("CLIENT_TYPE_CODE")
+  private String clientTypeCode;
+
   @Column("CLIENT_ID_TYPE_CODE")
   private String clientIdTypeCode;
 
@@ -48,24 +74,5 @@ public class ForestClientEntity extends ForestClientBaseEntity {
   @Column("CLIENT_COMMENT")
   private String clientComment;
 
-  @Column("ADD_TIMESTAMP")
-  private LocalDateTime addTimestamp;
-
-  @Column("ADD_USERID")
-  private String addUserId;
-
-  @Column("ADD_ORG_UNIT")
-  private Long addOrgUnit;
-
-  @Column("UPDATE_TIMESTAMP")
-  private LocalDateTime updateTimestamp;
-
-  @Column("UPDATE_USERID")
-  private String updateUserId;
-
-  @Column("UPDATE_ORG_UNIT")
-  private Long updateOrgUnit;
-
-  @Column("REVISION_COUNT")
-  private Long revisionCount;
+>>>>>>>> 4d191c8 (fix: changing acronym to singular):src/main/java/ca/bc/gov/api/oracle/legacy/entity/ForestClientEntity.java
 }
