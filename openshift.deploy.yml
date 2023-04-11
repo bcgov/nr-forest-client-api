@@ -153,7 +153,7 @@ objects:
                   mountPath: /cert
               resources:
                 limits:
-                  cpu: 128Mi
+                  cpu: 50m
                   memory: 256Mi
                 requests:
                   cpu: ${CPU_REQUEST}
