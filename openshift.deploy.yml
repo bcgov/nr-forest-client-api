@@ -154,10 +154,10 @@ objects:
               resources:
                 limits:
                   cpu: ${CPU_LIMIT}
-                  memory: 512Mi
+                  memory: ${MEMORY_LIMIT}
                 requests:
                   cpu: ${CPU_REQUEST}
-                  memory: 512Mi
+                  memory: ${MEMORY_REQUEST}
           containers:
             - image: ${NAME}-${ZONE}-${COMPONENT}:${IMAGE_TAG}
               imagePullPolicy: Always

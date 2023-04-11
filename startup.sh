@@ -15,8 +15,8 @@ generate_cert() {
 
 if [ "$(ls -A $cert_folder)" ]; then
   echo "The $cert_folder folder is not empty."
-  if [ -e "$cert_file" ]; then
-    echo "The $cert_file certificate file is present."
+  if [ -e "$cert_folder/$cert_file" ]; then
+    echo "The "$cert_folder/$cert_file" certificate file is present."
   else
     generate_cert
   fi

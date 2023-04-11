@@ -47,6 +47,8 @@ public class InstallCert {
 
   public static void main(String[] args) throws Exception {
 
+    long beforeUsedMem=Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory();
+
     String host = null;
     int port = -1;
     char[] passphrase = null;
@@ -216,6 +218,16 @@ public class InstallCert {
     OutputStream out = new FileOutputStream("jssecacerts");
     ks.store(out, passphrase);
     out.close();
+
+    long afterUsedMem=Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory();
+
+
+    long actualMemUsed=afterUsedMem-beforeUsedMem;
+
+    System.out.println("Memory Utilization");
+    System.out.println("Before " + beforeUsedMem);
+    System.out.println("After " + afterUsedMem);
+    System.out.println("Diff " + actualMemUsed);
 
   }
 

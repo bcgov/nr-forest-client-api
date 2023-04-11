@@ -5,6 +5,7 @@ WORKDIR /app
 ENV LANG en_CA.UTF-8
 ENV LANGUAGE en_CA.UTF-8
 ENV LC_ALL en_CA.UTF-8
+ENV JAVA_OPS -Xms20m -Xmx20m
 
 COPY startup.sh .
 COPY InstallCert.java .
