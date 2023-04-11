@@ -71,7 +71,7 @@ class ClientControllerIntegrationTest extends AbstractTestContainerIntegrationTe
         .exchange()
         .expectStatus().isOk()
         .expectBodyList(ClientPublicViewDto.class)
-        .hasSize(6);
+        .hasSize(7);
   }
 
   @Test
@@ -135,7 +135,7 @@ class ClientControllerIntegrationTest extends AbstractTestContainerIntegrationTe
         .uri(uriBuilder ->
             uriBuilder
                 .path("/api/clients/findByAcronym")
-                .queryParam("acronym", "DOUG FUNNY")
+                .queryParam("acronym", "DOUG")
                 .build()
         )
         .exchange()

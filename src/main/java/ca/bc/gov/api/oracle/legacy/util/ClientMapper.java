@@ -1,13 +1,13 @@
 package ca.bc.gov.api.oracle.legacy.util;
 
 import ca.bc.gov.api.oracle.legacy.dto.ClientPublicViewDto;
-import ca.bc.gov.api.oracle.legacy.entity.ClientPublicViewEntity;
+import ca.bc.gov.api.oracle.legacy.entity.ForestClientEntity;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ClientMapper {
-  public static ClientPublicViewDto mapEntityToDto(ClientPublicViewEntity clientEntity) {
+  public static ClientPublicViewDto mapEntityToDto(ForestClientEntity clientEntity) {
     return ClientPublicViewDto
         .builder()
         .clientNumber(clientEntity.getClientNumber())
@@ -16,6 +16,7 @@ public class ClientMapper {
         .legalMiddleName(clientEntity.getLegalMiddleName())
         .clientStatusCode(clientEntity.getClientStatusCode())
         .clientTypeCode(clientEntity.getClientTypeCode())
+        .acronym(clientEntity.getClientAcronym())
         .build();
   }
 }
