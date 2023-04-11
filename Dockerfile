@@ -3,6 +3,7 @@ FROM alpine:3.17.3@sha256:b6ca290b6b4cdcca5b3db3ffa338ee0285c11744b4a6abaa962774
 ENV LANG en_CA.UTF-8
 ENV LANGUAGE en_CA.UTF-8
 ENV LC_ALL en_CA.UTF-8
+ENV JAVA_OPS -Xms20m -Xmx20m
 
 RUN apk --no-cache add openssl openjdk8
 
