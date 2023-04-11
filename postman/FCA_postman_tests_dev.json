@@ -8,8 +8,7 @@
       "clientNumber": "00001356",
       "clientName": "BALFOUR FOREST PRODUCTS INC.",
       "clientStatusCode": "ACT",
-      "clientTypeCode": "U",
-      "acronyms":[]
+      "clientTypeCode": "U"
     },
     "FIND_CODE": 200,
     "BYNAME_QUERY_STRING": "clientTypeCodes=G",
@@ -30,10 +29,7 @@
     "BYACRONYM_QUERY_STRING": "acronym=TEST",
     "BYACRONYM_CODE": 200,
     "BYACRONYM_NUMBER": [
-      "00152207",
-      "00014992",
-      "00169575",
-      "00180622"
+      "00169568"
     ],
     "LOCATIONS_NUMBER": "00001356",
     "LOCATIONS_QUERY_STRING": "page=0",
@@ -62,10 +58,7 @@
     "BYACRONYM_QUERY_STRING": "acronym=TEST",
     "BYACRONYM_CODE": 200,
     "BYACRONYM_NUMBER": [
-      "00152207",
-      "00014992",
-      "00169575",
-      "00180622"
+      "00169568"
     ],
     "LOCATIONS_NUMBER": "00001356",
     "LOCATIONS_QUERY_STRING": "",
@@ -105,10 +98,7 @@
     "BYACRONYM_QUERY_STRING": "acronym=TEST",
     "BYACRONYM_CODE": 200,
     "BYACRONYM_NUMBER": [
-      "00152207",
-      "00014992",
-      "00169575",
-      "00180622"
+      "00169568"
     ],
     "LOCATIONS_NUMBER": "00001356",
     "LOCATIONS_QUERY_STRING": "page=0&size=2",
@@ -128,8 +118,7 @@
       "clientNumber": "00001356",
       "clientName": "BALFOUR FOREST PRODUCTS INC.",
       "clientStatusCode": "ACT",
-      "clientTypeCode": "U",
-      "acronyms":[]
+      "clientTypeCode": "U"
     },
     "FIND_CODE": 200,
     "BYNAME_QUERY_STRING": "clientFirstName=james&page=0&size=1",
@@ -141,10 +130,7 @@
     "BYACRONYM_QUERY_STRING": "acronym=TEST",
     "BYACRONYM_CODE": 200,
     "BYACRONYM_NUMBER": [
-      "00152207",
-      "00014992",
-      "00169575",
-      "00180622"
+      "00169568"
     ],
     "LOCATIONS_NUMBER": "00001356",
     "LOCATIONS_QUERY_STRING": "page=1",
@@ -161,8 +147,7 @@
       "clientNumber": "00001356",
       "clientName": "BALFOUR FOREST PRODUCTS INC.",
       "clientStatusCode": "ACT",
-      "clientTypeCode": "U",
-      "acronyms":[]
+      "clientTypeCode": "U"
     },
     "FIND_CODE": 200,
     "BYNAME_QUERY_STRING": "clientName=MEGIVERN&clientMiddleName=Fabiana&clientFirstName=JAMES",
@@ -174,10 +159,7 @@
     "BYACRONYM_QUERY_STRING": "acronym=TEST",
     "BYACRONYM_CODE": 200,
     "BYACRONYM_NUMBER": [
-      "00152207",
-      "00014992",
-      "00169575",
-      "00180622"
+      "00169568"
     ],
     "LOCATIONS_NUMBER": "00001356",
     "LOCATIONS_QUERY_STRING": "page=1",
@@ -194,8 +176,7 @@
       "clientNumber": "00001356",
       "clientName": "BALFOUR FOREST PRODUCTS INC.",
       "clientStatusCode": "ACT",
-      "clientTypeCode": "U",
-      "acronyms":[]
+      "clientTypeCode": "U"
     },
     "FIND_CODE": 200,
     "BYNAME_QUERY_STRING": "",
@@ -205,10 +186,7 @@
     "BYACRONYM_QUERY_STRING": "acronym=TEST",
     "BYACRONYM_CODE": 200,
     "BYACRONYM_NUMBER": [
-      "00152207",
-      "00014992",
-      "00169575",
-      "00180622"
+      "00169568"
     ],
     "LOCATIONS_NUMBER": "00001356",
     "LOCATIONS_QUERY_STRING": "page=1",

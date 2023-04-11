@@ -3,7 +3,6 @@ package ca.bc.gov.api.oracle.legacy.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.List;
 import lombok.Builder;
 import lombok.With;
 
@@ -20,7 +19,7 @@ import lombok.With;
           "legalMiddleName": "Canter",
           "clientStatusCode": "ACT",
           "clientTypeCode": "I",
-          "acronyms":["JAMES BAXTER","JAMES C. BAXTER","JIMMIE"]
+          "acronym":"JAMES BAXTER"
         }"""
 )
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -76,8 +75,8 @@ public record ClientPublicViewDto(
         U (Unregistered Company)""",
         example = "I")
     String clientTypeCode,
-    @Schema(description = "A list of possible acronyms for this client",
-        example = "[\"JAMES BAXTER\",\"JAMES C. BAXTER\",\"JIMMIE\"]")
-    List<String> acronyms
+    @Schema(description = "An acronyms for this client",
+        example = "JAMES BAXTER")
+    String acronym
 ) {
 }
