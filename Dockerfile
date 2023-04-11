@@ -6,6 +6,8 @@ ENV LC_ALL en_CA.UTF-8
 
 WORKDIR /app
 
+RUN apk --no-cache add openssl
+
 COPY startup.sh .
 
 RUN chmod g+w /app && \
