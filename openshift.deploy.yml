@@ -153,11 +153,11 @@ objects:
                   mountPath: /cert
               resources:
                 limits:
-                  cpu: ${CPU_LIMIT}
-                  memory: ${MEMORY_LIMIT}
+                  cpu: 128Mi
+                  memory: 256Mi
                 requests:
                   cpu: ${CPU_REQUEST}
-                  memory: ${MEMORY_REQUEST}
+                  memory: 256Mi
           containers:
             - image: ${NAME}-${ZONE}-${COMPONENT}:${IMAGE_TAG}
               imagePullPolicy: Always
