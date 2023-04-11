@@ -60,7 +60,7 @@ parameters:
     required: true
   - name: CERT_PVC_SIZE
     description: The amount of storage the cert PVC should have
-    value: 10Mi
+    value: 25Mi
 objects:
   - apiVersion: v1
     kind: Secret
@@ -109,7 +109,7 @@ objects:
     metadata:
       labels:
         app: ${NAME}-${ZONE}
-      name: ${NAME}-${ZONE}-${COMPONENT}-certs
+      name: ${NAME}-${ZONE}-${COMPONENT}
     spec:
       replicas: 1
       triggers:
@@ -133,9 +133,9 @@ objects:
             deploymentconfig: ${NAME}-${ZONE}-${COMPONENT}
         spec:
           volumes:
-            - name: ${NAME}-${ZONE}-${COMPONENT}-certs
+            - name: ${NAME}-${ZONE}-${COMPONENT}
               persistentVolumeClaim:
-                claimName: ${NAME}-${ZONE}-${COMPONENT}-certs
+                claimName: ${NAME}-${ZONE}-${COMPONENT}
           initContainers:
             - name: ${NAME}-init
               image: ${REGISTRY}/bcgov/${NAME}/init:${ZONE}
@@ -149,7 +149,7 @@ objects:
                 - name: ORACLEDB_PORT
                   value: "1543"
               volumeMounts:
-                - name: ${NAME}-${ZONE}-${COMPONENT}-certs
+                - name: ${NAME}-${ZONE}-${COMPONENT}
                   mountPath: /cert
               resources:
                 limits:
@@ -228,7 +228,7 @@ objects:
                 timeoutSeconds: 5
               volumeMounts:
                 - mountPath: /cert
-                  name: ${NAME}-${ZONE}-${COMPONENT}-certs
+                  name: ${NAME}-${ZONE}-${COMPONENT}
   - apiVersion: v1
     kind: Service
     metadata:
