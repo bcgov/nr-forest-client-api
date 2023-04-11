@@ -58,6 +58,9 @@ parameters:
   - name: ORACLEDB_SECRET
     description: Oracle database keystore secret/password
     required: true
+  - name: CERT_PVC_SIZE
+    description: The amount of storage the cert PVC should have
+    value: 25Mi
 objects:
   - apiVersion: v1
     kind: Secret
@@ -89,6 +92,19 @@ objects:
           referencePolicy:
             type: Local
   - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      labels:
+        app: ${NAME}-${ZONE}
+      name: ${NAME}-${ZONE}-${COMPONENT}
+    spec:
+      accessModes:
+        - ReadWriteMany
+      resources:
+        requests:
+          storage: ${CERT_PVC_SIZE}
+      storageClassName: netapp-file-standard
+  - apiVersion: v1
     kind: DeploymentConfig
     metadata:
       labels:
@@ -117,8 +133,9 @@ objects:
             deploymentconfig: ${NAME}-${ZONE}-${COMPONENT}
         spec:
           volumes:
-            - name: certs
-              emptyDir: {}
+            - name: ${NAME}-${ZONE}-${COMPONENT}
+              persistentVolumeClaim:
+                claimName: ${NAME}-${ZONE}-${COMPONENT}
           initContainers:
             - name: ${NAME}-init
               image: ${REGISTRY}/bcgov/${NAME}/init:${ZONE}
@@ -129,11 +146,16 @@ objects:
                     secretKeyRef:
                       name: ${NAME}-${ZONE}-${COMPONENT}
                       key: oracle-host
+                - name: ORACLEDB_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${NAME}-${ZONE}-${COMPONENT}
+                      key: oracle-secret
                 - name: ORACLEDB_PORT
                   value: "1543"
               volumeMounts:
-                - mountPath: /cert
-                  name: certs
+                - name: ${NAME}-${ZONE}-${COMPONENT}
+                  mountPath: /cert
               resources:
                 limits:
                   cpu: ${CPU_LIMIT}
@@ -211,7 +233,7 @@ objects:
                 timeoutSeconds: 5
               volumeMounts:
                 - mountPath: /cert
-                  name: certs
+                  name: ${NAME}-${ZONE}-${COMPONENT}
   - apiVersion: v1
     kind: Service
     metadata:
