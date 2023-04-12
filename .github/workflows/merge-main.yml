@@ -18,7 +18,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-
   codeql:
     name: Semantic Code Analysis
     runs-on: ubuntu-22.04
@@ -95,6 +94,8 @@ jobs:
       - trivy-repo
       - sonarcloud
     runs-on: ubuntu-22.04
+    outputs:
+      tag: ${{ steps.changelog.outputs.tag }}
     permissions:
       contents: write
       discussions: write
@@ -105,6 +106,7 @@ jobs:
       DOMAIN: apps.silver.devops.gov.bc.ca
     steps:
       - uses: actions/checkout@v3
+
       - name: Broker
         id: broker
         uses: bcgov-nr/action-vault-broker-approle@v0.0.5
@@ -114,16 +116,18 @@ jobs:
           project_name: client
           app_name: app-client
           environment: test
+
       - name: Import Secrets
         id: secrets
         uses: hashicorp/vault-action@v2.5.0
         with:
           url: https://vault-iit.apps.silver.devops.gov.bc.ca
           token: ${{ steps.broker.outputs.vault_token }}
-          exportEnv: 'false'
+          exportEnv: "false"
           secrets: |
             apps/data/test/client/app-client/db_proxy_read_only db_username | VAULT_DB_USER;
             apps/data/test/client/app-client/db_proxy_read_only db_password | VAULT_DB_PASS;
+
       - name: Deploys
         uses: bcgov-nr/action-deployer-openshift@v1.0.2
         with:
@@ -136,13 +140,14 @@ jobs:
           penetration_test: true
           parameters:
             -p ZONE=${{ env.ZONE }} -p NAME=${{ github.event.repository.name }}
-            -p PROMOTE=${{ github.repository }}/api:${{ env.ZONE }}            
+            -p PROMOTE=${{ github.repository }}/api:${{ env.ZONE }}
             -p ORACLEDB_USER=${{ steps.secrets.outputs.VAULT_DB_USER }}
             -p ORACLEDB_PASSWORD=${{ steps.secrets.outputs.VAULT_DB_PASS }}
             -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }}
             -p ORACLEDB_HOST=${{ secrets.ORACLEDB_HOST }}
             -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }}
             -p ORACLEDB_SECRET=${{ secrets.ORACLEDB_SECRET }}
+
       - name: Publish API
         uses: bcgov-nr/action-gwa-publish@v0.1.0
         with:
@@ -173,10 +178,10 @@ jobs:
         continue-on-error: true
         with:
           github-token: ${{ github.token }}
-          output-file: 'CHANGELOG.md'
-          skip-version-file: 'true'
-          skip-commit: 'true'
-          git-push: 'true'
+          output-file: "CHANGELOG.md"
+          skip-version-file: "true"
+          skip-commit: "true"
+          git-push: "true"
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
@@ -192,46 +197,37 @@ jobs:
       - name: Log in to the Container registry
         uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
         with:
-          registry: ghcr.io
+          registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Promoting API
+  image-promotions:
+    name: Image Promotions
+    needs:
+      - deploy-test
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        component: [api, init]
+        tag: [prod, "${{ needs.deploy-test.outputs.tag }}"]
+    steps:
+      - name: Promoting ${{ matrix.component }}
+        if: ${{ matrix.tag != '' }}
         uses: shrink/actions-docker-registry-tag@v3
         with:
-          registry: ghcr.io
-          repository: ${{ github.repository }}/api
+          registry: ${{ env.REGISTRY }}
+          repository: ${{ github.repository }}/${{ matrix.component }}
           target: test
-          tags: prod
+          tags: ${{ matrix.tag }}
 
-      - name: Promoting API
-        uses: shrink/actions-docker-registry-tag@v3
-        with:
-          registry: ghcr.io
-          repository: ${{ github.repository }}/api
-          target: test
-          tags: ${{ steps.changelog.outputs.tag }}
-
-      - name: Promoting Init
-        uses: shrink/actions-docker-registry-tag@v3
-        with:
-          registry: ghcr.io
-          repository: ${{ github.repository }}/init
-          target: test
-          tags: prod
-
-      - name: Promoting Init
-        uses: shrink/actions-docker-registry-tag@v3
-        with:
-          registry: ghcr.io
-          repository: ${{ github.repository }}/init
-          target: test
-          tags: ${{ steps.changelog.outputs.tag }}
+      - name: Promoting ${{ matrix.component }}
+        if: ${{ matrix.tag == '' }}
+        run: echo "Tag is empty, promotion step skipped"
 
   deploy-prod:
     name: PROD Deployment
     needs:
-      - deploy-test
+      - image-promotions
     runs-on: ubuntu-22.04
     environment:
       name: prod
@@ -257,7 +253,7 @@ jobs:
         with:
           url: https://vault-iit.apps.silver.devops.gov.bc.ca
           token: ${{ steps.broker.outputs.vault_token }}
-          exportEnv: 'false'
+          exportEnv: "false"
           secrets: |
             apps/data/prod/client/app-client/db_proxy_read_only db_username | VAULT_DB_USER;
             apps/data/prod/client/app-client/db_proxy_read_only db_password | VAULT_DB_PASS;
@@ -273,7 +269,7 @@ jobs:
           verification_path: /health
           parameters:
             -p ZONE=${{ env.ZONE }} -p NAME=${{ github.event.repository.name }}
-            -p PROMOTE=${{ github.repository }}/api:${{ env.ZONE }}            
+            -p PROMOTE=${{ github.repository }}/api:${{ env.ZONE }}
             -p ORACLEDB_USER=${{ steps.secrets.outputs.VAULT_DB_USER }}
             -p ORACLEDB_PASSWORD=${{ steps.secrets.outputs.VAULT_DB_PASS }}
             -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }}
