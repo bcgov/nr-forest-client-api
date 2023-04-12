@@ -1,7 +1,8 @@
 name: Pull Request Open
 
 on:
-  pull_request:
+  workflow_dispatch:
+  # pull_request:
 
 env:
   REGISTRY: ghcr.io
@@ -47,10 +48,10 @@ jobs:
         id: changelog
         with:
           github-token: ${{ github.token }}
-          output-file: 'CHANGELOG.md'
-          skip-version-file: 'true'
-          skip-commit: 'true'
-          git-push: 'false'
+          output-file: "CHANGELOG.md"
+          skip-version-file: "true"
+          skip-commit: "true"
+          git-push: "false"
           git-branch: refs/heads/${{ github.head_ref }}
 
       - name: Checkout pr
@@ -65,7 +66,7 @@ jobs:
         with:
           message: |
             # Current changelog
-            
+
             ${{ steps.changelog.outputs.clean_changelog }}
           comment_includes: Current changelog
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -88,10 +89,9 @@ jobs:
 
             Any successful deployments (not always required) will be available below.
             [API](https://${{ env.NAME }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}/) available
-            
+
             Once merged, code will be promoted and handed off to following workflow run.
             [Main Merge Workflow](https://github.com/${{ github.repository }}/actions/workflows/merge-main.yml)
-
 
   build-backend:
     name: Backend Image Build
@@ -118,9 +118,9 @@ jobs:
 
       - uses: graalvm/setup-graalvm@v1
         with:
-          version: '22.3.0'
-          java-version: '17'
-          components: 'native-image'
+          version: "22.3.0"
+          java-version: "17"
+          components: "native-image"
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build App
@@ -192,7 +192,7 @@ jobs:
         with:
           url: https://vault-iit.apps.silver.devops.gov.bc.ca
           token: ${{ steps.broker.outputs.vault_token }}
-          exportEnv: 'false'
+          exportEnv: "false"
           secrets: |
             apps/data/dev/client/app-client/db_proxy_read_only db_username | VAULT_DB_USER;
             apps/data/dev/client/app-client/db_proxy_read_only db_password | VAULT_DB_PASS;
@@ -208,7 +208,7 @@ jobs:
           verification_path: /health
           parameters:
             -p ZONE=${{ github.event.number }} -p NAME=${{ github.event.repository.name }}
-            -p PROMOTE=${{ github.repository }}/api:${{ github.event.number }}            
+            -p PROMOTE=${{ github.repository }}/api:${{ github.event.number }}
             -p ORACLEDB_USER=${{ steps.secrets.outputs.VAULT_DB_USER }}
             -p ORACLEDB_PASSWORD=${{ steps.secrets.outputs.VAULT_DB_PASS }}
             -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }}
@@ -257,7 +257,7 @@ jobs:
         uses: mikepenz/action-junit-report@v3
         if: success() || failure() # always run even if the previous step fails
         with:
-          report_paths: 'postman/report.xml'
+          report_paths: "postman/report.xml"
           commit: ${{ github.event.pull_request.head.sha }}
           summary: Postman Tests
           detailed_summary: true
