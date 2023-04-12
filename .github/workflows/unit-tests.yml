@@ -1,17 +1,17 @@
 name: Unit Tests and Analysis
 
 on:
-  # pull_request:
-  #   types:
-  #     - opened
-  #     - reopened
-  #     - synchronize
-  #     - ready_for_review
-  # push:
-  #   branches:
-  #     - main
-  #   paths-ignore:
-  #     - "**.md"
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "**.md"
   workflow_dispatch:
 
 concurrency:
