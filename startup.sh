@@ -12,9 +12,8 @@ generate_cert() {
 
   openssl s_client -connect ${ORACLEDB_HOST}:${ORACLEDB_PORT} -showcerts </dev/null | openssl x509 -outform pem > $cert_folder/${ORACLEDB_HOST}.pem
   openssl x509 -outform der -in $cert_folder/${ORACLEDB_HOST}.pem -out $cert_folder/${ORACLEDB_HOST}.der
-  keytool -import -alias ${ORACLEDB_HOST} -keystore $cert_file -file $cert_folder/${ORACLEDB_HOST}.der -storepass ${ORACLEDB_SECRET} -noprompt
+  keytool -import -alias ${ORACLEDB_HOST} -keystore $cert_folder/$cert_file -file $cert_folder/${ORACLEDB_HOST}.der -storepass ${ORACLEDB_SECRET} -noprompt
 
-  cp $cert_file $cert_folder/$cert_file
   echo "Generated $cert_file and copied it to $cert_folder."
 }
 
