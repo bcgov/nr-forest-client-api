@@ -212,12 +212,17 @@ jobs:
         tag: [prod, "${{ needs.deploy-test.outputs.tag }}"]
     steps:
       - name: Promoting ${{ matrix.component }}
+        if: ${{ matrix.tag }} == ''
         uses: shrink/actions-docker-registry-tag@v3
         with:
           registry: ${{ env.REGISTRY }}
           repository: ${{ github.repository }}/${{ matrix.component }}
           target: test
           tags: ${{ matrix.tag }}
+
+      - name: Promoting ${{ matrix.component }}
+        if: ${{ matrix.tag }} != ''
+        run: echo "Tag is empty, promotion step skipped"
 
   deploy-prod:
     name: PROD Deployment
