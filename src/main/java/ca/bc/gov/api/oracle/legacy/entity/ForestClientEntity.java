@@ -1,8 +1,5 @@
 package ca.bc.gov.api.oracle.legacy.entity;
 
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,7 +7,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.With;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -23,7 +19,6 @@ import org.springframework.data.relational.core.mapping.Table;
 @ToString(callSuper = true)
 @Table(name = "FOREST_CLIENT", schema = "THE")
 public class ForestClientEntity extends ForestClientBaseEntity {
-
 
   @Column("CLIENT_ID_TYPE_CODE")
   private String clientIdTypeCode;

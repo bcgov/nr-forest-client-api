@@ -2,6 +2,7 @@ package ca.bc.gov.api.oracle.legacy.controller;
 
 import ca.bc.gov.api.oracle.legacy.dto.ClientLocationDto;
 import ca.bc.gov.api.oracle.legacy.dto.ClientPublicViewDto;
+import ca.bc.gov.api.oracle.legacy.dto.ClientViewDto;
 import ca.bc.gov.api.oracle.legacy.service.ClientLocationService;
 import ca.bc.gov.api.oracle.legacy.service.ClientService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -83,6 +84,51 @@ public class ClientController {
     return clientService.findByClientNumber(clientNumber);
   }
 
+  @GetMapping("/findByClientNumberOrName/{clientNumberOrName}")
+  @Operation(
+      summary = "Search clients by client number or client name. It will return active and inactive",
+      responses = {
+          @ApiResponse(
+              responseCode = "200",
+              description = "Returns a client based on it's number or name",
+              content = @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(
+                      name = "ClientView",
+                      implementation = ClientPublicViewDto.class
+                  )
+              )
+          ),
+          @ApiResponse(
+              responseCode = "404",
+              description = "Unable find a client based on the provided parameter",
+              content = @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = String.class),
+                  examples = {@ExampleObject(value = "Client not found")}
+              )
+          )
+      }
+  )
+  public Flux<ClientViewDto> findByClientNumberOrName(
+      @Parameter(description = "The one index page number, defaults to 0", example = "0")
+      @RequestParam(value = "page", required = false, defaultValue = "0")
+      Integer page,
+
+      @Parameter(description = "The amount of data to be returned per page, defaults to 10",
+          example = "10")
+      @RequestParam(value = "size", required = false, defaultValue = "10")
+      Integer size,
+
+      @Parameter(
+          description = "The client number to look for",
+          example = "00000002"
+      )
+      @PathVariable String clientNumberOrName
+  ) {
+    return clientService.findByClientNumberOrName(page, size, clientNumberOrName);
+  }
+
   @GetMapping("/findAllNonIndividuals")
   @Operation(
       summary = "Search all non-individual client. It will return active and inactive",
@@ -123,8 +169,8 @@ public class ClientController {
   @GetMapping("/findByNames")
   @Operation(
       summary = """
-        Search a client by it's name (including first, middle and last) and client type. 
-        It will return active and inactive""",
+          Search a client by it's name (including first, middle and last) and client type. 
+          It will return active and inactive""",
       responses = {
           @ApiResponse(
               responseCode = "200",

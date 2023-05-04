@@ -3,11 +3,17 @@ package ca.bc.gov.api.oracle.legacy.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.With;
+import lombok.experimental.SuperBuilder;
 
-@Builder
+@Data
+@SuperBuilder
 @With
+@NoArgsConstructor
+@AllArgsConstructor
 @Schema(
     description = "A snapshot of the client information",
     title = "ClientDetails",
@@ -24,28 +30,28 @@ import lombok.With;
 )
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record ClientPublicViewDto(
+public class ClientPublicViewDto {
     @Schema(description = "The client number", example = "00000002")
-    String clientNumber,
+    protected String clientNumber;
 
     @Schema(description = """
         The client last name if it's an individual or
          the company name if it's a company""",
         example = "BAXTER"
     )
-    String clientName,
+    protected String clientName;
 
     @Schema(description = """
         The first name of the individual,
          or null if it's a company""",
         example = "JAMES")
-    String legalFirstName,
+    protected String legalFirstName;
 
     @Schema(description = """
         The middle name of the individual,
          or null if it's a company""",
         example = "Canter")
-    String legalMiddleName,
+    protected String legalMiddleName;
 
     @Schema(description = """
         The status of the client, can be any of the following:<br>
@@ -56,7 +62,7 @@ public record ClientPublicViewDto(
         REC (Receivership)<br>
         SPN (Suspended)""",
         example = "ACT")
-    String clientStatusCode,
+    protected String clientStatusCode;
 
     @Schema(description = """
         The type of client, can be any of the following:<br>
@@ -74,9 +80,9 @@ public record ClientPublicViewDto(
         T (First Nation Tribal Council)<br>
         U (Unregistered Company)""",
         example = "I")
-    String clientTypeCode,
+    protected String clientTypeCode;
+
     @Schema(description = "An acronyms for this client",
         example = "JAMES BAXTER")
-    String acronym
-) {
+    protected String acronym;
 }

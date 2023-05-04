@@ -5,6 +5,9 @@ import static org.springframework.data.relational.core.query.Query.query;
 
 import ca.bc.gov.api.oracle.legacy.ApplicationConstants;
 import ca.bc.gov.api.oracle.legacy.dto.ClientPublicViewDto;
+import ca.bc.gov.api.oracle.legacy.dto.ClientStatusCodeEnum;
+import ca.bc.gov.api.oracle.legacy.dto.ClientTypeCodeEnum;
+import ca.bc.gov.api.oracle.legacy.dto.ClientViewDto;
 import ca.bc.gov.api.oracle.legacy.entity.ForestClientEntity;
 import ca.bc.gov.api.oracle.legacy.exception.ClientNotFoundException;
 import ca.bc.gov.api.oracle.legacy.exception.InvalidClientNumberException;
@@ -45,6 +48,27 @@ public class ClientService {
         .doOnNext(entity -> log.info("Found client with number {} as {}", clientNumber, entity))
         .switchIfEmpty(Mono.error(new ClientNotFoundException()))
         .map(ClientMapper::mapEntityToDto);
+  }
+
+  public Flux<ClientViewDto> findByClientNumberOrName(
+      int page, int size, String clientNumberOrName) {
+
+    log.info("Searching for client with number or name {}", clientNumberOrName);
+
+    return forestClientRepository
+        .findByClientNumberContainingOrClientNameContaining(
+            clientNumberOrName,
+            clientNumberOrName,
+            PageRequest.of(page, size))
+        .switchIfEmpty(Mono.error(new ClientNotFoundException()))
+        .map(ClientMapper::mapEntityToClientViewDto)
+        .map(clientViewDto -> {
+          clientViewDto.setClientTypeCodeDescription(
+              ClientTypeCodeEnum.valueOf(clientViewDto.getClientTypeCode()).getDescription());
+
+          return clientViewDto.withClientStatusCodeDescription(
+              ClientStatusCodeEnum.valueOf(clientViewDto.getClientStatusCode()).getDescription());
+        });
   }
 
   public Flux<ClientPublicViewDto> findAllNonIndividualClients(
