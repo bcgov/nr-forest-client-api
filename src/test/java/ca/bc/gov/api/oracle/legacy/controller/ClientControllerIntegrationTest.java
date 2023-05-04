@@ -2,6 +2,7 @@ package ca.bc.gov.api.oracle.legacy.controller;
 
 import ca.bc.gov.api.oracle.legacy.AbstractTestContainerIntegrationTest;
 import ca.bc.gov.api.oracle.legacy.dto.ClientPublicViewDto;
+import ca.bc.gov.api.oracle.legacy.dto.ClientViewDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,19 @@ class ClientControllerIntegrationTest extends AbstractTestContainerIntegrationTe
         .uri("/api/clients/findByClientNumber/{clientName}", "abcdefgh")
         .exchange()
         .expectStatus().isBadRequest();
+  }
+
+  @Test
+  @DisplayName("Search client by client number or name")
+  void shouldfindByClientNumberOrName() {
+    webTestClient
+        .get()
+        .uri("/api/clients/findByClientNumberOrName/{clientNumberOrName}", "01")
+        .exchange()
+        .expectStatus()
+        .isOk()
+        .expectBodyList(ClientViewDto.class)
+        .hasSize(5);
   }
 
   @Test

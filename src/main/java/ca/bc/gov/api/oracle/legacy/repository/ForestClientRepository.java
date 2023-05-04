@@ -16,4 +16,6 @@ public interface ForestClientRepository extends ReactiveCrudRepository<ForestCli
 
   Flux<ForestClientEntity> findByClientAcronym(String acronym);
 
+  Flux<ForestClientEntity> findByClientNumberContainingOrClientNameContaining(
+      String clientNumber, String clientName, Pageable pageable);
 }
