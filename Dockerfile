@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17.0.6_10-jdk-alpine@sha256:a765a97826df90554f3d3a98be5586012bbc53593876f669ff4b2e68717be71d
+FROM eclipse-temurin:17.0.7_7-jdk-alpine@sha256:ad135147f78ddb330275438075a7177aaf9408f62d6b97ad2ecb6e66c1adc7b9
 
 ENV LANG en_CA.UTF-8
 ENV LANGUAGE en_CA.UTF-8
