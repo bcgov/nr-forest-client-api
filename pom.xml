@@ -370,7 +370,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>3.2.2</version>
+				<version>3.3.0</version>
 				<configuration>
 					<skip>${checkstyle.skip}</skip>
 					<configLocation>google_checks.xml</configLocation>
@@ -392,7 +392,7 @@
 			<plugin>
 				<groupId>org.cyclonedx</groupId>
 				<artifactId>cyclonedx-maven-plugin</artifactId>
-				<version>2.7.8</version>
+				<version>2.7.9</version>
 				<executions>
 					<execution>
 						<phase>validate</phase>
