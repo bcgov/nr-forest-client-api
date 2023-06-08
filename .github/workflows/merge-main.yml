@@ -107,27 +107,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Broker
-        id: broker
-        uses: bcgov-nr/action-vault-broker-approle@v0.0.5
-        with:
-          broker_jwt: ${{ secrets.BROKER_JWT }}
-          provision_role_id: ${{ secrets.PROVISION_ROLE_ID }}
-          project_name: client
-          app_name: app-client
-          environment: test
-
-      - name: Import Secrets
-        id: secrets
-        uses: hashicorp/vault-action@v2.5.0
-        with:
-          url: https://vault-iit.apps.silver.devops.gov.bc.ca
-          token: ${{ steps.broker.outputs.vault_token }}
-          exportEnv: "false"
-          secrets: |
-            apps/data/test/client/app-client/db_proxy_read_only db_username | VAULT_DB_USER;
-            apps/data/test/client/app-client/db_proxy_read_only db_password | VAULT_DB_PASS;
-
       - name: Deploys
         uses: bcgov-nr/action-deployer-openshift@v1.0.2
         with:
@@ -141,8 +120,8 @@ jobs:
           parameters:
             -p ZONE=${{ env.ZONE }} -p NAME=${{ github.event.repository.name }}
             -p PROMOTE=${{ github.repository }}/api:${{ env.ZONE }}
-            -p ORACLEDB_USER=${{ steps.secrets.outputs.VAULT_DB_USER }}
-            -p ORACLEDB_PASSWORD=${{ steps.secrets.outputs.VAULT_DB_PASS }}
+            -p ORACLEDB_USER=${{ secrets.ORACLEDB_USERNAME }}
+            -p ORACLEDB_PASSWORD=${{ secrets.ORACLEDB_PASSWORD }}
             -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }}
             -p ORACLEDB_HOST=${{ secrets.ORACLEDB_HOST }}
             -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }}
@@ -238,25 +217,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Broker
-        id: broker
-        uses: bcgov-nr/action-vault-broker-approle@v0.0.5
-        with:
-          broker_jwt: ${{ secrets.BROKER_JWT }}
-          provision_role_id: ${{ secrets.PROVISION_ROLE_ID }}
-          project_name: client
-          app_name: app-client
-          environment: production
-      - name: Import Secrets
-        id: secrets
-        uses: hashicorp/vault-action@v2.5.0
-        with:
-          url: https://vault-iit.apps.silver.devops.gov.bc.ca
-          token: ${{ steps.broker.outputs.vault_token }}
-          exportEnv: "false"
-          secrets: |
-            apps/data/prod/client/app-client/db_proxy_read_only db_username | VAULT_DB_USER;
-            apps/data/prod/client/app-client/db_proxy_read_only db_password | VAULT_DB_PASS;
       - name: Deploys
         uses: bcgov-nr/action-deployer-openshift@v1.0.2
         with:
@@ -270,8 +230,8 @@ jobs:
           parameters:
             -p ZONE=${{ env.ZONE }} -p NAME=${{ github.event.repository.name }}
             -p PROMOTE=${{ github.repository }}/api:${{ env.ZONE }}
-            -p ORACLEDB_USER=${{ steps.secrets.outputs.VAULT_DB_USER }}
-            -p ORACLEDB_PASSWORD=${{ steps.secrets.outputs.VAULT_DB_PASS }}
+            -p ORACLEDB_USER=${{ secrets.ORACLEDB_USERNAME }}
+            -p ORACLEDB_PASSWORD=${{ secrets.ORACLEDB_PASSWORD }}
             -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }}
             -p ORACLEDB_HOST=${{ secrets.ORACLEDB_HOST }}
             -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }}
