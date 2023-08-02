@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -341,13 +342,14 @@ public class ClientController {
       Integer size,
 
       @Parameter(
-          description = "Name of the column to be sorted by",
+          description = "ID of the client to filter by",
           example = "00000001")
       @PathVariable(value = "clientNumber")
       String clientNumber,
 
       ServerHttpResponse serverResponse
   ) {
+    serverResponse.getHeaders().add("X-DATA-TOTAL", "0");
     return locationService
         .listClientLocations(clientNumber, page, size)
         .flatMap(locations ->
@@ -356,5 +358,46 @@ public class ClientController {
               .doOnNext(count -> serverResponse.getHeaders().add("X-DATA-TOTAL", count.toString()))
               .thenReturn(locations)
         );
+  }
+
+  @GetMapping("/{clientNumber}/locations/{locationNumber}")
+  @Operation(
+      summary = "Get the client location based on client number and location id",
+      responses = {
+          @ApiResponse(
+              responseCode = "200",
+              description = "Returns a client location",
+              content = @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(
+                      name = "ClientLocation",
+                      implementation = ClientLocationDto.class
+                  )
+              )
+          ),
+          @ApiResponse(
+              responseCode = "404",
+              description = "If no client location found for that client number and location id",
+              content = @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = String.class),
+                  examples = {@ExampleObject(value = "No client location found")}
+              )
+          )
+      }
+  )
+  public Mono<ClientLocationDto> getClientLocationDetails(
+      @Parameter(
+          description = "ID of the client to filter by",
+          example = "00000001")
+      @PathVariable(value = "clientNumber")
+      String clientNumber,
+      @Parameter(
+          description = "ID of the client location to filter by",
+          example = "00000001")
+      @PathVariable(value = "locationNumber")
+      String locationNumber
+  ){
+    return locationService.getClientLocationDetails(clientNumber, locationNumber);
   }
 }

@@ -3,6 +3,7 @@ package ca.bc.gov.api.oracle.legacy.service;
 import ca.bc.gov.api.oracle.legacy.dto.ClientLocationDto;
 import ca.bc.gov.api.oracle.legacy.dto.YesNoEnum;
 import ca.bc.gov.api.oracle.legacy.entity.ClientLocationEntity;
+import ca.bc.gov.api.oracle.legacy.exception.ClientNotFoundException;
 import ca.bc.gov.api.oracle.legacy.repository.ClientLocationRepository;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -71,5 +72,36 @@ public class ClientLocationService {
                     entity.getComment()
                 )
             );
+  }
+
+  public Mono<ClientLocationDto> getClientLocationDetails(String clientNumber,
+      String locationNumber) {
+    return repository
+        .findByClientNumberAndLocationCode(clientNumber,locationNumber)
+        .map(entity -> new ClientLocationDto(
+                entity.getClientNumber(),
+                entity.getLocationCode(),
+                entity.getLocationName(),
+                entity.getCompanyCode(),
+                entity.getAddress1(),
+                entity.getAddress2(),
+                entity.getAddress3(),
+                entity.getCity(),
+                entity.getProvince(),
+                entity.getPostalCode(),
+                entity.getCountry(),
+                entity.getBusinessPhone(),
+                entity.getHomePhone(),
+                entity.getCellPhone(),
+                entity.getFaxNumber(),
+                entity.getEmail(),
+                YesNoEnum.fromValue(entity.getExpired()),
+                YesNoEnum.fromValue(entity.getTrusted()),
+                Optional.ofNullable(entity.getReturnedMailDate()).map(
+                    LocalDateTime::toLocalDate).orElse(null),
+                entity.getComment()
+            )
+        )
+        .switchIfEmpty(Mono.error(new ClientNotFoundException("No client location found")));
   }
 }
