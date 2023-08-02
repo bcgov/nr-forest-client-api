@@ -7,6 +7,7 @@ import ca.bc.gov.api.oracle.legacy.service.ClientLocationService;
 import ca.bc.gov.api.oracle.legacy.service.ClientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -18,6 +19,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -317,7 +319,14 @@ public class ClientController {
                           implementation = ClientLocationDto.class
                       )
                   )
-              )
+              ),
+              headers = {
+                  @Header(
+                      name = "X-DATA-TOTAL",
+                      schema = @Schema(implementation = Long.class),
+                      description = "The total number of records found for the search"
+                  )
+              }
           )
       }
   )
@@ -335,8 +344,17 @@ public class ClientController {
           description = "Name of the column to be sorted by",
           example = "00000001")
       @PathVariable(value = "clientNumber")
-      String clientNumber
+      String clientNumber,
+
+      ServerHttpResponse serverResponse
   ) {
-    return locationService.listClientLocations(clientNumber, page, size);
+    return locationService
+        .listClientLocations(clientNumber, page, size)
+        .flatMap(locations ->
+          locationService
+              .countClientLocations(clientNumber)
+              .doOnNext(count -> serverResponse.getHeaders().add("X-DATA-TOTAL", count.toString()))
+              .thenReturn(locations)
+        );
   }
 }
