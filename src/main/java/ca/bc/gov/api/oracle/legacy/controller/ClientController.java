@@ -355,7 +355,9 @@ public class ClientController {
         .flatMap(locations ->
           locationService
               .countClientLocations(clientNumber)
-              .doOnNext(count -> serverResponse.getHeaders().add("X-DATA-TOTAL", count.toString()))
+              .doOnNext(count -> serverResponse
+                  .getHeaders()
+                  .put("X-DATA-TOTAL", List.of(count.toString())))
               .thenReturn(locations)
         );
   }

@@ -427,15 +427,6 @@
     </profile>
 
     <profile>
-      <id>native</id>
-      <properties>
-        <skip.integration.tests>true</skip.integration.tests>
-        <skip.unit.tests>true</skip.unit.tests>
-        <jacoco.skip>true</jacoco.skip>
-      </properties>
-    </profile>
-
-    <profile>
       <id>all-tests</id>
       <properties>
         <build.profile.id>all-tests</build.profile.id>
@@ -451,6 +442,33 @@
         <build.profile.id>integration-test</build.profile.id>
         <skip.integration.tests>false</skip.integration.tests>
         <skip.unit.tests>true</skip.unit.tests>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>macos</id>
+      <activation>
+        <os>
+          <family>mac</family>
+          <arch>aarch64</arch>
+        </os>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-resolver-dns-native-macos</artifactId>
+          <classifier>osx-aarch_64</classifier>
+        </dependency>
+      </dependencies>
+    </profile>
+
+    <profile>
+      <id>native</id>
+      <properties>
+        <build.profile.id>native</build.profile.id>
+        <skip.integration.tests>true</skip.integration.tests>
+        <skip.unit.tests>true</skip.unit.tests>
+        <native.image.march>x86_64</native.image.march>
       </properties>
     </profile>
   </profiles>
