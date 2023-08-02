@@ -52,7 +52,7 @@ class ClientLocationControllerIntegrationTest extends AbstractTestContainerInteg
         .uri(uri)
         .exchange()
         .expectStatus().isEqualTo(status)
-        .expectHeader().valueEquals("X-DATA-TOTAL",returnSize.toString())
+        .expectHeader().valueEquals("X-DATA-TOTAL", returnSize.toString())
         .expectBodyList(ClientLocationDto.class)
         .hasSize(returnSize);
   }
