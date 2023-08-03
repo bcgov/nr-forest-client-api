@@ -106,7 +106,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - uses: bcgov-nr/action-builder-ghcr@v1.1.0
+      - uses: bcgov-nr/action-builder-ghcr@v1.2.0
         with:
           package: init
           build_context: ./
