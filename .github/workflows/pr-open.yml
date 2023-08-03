@@ -93,20 +93,16 @@ jobs:
             [Main Merge Workflow](https://github.com/${{ github.repository }}/actions/workflows/merge-main.yml)
 
   build-backend:
-    name: Backend Image Build
-    env:
-      COMPONENT: backend
-      ZONE: ${{ github.event.number }}
-      NAME: ghcr.io/${{ github.repository }}/api:${{ github.event.number }}
+    name: Builds
     runs-on: ubuntu-latest
     permissions:
-      contents: read
       packages: write
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v3
 
-      - uses: bcgov-nr/action-builder-ghcr@v1.1.0
+      - name: Build init
+        uses: bcgov-nr/action-builder-ghcr@v1.2.0
         with:
           package: init
           build_context: ./
@@ -115,29 +111,15 @@ jobs:
           tag_fallback: test
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: graalvm/setup-graalvm@v1
+      - name: Build api
+        uses: bcgov-nr/action-builder-ghcr@v1.2.0
         with:
-          version: "22.3.0"
-          java-version: "17"
-          components: "native-image"
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build App
-        run: |
-          chmod +x ./mvnw
-          ./mvnw -Pnative clean spring-boot:build-image \
-          -Dspring-boot.build-image.imageName="${{ env.NAME }}" \
-          -Doci.revision=${{ github.event.number }}
-
-      - name: Log in to the Container registry
-        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Pushing
-        run: docker push ${{ env.NAME }}
+          package: api
+          build_context: ./
+          build_file: Dockerfile
+          tag: ${{ github.event.number }}
+          tag_fallback: test
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   tests-backend:
     name: Backend Unit Tests
