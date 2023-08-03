@@ -117,7 +117,7 @@ jobs:
 
       - uses: graalvm/setup-graalvm@v1
         with:
-          java-version: '17'
+          java-version: '20.0.1'
           distribution: 'graalvm'
           components: "native-image"
           github-token: ${{ secrets.GITHUB_TOKEN }}
