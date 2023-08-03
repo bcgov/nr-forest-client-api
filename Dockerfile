@@ -16,7 +16,8 @@ ARG PORT=8090
 
 # Copy
 WORKDIR /app
-COPY --from=build /app/target/nr-forest-client-api ./bin
+# TODO - generate and copy the correct file, not the jar!
+COPY --from=build /app/target/nr-forest-client-api.jar ./bin
 
 # User, port and health check
 USER 1001
