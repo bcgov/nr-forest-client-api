@@ -106,7 +106,7 @@ jobs:
         with:
           package: init
           build_context: ./
-          build_file: Dockerfile
+          build_file: Dockerfile.old
           tag: ${{ github.event.number }}
           tag_fallback: test
           token: ${{ secrets.GITHUB_TOKEN }}
