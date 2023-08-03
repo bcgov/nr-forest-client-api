@@ -346,24 +346,12 @@ public class ClientController {
           example = "00000001")
       @PathVariable(value = "clientNumber")
       String clientNumber,
-
       ServerHttpResponse serverResponse
   ) {
-    return locationService
-        .listClientLocations(clientNumber, page, size)
-        .flatMap(locations ->
-          locationService
-              .countClientLocations(clientNumber)
-              .doOnNext(count -> serverResponse.getHeaders().add("X-DATA-TOTAL",count.toString()))
-              .thenReturn(locations)
-        )
-        .switchIfEmpty(
-            Mono
-                .just(new ArrayList<>())
-                .doOnNext(data -> serverResponse.getHeaders().add("X-DATA-TOTAL", "0"))
-                .flatMapMany(Flux::fromIterable)
-                .map(ClientLocationDto.class::cast)
-        );
+
+    return
+        locationService
+            .listClientLocations(clientNumber, page, size);
   }
 
   @GetMapping("/{clientNumber}/locations/{locationNumber}")

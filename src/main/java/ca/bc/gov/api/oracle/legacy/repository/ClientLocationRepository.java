@@ -21,4 +21,6 @@ public interface ClientLocationRepository extends
       String locationCode
   );
 
+  Mono<Long> countByClientNumber(String clientNumber);
+
 }

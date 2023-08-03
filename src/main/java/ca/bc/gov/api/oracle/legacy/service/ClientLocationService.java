@@ -24,20 +24,7 @@ public class ClientLocationService {
   private final ClientLocationRepository repository;
 
   public Mono<Long> countClientLocations(String clientNumber) {
-    return repository.count(
-        Example.of(
-            ClientLocationEntity
-                .builder()
-                .clientNumber(clientNumber)
-                .build()
-       ,
-        ExampleMatcher
-            .matching()
-            .withMatcher("clientNumber", ExampleMatcher.GenericPropertyMatchers.exact())
-        )
-    );
-
-
+    return repository.countByClientNumber(clientNumber);
   }
 
   public Flux<ClientLocationDto> listClientLocations(
