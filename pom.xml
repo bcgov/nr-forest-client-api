@@ -423,10 +423,6 @@
 
   <profiles>
     <profile>
-      <id>dev</id>
-    </profile>
-
-    <profile>
       <id>native</id>
       <properties>
         <skip.integration.tests>true</skip.integration.tests>
