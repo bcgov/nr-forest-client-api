@@ -194,7 +194,7 @@
               <buildpack>gcr.io/paketo-buildpacks/image-labels</buildpack>
             </buildpacks>
             <env>
-              <BP_JVM_VERSION>19.0.2</BP_JVM_VERSION>
+              <BP_JVM_VERSION>17.0.8</BP_JVM_VERSION>
               <BP_OCI_SOURCE>https://github.com/bcgov/nr-forest-client-api</BP_OCI_SOURCE>
               <BP_OCI_VERSION>${project.version}</BP_OCI_VERSION>
               <BP_OCI_DESCRIPTION>${project.description}</BP_OCI_DESCRIPTION>
