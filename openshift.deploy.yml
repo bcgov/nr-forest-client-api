@@ -138,7 +138,7 @@ objects:
                 claimName: ${NAME}-${ZONE}-${COMPONENT}
           initContainers:
             - name: ${NAME}-init
-              image: ${REGISTRY}/bcgov/${NAME}/init:${ZONE}
+              image: ghcr.io/bcgov/nr-forest-client/common:prod
               imagePullPolicy: Always
               env:
                 - name: ORACLEDB_HOST

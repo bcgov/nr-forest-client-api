@@ -1,20 +1,28 @@
-FROM eclipse-temurin:17.0.8_7-jdk-alpine@sha256:3ecc5edd648f5d9c92e53e8eb6361cfcfaf626220f8308332f239dfb03418c1c
+### Builder
+FROM ghcr.io/graalvm/native-image-community:20-ol7 AS build
 
-ENV LANG en_CA.UTF-8
-ENV LANGUAGE en_CA.UTF-8
-ENV LC_ALL en_CA.UTF-8
-
+# Copy
 WORKDIR /app
+COPY pom.xml mvnw ./
+COPY src ./src
+COPY .mvn/ ./.mvn
 
-RUN apk --no-cache add openssl
+# Build
+RUN ./mvnw -Pnative native:compile
 
-COPY startup.sh .
 
-RUN chmod g+w /app && \
-    chmod g+x startup.sh && \
-    chmod g+w ${JAVA_HOME}/lib/security/cacerts
+### Deployer
+FROM gcr.io/distroless/java-base:nonroot AS deploy
+ARG PORT=8090
 
-# Non-privileged user
-USER app
+# Copy
+WORKDIR /app
+COPY --from=build /app/target/nr-forest-client-api ./nr-forest-client-api
 
-ENTRYPOINT ["sh", "startup.sh"]
+# User, port and health check
+USER 1001
+EXPOSE ${PORT}
+HEALTHCHECK CMD curl -f http://localhost:${PORT}/actuator/health | grep '"status":"UP"'
+
+# Startup
+ENTRYPOINT ["/app/nr-forest-client-api"]
