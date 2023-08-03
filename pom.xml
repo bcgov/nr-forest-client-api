@@ -468,7 +468,6 @@
         <build.profile.id>native</build.profile.id>
         <skip.integration.tests>true</skip.integration.tests>
         <skip.unit.tests>true</skip.unit.tests>
-        <native.image.march>x86_64</native.image.march>
       </properties>
     </profile>
   </profiles>
