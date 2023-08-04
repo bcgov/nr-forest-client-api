@@ -1,6 +1,6 @@
 package ca.bc.gov.api.oracle.legacy.entity;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -68,7 +68,7 @@ public class ClientLocationEntity {
   private String expired;
 
   @Column("RETURNED_MAIL_DATE")
-  LocalDate returnedMailDate;
+  LocalDateTime returnedMailDate;
 
   @Column("TRUST_LOCATION_IND")
   private String trusted;

@@ -7,6 +7,7 @@ import ca.bc.gov.api.oracle.legacy.service.ClientLocationService;
 import ca.bc.gov.api.oracle.legacy.service.ClientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -14,10 +15,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -317,7 +320,14 @@ public class ClientController {
                           implementation = ClientLocationDto.class
                       )
                   )
-              )
+              ),
+              headers = {
+                  @Header(
+                      name = "X-DATA-TOTAL",
+                      schema = @Schema(implementation = Long.class),
+                      description = "The total number of records found for the search"
+                  )
+              }
           )
       }
   )
@@ -332,11 +342,56 @@ public class ClientController {
       Integer size,
 
       @Parameter(
-          description = "Name of the column to be sorted by",
+          description = "ID of the client to filter by",
           example = "00000001")
       @PathVariable(value = "clientNumber")
-      String clientNumber
+      String clientNumber,
+      ServerHttpResponse serverResponse
   ) {
-    return locationService.listClientLocations(clientNumber, page, size);
+
+    return
+        locationService
+            .listClientLocations(clientNumber, page, size);
+  }
+
+  @GetMapping("/{clientNumber}/locations/{locationNumber}")
+  @Operation(
+      summary = "Get the client location based on client number and location id",
+      responses = {
+          @ApiResponse(
+              responseCode = "200",
+              description = "Returns a client location",
+              content = @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(
+                      name = "ClientLocation",
+                      implementation = ClientLocationDto.class
+                  )
+              )
+          ),
+          @ApiResponse(
+              responseCode = "404",
+              description = "If no client location found for that client number and location id",
+              content = @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = String.class),
+                  examples = {@ExampleObject(value = "No client location found")}
+              )
+          )
+      }
+  )
+  public Mono<ClientLocationDto> getClientLocationDetails(
+      @Parameter(
+          description = "ID of the client to filter by",
+          example = "00000001")
+      @PathVariable(value = "clientNumber")
+      String clientNumber,
+      @Parameter(
+          description = "ID of the client location to filter by",
+          example = "00000001")
+      @PathVariable(value = "locationNumber")
+      String locationNumber
+  ){
+    return locationService.getClientLocationDetails(clientNumber, locationNumber);
   }
 }

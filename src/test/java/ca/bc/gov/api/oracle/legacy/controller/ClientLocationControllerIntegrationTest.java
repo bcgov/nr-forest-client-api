@@ -6,6 +6,7 @@ import java.net.URI;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -53,6 +54,17 @@ class ClientLocationControllerIntegrationTest extends AbstractTestContainerInteg
         .expectStatus().isEqualTo(status)
         .expectBodyList(ClientLocationDto.class)
         .hasSize(returnSize);
+  }
+
+  @Test
+  void shouldGetDetailsFromLocation() {
+    webTestClient
+        .get()
+        .uri("/api/clients/00000001/locations/00")
+        .exchange()
+        .expectStatus().isEqualTo(HttpStatus.OK)
+        .expectBody(ClientLocationDto.class)
+        .value(clientLocationDto -> clientLocationDto.clientNumber().equals("00000001"));
   }
 
   private static Stream<Arguments> locationsClients() {
