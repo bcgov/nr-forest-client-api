@@ -7,7 +7,6 @@ import ca.bc.gov.api.oracle.legacy.service.ClientLocationService;
 import ca.bc.gov.api.oracle.legacy.service.ClientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -319,14 +318,7 @@ public class ClientController {
                           implementation = ClientLocationDto.class
                       )
                   )
-              ),
-              headers = {
-                  @Header(
-                      name = "X-DATA-TOTAL",
-                      schema = @Schema(implementation = Long.class),
-                      description = "The total number of records found for the search"
-                  )
-              }
+              )
           )
       }
   )
