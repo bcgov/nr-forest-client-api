@@ -7,7 +7,6 @@ import ca.bc.gov.api.oracle.legacy.service.ClientLocationService;
 import ca.bc.gov.api.oracle.legacy.service.ClientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -15,7 +14,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -320,14 +318,7 @@ public class ClientController {
                           implementation = ClientLocationDto.class
                       )
                   )
-              ),
-              headers = {
-                  @Header(
-                      name = "X-DATA-TOTAL",
-                      schema = @Schema(implementation = Long.class),
-                      description = "The total number of records found for the search"
-                  )
-              }
+              )
           )
       }
   )
@@ -391,7 +382,7 @@ public class ClientController {
           example = "00000001")
       @PathVariable(value = "locationNumber")
       String locationNumber
-  ){
+  ) {
     return locationService.getClientLocationDetails(clientNumber, locationNumber);
   }
 }
