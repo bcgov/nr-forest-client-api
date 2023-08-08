@@ -1,5 +1,5 @@
 ### Builder
-FROM ghcr.io/graalvm/native-image-community:20-ol7 AS build
+FROM ghcr.io/graalvm/native-image:ol8-java17-22.3.3 AS build
 
 # Copy
 WORKDIR /app
