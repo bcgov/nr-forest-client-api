@@ -13,7 +13,7 @@ RUN ./mvnw -Pnative native:compile
 
 ### Deployer
 FROM gcr.io/distroless/java-base:nonroot AS deploy
-  ARG PORT=3001
+ARG PORT=3001
 
 # Copy
 WORKDIR /app
