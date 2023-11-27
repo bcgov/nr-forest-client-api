@@ -62,7 +62,7 @@ jobs:
           sonar_args: >
             -Dsonar.organization=bcgov-sonarcloud
             -Dsonar.projectKey=bcgov_forest-client-api
-          sonar_project_token: ${{ secrets.SONAR_TOKEN }}
+          sonar_token: ${{ secrets.SONAR_TOKEN }}
 
   trivy-repo:
     name: Repository Report
