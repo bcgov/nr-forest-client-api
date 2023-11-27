@@ -24,7 +24,7 @@ jobs:
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     runs-on: ubuntu-22.04
     steps:
-      - uses: bcgov-nr/action-test-and-analyse-java@v0.2.0
+      - uses: bcgov-nr/action-test-and-analyse-java@v1.0.0
         with:
           commands: |
             mvn -B verify -Pall-tests checkstyle:checkstyle -Dcheckstyle.skip=false --file pom.xml
@@ -35,7 +35,7 @@ jobs:
           sonar_args: >
             -Dsonar.organization=bcgov-sonarcloud
             -Dsonar.projectKey=bcgov_forest-client-api
-          sonar_project_token: ${{ secrets.SONAR_TOKEN }}
+          sonar_token: ${{ secrets.SONAR_TOKEN }}
       - name: Archive CycloneDX
         continue-on-error: true
         uses: actions/upload-artifact@v3
@@ -51,7 +51,7 @@ jobs:
           path: "**/checkstyle-result.xml"
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@v3
+        uses: mikepenz/action-junit-report@v4
         continue-on-error: true
         if: success() || failure() # always run even if the previous step fails
         with:
@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Run Trivy vulnerability scanner in repo mode
         uses: aquasecurity/trivy-action@0.14.0

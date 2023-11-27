@@ -27,7 +27,7 @@ jobs:
       security-events: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Initialize
         uses: github/codeql-action/init@v2
@@ -51,7 +51,7 @@ jobs:
     name: Static Analysis
     runs-on: ubuntu-22.04
     steps:
-      - uses: bcgov-nr/action-test-and-analyse-java@v0.2.0
+      - uses: bcgov-nr/action-test-and-analyse-java@v1.0.0
         with:
           commands: |
             mvn -B verify -P all-tests checkstyle:checkstyle -Dcheckstyle.skip=false --file pom.xml
@@ -62,7 +62,7 @@ jobs:
           sonar_args: >
             -Dsonar.organization=bcgov-sonarcloud
             -Dsonar.projectKey=bcgov_forest-client-api
-          sonar_project_token: ${{ secrets.SONAR_TOKEN }}
+          sonar_token: ${{ secrets.SONAR_TOKEN }}
 
   trivy-repo:
     name: Repository Report
@@ -71,7 +71,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Run Trivy vulnerability scanner in repo mode
         uses: aquasecurity/trivy-action@0.14.0
@@ -105,10 +105,10 @@ jobs:
       ZONE: test
       DOMAIN: apps.silver.devops.gov.bc.ca
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Deploys
-        uses: bcgov-nr/action-deployer-openshift@v1.4.0
+        uses: bcgov-nr/action-deployer-openshift@v2.0.0
         with:
           file: openshift.deploy.yml
           oc_namespace: ${{ secrets.OC_NAMESPACE }}
@@ -152,7 +152,7 @@ jobs:
           folder: '["general"]'
 
       - name: Conventional Changelog Update
-        uses: TriPSs/conventional-changelog-action@v3
+        uses: TriPSs/conventional-changelog-action@v4
         id: changelog
         continue-on-error: true
         with:
@@ -215,10 +215,10 @@ jobs:
       PREV: test
       DOMAIN: apps.silver.devops.gov.bc.ca
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Deploys
-        uses: bcgov-nr/action-deployer-openshift@v1.4.0
+        uses: bcgov-nr/action-deployer-openshift@v2.0.0
         with:
           file: openshift.deploy.yml
           oc_namespace: ${{ secrets.OC_NAMESPACE }}
