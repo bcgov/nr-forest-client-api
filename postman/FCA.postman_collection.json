@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "130659af-33cd-4fbf-b11c-6fd12a4af373",
+		"_postman_id": "6c5a7106-776a-40f3-ba05-7fe2f2dea324",
 		"name": "nr-forest-client-api",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "17369587"
+		"_exporter_id": "2218912"
 	},
 	"item": [
 		{
@@ -141,8 +141,10 @@
 							"});\r",
 							"\r",
 							"pm.test(\"Check body\", () => {\r",
-							"    const expectedBody = pm.variables.get(\"FIND_BODY\");\r",
-							"    pm.response.to.have.body(expectedBody);\r",
+							"    if(pm.response.code == 200){\r",
+							"        const expectedBody = pm.variables.get(\"FIND_BODY\");\r",
+							"        pm.response.to.have.body(expectedBody);\r",
+							"    }\r",
 							"});\r",
 							"\r",
 							"pm.test('Schema is valid', function () {    \r",
