@@ -22,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.relational.core.query.Criteria;
+import org.springframework.data.relational.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import reactor.core.publisher.Flux;
@@ -51,24 +52,44 @@ public class ClientService {
   }
 
   public Flux<ClientViewDto> findByClientNumberOrName(
-      int page, int size, String clientNumberOrName) {
+      int page, int size, String clientNumberOrName
+  ) {
 
     log.info("Searching for client with number or name {}", clientNumberOrName);
 
-    return forestClientRepository
-        .findByClientNumberContainingOrClientNameContaining(
-            clientNumberOrName,
-            clientNumberOrName,
-            PageRequest.of(page, size))
-        .switchIfEmpty(Mono.error(new ClientNotFoundException()))
-        .map(ClientMapper::mapEntityToClientViewDto)
-        .map(clientViewDto -> {
-          clientViewDto.setClientTypeCodeDescription(
-              ClientTypeCodeEnum.valueOf(clientViewDto.getClientTypeCode()).getDescription());
-
-          return clientViewDto.withClientStatusCodeDescription(
-              ClientStatusCodeEnum.valueOf(clientViewDto.getClientStatusCode()).getDescription());
-        });
+    return
+        forestClientRepository
+            .countByClientNumberContainingOrClientNameContaining(
+                clientNumberOrName,
+                clientNumberOrName
+            )
+            .doOnNext(
+                count -> log.info("Found {} results when looking for number or name {}", count,
+                    clientNumberOrName)
+            )
+            .flatMapMany(count ->
+                forestClientRepository
+                    .findByClientNumberContainingOrClientNameContaining(
+                        clientNumberOrName,
+                        clientNumberOrName,
+                        PageRequest.of(page, size)
+                    )
+                    .doOnNext(
+                        entity -> log.info("Found client with number or name {} as {}",
+                            clientNumberOrName,
+                            entity.getName()))
+                    .switchIfEmpty(Mono.error(new ClientNotFoundException()))
+                    .map(ClientMapper::mapEntityToClientViewDto)
+                    .doOnNext(dto -> dto.setClientTypeCodeDescription(
+                        ClientTypeCodeEnum.valueOf(dto.getClientTypeCode()).getDescription())
+                    )
+                    .doOnNext(dto ->
+                        dto.setClientStatusCodeDescription(
+                            ClientStatusCodeEnum.valueOf(dto.getClientStatusCode())
+                                .getDescription())
+                    )
+                    .doOnNext(dto -> dto.setCount(count))
+            );
   }
 
   public Flux<ClientPublicViewDto> findAllNonIndividualClients(
@@ -77,13 +98,19 @@ public class ClientService {
     log.info("Searching all non individual clients on page {} with size {} sorting by {}", page,
         size, sortBy);
 
-    return forestClientRepository
-        .findByClientTypeCodeNot(
-            ApplicationConstants.INDIVIDUAL,
-            PageRequest.of(page, size, Sort.by(sortBy))
-        )
-        .map(ClientMapper::mapEntityToDto)
-        .doOnNext(dto -> log.info("Found entry {}", dto));
+    return
+        forestClientRepository
+            .countByClientTypeCodeNot(ApplicationConstants.INDIVIDUAL)
+            .flatMapMany(count ->
+                forestClientRepository
+                    .findByClientTypeCodeNot(
+                        ApplicationConstants.INDIVIDUAL,
+                        PageRequest.of(page, size, Sort.by(sortBy))
+                    )
+                    .map(ClientMapper::mapEntityToDto)
+                    .doOnNext(dto -> dto.setCount(count))
+            )
+            .doOnNext(dto -> log.info("Found entry {}", dto));
   }
 
 
@@ -123,15 +150,26 @@ public class ClientService {
           .and(where("clientTypeCode").in(clientTypeCodes));
     }
 
+    Query searchQuery = query(queryCriteria);
+
     return
+
         template
-            .select(
-                query(queryCriteria)
-                    .limit(size)
-                    .offset((long) page * size),
+            .count(
+                searchQuery,
                 ForestClientEntity.class
             )
-            .map(ClientMapper::mapEntityToDto)
+            .flatMapMany(count ->
+                template
+                    .select(
+                        searchQuery
+                            .limit(size)
+                            .offset((long) page * size),
+                        ForestClientEntity.class
+                    )
+                    .map(ClientMapper::mapEntityToDto)
+                    .doOnNext(dto -> dto.setCount(count))
+            )
             .doOnNext(dto -> log.info("Found entry {}", dto));
   }
 
@@ -145,12 +183,16 @@ public class ClientService {
 
     return forestClientRepository
         .findByClientAcronym(acronym)
+        .index()
         .doOnNext(entity -> log.info("Found entity with acronym {} with number {}", acronym,
-            entity.getClientNumber()))
+            entity.getT2().getClientNumber()))
         .switchIfEmpty(
             Mono.error(new ClientNotFoundException("No client found with the acronym " + acronym))
         )
-        .map(ClientMapper::mapEntityToDto);
+        .map(dtoIndex ->
+            ClientMapper
+                .mapEntityToDto(dtoIndex.getT2(), dtoIndex.getT1() + 1)
+        );
   }
 
 }

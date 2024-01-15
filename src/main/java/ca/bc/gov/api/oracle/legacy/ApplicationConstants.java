@@ -6,4 +6,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ApplicationConstants {
   public static final String INDIVIDUAL = "I";
+  public static final String X_TOTAL_COUNT = "X-Total-Count";
 }

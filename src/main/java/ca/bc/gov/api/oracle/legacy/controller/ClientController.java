@@ -1,5 +1,6 @@
 package ca.bc.gov.api.oracle.legacy.controller;
 
+import ca.bc.gov.api.oracle.legacy.ApplicationConstants;
 import ca.bc.gov.api.oracle.legacy.dto.ClientLocationDto;
 import ca.bc.gov.api.oracle.legacy.dto.ClientPublicViewDto;
 import ca.bc.gov.api.oracle.legacy.dto.ClientViewDto;
@@ -7,6 +8,7 @@ import ca.bc.gov.api.oracle.legacy.service.ClientLocationService;
 import ca.bc.gov.api.oracle.legacy.service.ClientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -98,7 +100,13 @@ public class ClientController {
                       name = "ClientView",
                       implementation = ClientPublicViewDto.class
                   )
-              )
+              ),
+              headers = {
+                  @Header(
+                      name = ApplicationConstants.X_TOTAL_COUNT,
+                      description = "Total number of records found"
+                  )
+              }
           ),
           @ApiResponse(
               responseCode = "404",
@@ -125,9 +133,13 @@ public class ClientController {
           description = "The client number to look for",
           example = "00000002"
       )
-      @PathVariable String clientNumberOrName
+      @PathVariable String clientNumberOrName,
+      ServerHttpResponse serverResponse
   ) {
-    return clientService.findByClientNumberOrName(page, size, clientNumberOrName);
+    return clientService
+        .findByClientNumberOrName(page, size, clientNumberOrName)
+        .doOnNext(dto -> serverResponse.getHeaders()
+            .putIfAbsent(ApplicationConstants.X_TOTAL_COUNT, List.of(dto.getCount().toString())));
   }
 
   @GetMapping("/findAllNonIndividuals")
@@ -145,7 +157,13 @@ public class ClientController {
                           implementation = ClientPublicViewDto.class
                       )
                   )
-              )
+              ),
+              headers = {
+                  @Header(
+                      name = ApplicationConstants.X_TOTAL_COUNT,
+                      description = "Total number of records found"
+                  )
+              }
           )
       }
   )
@@ -163,14 +181,19 @@ public class ClientController {
           description = "Column name to sort by, defaults to clientName",
           example = "clientName")
       @RequestParam(value = "sortedColumnName", required = false, defaultValue = "clientName")
-      String sortedColumn) {
-    return clientService.findAllNonIndividualClients(page, size, sortedColumn);
+      String sortedColumn,
+      ServerHttpResponse serverResponse
+  ) {
+    return clientService
+        .findAllNonIndividualClients(page, size, sortedColumn)
+        .doOnNext(dto -> serverResponse.getHeaders()
+            .putIfAbsent(ApplicationConstants.X_TOTAL_COUNT, List.of(dto.getCount().toString())));
   }
 
   @GetMapping("/findByNames")
   @Operation(
       summary = """
-          Search a client by it's name (including first, middle and last) and client type. 
+          Search a client by it's name (including first, middle and last) and client type.
           It will return active and inactive""",
       responses = {
           @ApiResponse(
@@ -184,7 +207,13 @@ public class ClientController {
                           implementation = ClientPublicViewDto.class
                       )
                   )
-              )
+              ),
+              headers = {
+                  @Header(
+                      name = ApplicationConstants.X_TOTAL_COUNT,
+                      description = "Total number of records found"
+                  )
+              }
           ),
           @ApiResponse(
               responseCode = "400",
@@ -243,16 +272,20 @@ public class ClientController {
           Z (Sole Proprietorship)""",
           example = "I")
       @RequestParam(value = "clientTypeCodes", required = false)
-      List<String> clientTypeCodes
+      List<String> clientTypeCodes,
+      ServerHttpResponse serverResponse
   ) {
-    return clientService.searchByNames(
-        clientName,
-        clientFirstName,
-        clientMiddleName,
-        clientTypeCodes,
-        page,
-        size
-    );
+    return clientService
+        .searchByNames(
+            clientName,
+            clientFirstName,
+            clientMiddleName,
+            clientTypeCodes,
+            page,
+            size
+        )
+        .doOnNext(dto -> serverResponse.getHeaders()
+            .putIfAbsent(ApplicationConstants.X_TOTAL_COUNT, List.of(dto.getCount().toString())));
   }
 
   @GetMapping("/findByAcronym")
@@ -270,7 +303,13 @@ public class ClientController {
                           implementation = ClientPublicViewDto.class
                       )
                   )
-              )
+              ),
+              headers = {
+                  @Header(
+                      name = ApplicationConstants.X_TOTAL_COUNT,
+                      description = "Total number of records found"
+                  )
+              }
           ),
           @ApiResponse(
               responseCode = "400",
@@ -298,9 +337,13 @@ public class ClientController {
           example = "Baxter")
       @RequestParam(value = "acronym")
       @NotNull
-      String acronym
+      String acronym,
+      ServerHttpResponse serverResponse
   ) {
-    return clientService.searchByAcronym(acronym);
+    return clientService
+        .searchByAcronym(acronym)
+        .doOnNext(dto -> serverResponse.getHeaders()
+            .put(ApplicationConstants.X_TOTAL_COUNT, List.of(dto.getCount().toString())));
   }
 
   @GetMapping("/{clientNumber}/locations")
@@ -318,7 +361,13 @@ public class ClientController {
                           implementation = ClientLocationDto.class
                       )
                   )
-              )
+              ),
+              headers = {
+                  @Header(
+                      name = ApplicationConstants.X_TOTAL_COUNT,
+                      description = "Total number of records found"
+                  )
+              }
           )
       }
   )
@@ -342,7 +391,13 @@ public class ClientController {
 
     return
         locationService
-            .listClientLocations(clientNumber, page, size);
+            .countClientLocations(clientNumber)
+            .doOnNext(dto -> serverResponse.getHeaders().putIfAbsent(
+                ApplicationConstants.X_TOTAL_COUNT, List.of(dto.toString())))
+            .flatMapMany(count ->
+                locationService
+                    .listClientLocations(clientNumber, page, size)
+            );
   }
 
   @GetMapping("/{clientNumber}/locations/{locationNumber}")

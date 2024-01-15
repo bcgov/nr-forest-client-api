@@ -1,10 +1,13 @@
 package ca.bc.gov.api.oracle.legacy.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.With;
 import lombok.experimental.SuperBuilder;
@@ -85,4 +88,8 @@ public class ClientPublicViewDto {
     @Schema(description = "An acronyms for this client",
         example = "JAMES BAXTER")
     protected String acronym;
+
+    @JsonIgnore
+    @Getter(AccessLevel.PUBLIC)
+    private Long count;
 }
