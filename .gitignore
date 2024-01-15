@@ -225,3 +225,4 @@ buildNumber.properties
 # The below expression will prevent user specific configuration files from being added to the repository
 config/application-dev-*.yml
 .checkstyle
+config/*.jks
