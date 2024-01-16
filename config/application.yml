@@ -1,3 +1,0 @@
-spring:
-  r2dbc:
-    url: r2dbc:oracle://${ca.bc.gov.nrs.oracle.host}:${ca.bc.gov.nrs.oracle.port}/${ca.bc.gov.nrs.oracle.database}

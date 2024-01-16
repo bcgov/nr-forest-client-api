@@ -21,6 +21,20 @@ public class ClientMapper {
         .build();
   }
 
+  public static ClientPublicViewDto mapEntityToDto(ForestClientEntity clientEntity, Long count) {
+    return ClientPublicViewDto
+        .builder()
+        .clientNumber(clientEntity.getClientNumber())
+        .clientName(clientEntity.getClientName())
+        .legalFirstName(clientEntity.getLegalFirstName())
+        .legalMiddleName(clientEntity.getLegalMiddleName())
+        .clientStatusCode(clientEntity.getClientStatusCode())
+        .clientTypeCode(clientEntity.getClientTypeCode())
+        .acronym(clientEntity.getClientAcronym())
+        .count(count)
+        .build();
+  }
+
   public static ClientViewDto mapEntityToClientViewDto(ForestClientEntity clientEntity) {
     return ClientViewDto
         .builder()

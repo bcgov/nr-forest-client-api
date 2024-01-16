@@ -1,5 +1,6 @@
 package ca.bc.gov.api.oracle.legacy.controller;
 
+import ca.bc.gov.api.oracle.legacy.ApplicationConstants;
 import ca.bc.gov.api.oracle.legacy.dto.ClientLocationDto;
 import ca.bc.gov.api.oracle.legacy.dto.ClientPublicViewDto;
 import ca.bc.gov.api.oracle.legacy.dto.ClientViewDto;
@@ -7,6 +8,7 @@ import ca.bc.gov.api.oracle.legacy.service.ClientLocationService;
 import ca.bc.gov.api.oracle.legacy.service.ClientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -27,11 +29,14 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+/**
+ * Controller class for handling client-related API operations.
+ */
 @RestController
 @Slf4j
 @Tag(
-    name = "Client API",
-    description = "Deals with client data checks and validation"
+	name = "Client API", 
+	description = "Deals with client data checks and validation"
 )
 @RequestMapping(value = "/api/clients", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
@@ -40,6 +45,12 @@ public class ClientController {
   private final ClientService clientService;
   private final ClientLocationService locationService;
 
+  /**
+   * Retrieves a client based on the provided client number.
+   *
+   * @param clientNumber The client number to look for.
+   * @return A Mono emitting the client details.
+   */
   @GetMapping("/findByClientNumber/{clientNumber}")
   @Operation(
       summary = "Search clients by client number. It will return active and inactive",
@@ -85,9 +96,19 @@ public class ClientController {
     return clientService.findByClientNumber(clientNumber);
   }
 
+  /**
+   * Searches clients by client number or client name.
+   *
+   * @param page              The one index page number, defaults to 0.
+   * @param size              The amount of data to be returned per page, defaults to 10.
+   * @param clientNumberOrName The client number or name to look for.
+   * @param serverResponse    The ServerHttpResponse instance.
+   * @return A Flux emitting the list of clients.
+   */
   @GetMapping("/findByClientNumberOrName/{clientNumberOrName}")
   @Operation(
-      summary = "Search clients by client number or client name. It will return active and inactive",
+      summary = "Search clients by client number or client name." 
+    		  	+ " It will return active and inactive",
       responses = {
           @ApiResponse(
               responseCode = "200",
@@ -98,7 +119,13 @@ public class ClientController {
                       name = "ClientView",
                       implementation = ClientPublicViewDto.class
                   )
-              )
+              ),
+              headers = {
+                  @Header(
+                      name = ApplicationConstants.X_TOTAL_COUNT,
+                      description = "Total number of records found"
+                  )
+              }
           ),
           @ApiResponse(
               responseCode = "404",
@@ -125,11 +152,24 @@ public class ClientController {
           description = "The client number to look for",
           example = "00000002"
       )
-      @PathVariable String clientNumberOrName
+      @PathVariable String clientNumberOrName,
+      ServerHttpResponse serverResponse
   ) {
-    return clientService.findByClientNumberOrName(page, size, clientNumberOrName);
+    return clientService
+        .findByClientNumberOrName(page, size, clientNumberOrName)
+        .doOnNext(dto -> serverResponse.getHeaders()
+            .putIfAbsent(ApplicationConstants.X_TOTAL_COUNT, List.of(dto.getCount().toString())));
   }
 
+  /**
+   * Searches for all non-individual clients.
+   *
+   * @param page          The one index page number, defaults to 0.
+   * @param size          The amount of data to be returned per page, defaults to 10.
+   * @param sortedColumn  Column name to sort by, defaults to clientName.
+   * @param serverResponse The ServerHttpResponse instance.
+   * @return A Flux emitting the list of non-individual clients.
+   */
   @GetMapping("/findAllNonIndividuals")
   @Operation(
       summary = "Search all non-individual client. It will return active and inactive",
@@ -145,7 +185,13 @@ public class ClientController {
                           implementation = ClientPublicViewDto.class
                       )
                   )
-              )
+              ),
+              headers = {
+                  @Header(
+                      name = ApplicationConstants.X_TOTAL_COUNT,
+                      description = "Total number of records found"
+                  )
+              }
           )
       }
   )
@@ -163,14 +209,31 @@ public class ClientController {
           description = "Column name to sort by, defaults to clientName",
           example = "clientName")
       @RequestParam(value = "sortedColumnName", required = false, defaultValue = "clientName")
-      String sortedColumn) {
-    return clientService.findAllNonIndividualClients(page, size, sortedColumn);
+      String sortedColumn,
+      ServerHttpResponse serverResponse
+  ) {
+    return clientService
+        .findAllNonIndividualClients(page, size, sortedColumn)
+        .doOnNext(dto -> serverResponse.getHeaders()
+            .putIfAbsent(ApplicationConstants.X_TOTAL_COUNT, List.of(dto.getCount().toString())));
   }
 
+  /**
+   * Searches a client by its name (including first, middle, and last) and client type.
+   *
+   * @param page              The one index page number, defaults to 0.
+   * @param size              The amount of data to be returned per page, defaults to 10.
+   * @param clientName        The name of the entity or individual's last name.
+   * @param clientFirstName   The client's first name.
+   * @param clientMiddleName  The client's middle name.
+   * @param clientTypeCodes   The type of client codes.
+   * @param serverResponse    The ServerHttpResponse instance.
+   * @return A Flux emitting the list of clients based on provided parameters.
+   */
   @GetMapping("/findByNames")
   @Operation(
       summary = """
-          Search a client by it's name (including first, middle and last) and client type. 
+          Search a client by it's name (including first, middle and last) and client type.
           It will return active and inactive""",
       responses = {
           @ApiResponse(
@@ -184,7 +247,13 @@ public class ClientController {
                           implementation = ClientPublicViewDto.class
                       )
                   )
-              )
+              ),
+              headers = {
+                  @Header(
+                      name = ApplicationConstants.X_TOTAL_COUNT,
+                      description = "Total number of records found"
+                  )
+              }
           ),
           @ApiResponse(
               responseCode = "400",
@@ -243,18 +312,29 @@ public class ClientController {
           Z (Sole Proprietorship)""",
           example = "I")
       @RequestParam(value = "clientTypeCodes", required = false)
-      List<String> clientTypeCodes
+      List<String> clientTypeCodes,
+      ServerHttpResponse serverResponse
   ) {
-    return clientService.searchByNames(
-        clientName,
-        clientFirstName,
-        clientMiddleName,
-        clientTypeCodes,
-        page,
-        size
-    );
+    return clientService
+        .searchByNames(
+            clientName,
+            clientFirstName,
+            clientMiddleName,
+            clientTypeCodes,
+            page,
+            size
+        )
+        .doOnNext(dto -> serverResponse.getHeaders()
+            .putIfAbsent(ApplicationConstants.X_TOTAL_COUNT, List.of(dto.getCount().toString())));
   }
 
+  /**
+   * Searches a client by its acronym.
+   *
+   * @param acronym          The acronym to look for.
+   * @param serverResponse   The ServerHttpResponse instance.
+   * @return A Flux emitting the list of clients based on provided acronym.
+   */
   @GetMapping("/findByAcronym")
   @Operation(
       summary = "Search a client by it's acronym. It will return active and inactive",
@@ -270,7 +350,13 @@ public class ClientController {
                           implementation = ClientPublicViewDto.class
                       )
                   )
-              )
+              ),
+              headers = {
+                  @Header(
+                      name = ApplicationConstants.X_TOTAL_COUNT,
+                      description = "Total number of records found"
+                  )
+              }
           ),
           @ApiResponse(
               responseCode = "400",
@@ -298,11 +384,24 @@ public class ClientController {
           example = "Baxter")
       @RequestParam(value = "acronym")
       @NotNull
-      String acronym
+      String acronym,
+      ServerHttpResponse serverResponse
   ) {
-    return clientService.searchByAcronym(acronym);
+    return clientService
+        .searchByAcronym(acronym)
+        .doOnNext(dto -> serverResponse.getHeaders()
+            .put(ApplicationConstants.X_TOTAL_COUNT, List.of(dto.getCount().toString())));
   }
 
+  /**
+   * Lists client locations based on client number.
+   *
+   * @param page             The one index page number, defaults to 0.
+   * @param size             The amount of data to be returned per page, defaults to 10.
+   * @param clientNumber     ID of the client to filter by.
+   * @param serverResponse   The ServerHttpResponse instance.
+   * @return A Flux emitting the list of client locations.
+   */
   @GetMapping("/{clientNumber}/locations")
   @Operation(
       summary = "Search for client location based on client number",
@@ -318,7 +417,13 @@ public class ClientController {
                           implementation = ClientLocationDto.class
                       )
                   )
-              )
+              ),
+              headers = {
+                  @Header(
+                      name = ApplicationConstants.X_TOTAL_COUNT,
+                      description = "Total number of records found"
+                  )
+              }
           )
       }
   )
@@ -342,9 +447,22 @@ public class ClientController {
 
     return
         locationService
-            .listClientLocations(clientNumber, page, size);
+            .countClientLocations(clientNumber)
+            .doOnNext(dto -> serverResponse.getHeaders().putIfAbsent(
+                ApplicationConstants.X_TOTAL_COUNT, List.of(dto.toString())))
+            .flatMapMany(count ->
+                locationService
+                    .listClientLocations(clientNumber, page, size)
+            );
   }
 
+  /**
+   * Retrieves details of a client location based on client number and location id.
+   *
+   * @param clientNumber   ID of the client to filter by.
+   * @param locationNumber ID of the client location to filter by.
+   * @return A Mono emitting the client location details.
+   */
   @GetMapping("/{clientNumber}/locations/{locationNumber}")
   @Operation(
       summary = "Get the client location based on client number and location id",
@@ -385,4 +503,5 @@ public class ClientController {
   ) {
     return locationService.getClientLocationDetails(clientNumber, locationNumber);
   }
+  
 }
