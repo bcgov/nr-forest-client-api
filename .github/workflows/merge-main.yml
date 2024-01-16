@@ -30,12 +30,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Initialize
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
           languages: java
 
       - name: Set up JDK 17 and Caching maven dependencies
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: "temurin"
           java-version: "17"
@@ -45,7 +45,7 @@ jobs:
         run: ./mvnw clean package
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3
 
   sonarcloud:
     name: Static Analysis
@@ -84,7 +84,7 @@ jobs:
           scanners: "vuln,secret,config"
 
       - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: "trivy-results.sarif"
 
@@ -152,7 +152,7 @@ jobs:
           folder: '["general"]'
 
       - name: Conventional Changelog Update
-        uses: TriPSs/conventional-changelog-action@v4
+        uses: TriPSs/conventional-changelog-action@v5
         id: changelog
         continue-on-error: true
         with:
