@@ -38,7 +38,7 @@ jobs:
           sonar_token: ${{ secrets.SONAR_TOKEN }}
       - name: Archive CycloneDX
         continue-on-error: true
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: cyclone
           path: target/bom.json
@@ -91,6 +91,6 @@ jobs:
           scanners: "vuln,secret,config"
 
       - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: "trivy-results.sarif"

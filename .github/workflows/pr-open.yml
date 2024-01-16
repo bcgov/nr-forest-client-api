@@ -23,7 +23,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Pull request size and stability labels
-        uses: actions/labeler@v4
+        uses: actions/labeler@v5
         continue-on-error: true
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
@@ -43,7 +43,7 @@ jobs:
 
       - name: Conventional Changelog Update
         continue-on-error: true
-        uses: TriPSs/conventional-changelog-action@v4
+        uses: TriPSs/conventional-changelog-action@v5
         id: changelog
         with:
           github-token: ${{ github.token }}
@@ -128,7 +128,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up JDK 17 and Caching maven dependencies
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: "temurin"
           java-version: "17"
