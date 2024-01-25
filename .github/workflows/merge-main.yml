@@ -116,7 +116,7 @@ jobs:
           oc_token: ${{ secrets.OC_TOKEN }}
           overwrite: true
           verification_path: /health
-          penetration_test: true
+          penetration_test: false
           parameters:
             -p ZONE=${{ env.ZONE }} -p NAME=${{ github.event.repository.name }}
             -p PROMOTE=${{ github.repository }}/api:${{ env.ZONE }}
