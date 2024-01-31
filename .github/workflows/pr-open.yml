@@ -120,8 +120,6 @@ jobs:
   postman:
     name: Smoke Test
     needs: [deploy]
-    env:
-      ENVVAR: '[{"key":"URL_FCA","value":"https://${{ github.event.repository.name }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}"}]'
     environment:
       name: dev
     runs-on: ubuntu-latest
@@ -136,7 +134,7 @@ jobs:
         uses: matt-ball/newman-action@master
         with:
           collection: postman/FCA.postman_collection.json
-          envVar: ${{ env.ENVVAR}}
+          envVar: '[{"key":"URL_FCA","value":"https://${{ github.event.repository.name }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}"}]'
           reporters: '["cli"]'
           folder: '["general"]'
 
@@ -144,7 +142,7 @@ jobs:
         uses: matt-ball/newman-action@master
         with:
           collection: postman/FCA.postman_collection.json
-          envVar: ${{ env.ENVVAR }}
+          envVar: '[{"key":"URL_FCA","value":"https://${{ github.event.repository.name }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}"}]'
           iterationData: postman/FCA_postman_tests_dev.json
           reporters: '["cli", "junit"]'
           reporter: '{ "junit" : { "export" : "./postman/report.xml" } }'
