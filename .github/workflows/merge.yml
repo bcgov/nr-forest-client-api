@@ -1,16 +1,14 @@
-name: Merge to Main
+name: Merge
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
     paths-ignore:
       - "**.md"
   workflow_dispatch:
 
 env:
-  REGISTRY: ghcr.io
-  NAME: ${{ github.event.repository.name }}
+  DOMAIN: apps.silver.devops.gov.bc.ca
   NS: nr-d2723f
 
 concurrency:
@@ -18,81 +16,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  codeql:
-    name: Semantic Code Analysis
-    runs-on: ubuntu-22.04
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Initialize
-        uses: github/codeql-action/init@v3
-        with:
-          languages: java
-
-      - name: Set up JDK 17 and Caching maven dependencies
-        uses: actions/setup-java@v4
-        with:
-          distribution: "temurin"
-          java-version: "17"
-          cache: "maven"
-
-      - name: Build for Java
-        run: ./mvnw clean package
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
-
-  sonarcloud:
-    name: Static Analysis
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: bcgov-nr/action-test-and-analyse-java@v1.0.0
-        with:
-          commands: |
-            mvn -B verify -P all-tests checkstyle:checkstyle -Dcheckstyle.skip=false --file pom.xml
-          dir: .
-          java-cache: maven
-          java-distribution: temurin
-          java-version: "17"
-          sonar_args: >
-            -Dsonar.organization=bcgov-sonarcloud
-            -Dsonar.projectKey=bcgov_forest-client-api
-          sonar_token: ${{ secrets.SONAR_TOKEN }}
-
-  trivy-repo:
-    name: Repository Report
-    needs:
-      - codeql
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Run Trivy vulnerability scanner in repo mode
-        uses: aquasecurity/trivy-action@0.16.1
-        with:
-          scan-type: "fs"
-          format: "sarif"
-          output: "trivy-results.sarif"
-          ignore-unfixed: true
-          severity: "CRITICAL,HIGH"
-          scanners: "vuln,secret,config"
-
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: "trivy-results.sarif"
-
   deploy-test:
     name: TEST Deployment
-    needs:
-      - trivy-repo
-      - sonarcloud
     runs-on: ubuntu-22.04
     outputs:
       tag: ${{ steps.changelog.outputs.tag }}
@@ -101,12 +26,8 @@ jobs:
       discussions: write
     environment:
       name: test
-    env:
-      ZONE: test
-      DOMAIN: apps.silver.devops.gov.bc.ca
     steps:
       - uses: actions/checkout@v4
-
       - name: Deploys
         uses: bcgov-nr/action-deployer-openshift@v2.0.0
         with:
@@ -123,7 +44,7 @@ jobs:
             -p ORACLEDB_HOST=${{ secrets.ORACLEDB_HOST }}
             -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }}
             -p ORACLEDB_SECRET=${{ secrets.ORACLEDB_SECRET }}
-            -p ZONE=${{ env.ZONE }}
+            -p ZONE=test
 
       - name: Publish API
         uses: bcgov-nr/action-gwa-publish@v0.1.0
@@ -137,7 +58,7 @@ jobs:
         uses: matt-ball/newman-action@master
         with:
           collection: postman/FCA.postman_collection.json
-          envVar: '[{"key":"URL_FCA","value":"https://${{ env.NAME }}-test-backend.${{ env.DOMAIN }}"}]'
+          envVar: '[{"key":"URL_FCA","value":"https://${{ github.event.repository.name }}-test-backend.${{ env.DOMAIN }}"}]'
           reporters: '["cli"]'
           folder: '["general"]'
 
@@ -145,7 +66,7 @@ jobs:
         uses: matt-ball/newman-action@master
         with:
           collection: postman/FCA.postman_collection.json
-          envVar: '[{"key":"URL_FCA","value":"https://${{ env.NAME }}-test.api.gov.bc.ca"}]'
+          envVar: '[{"key":"URL_FCA","value":"https://${{ github.event.repository.name }}-test.api.gov.bc.ca"}]'
           reporters: '["cli"]'
           folder: '["general"]'
 
@@ -171,47 +92,33 @@ jobs:
           name: ${{ steps.changelog.outputs.tag }}
           body: ${{ steps.changelog.outputs.clean_changelog }}
 
-      - name: Log in to the Container registry
-        uses: docker/login-action@3d58c274f17dffee475a5520cbe67f0a882c4dbb
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
   image-promotions:
     name: Image Promotions
-    needs:
-      - deploy-test
+    needs: [deploy-test]
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        component: [api, init]
         tag: [prod, "${{ needs.deploy-test.outputs.tag }}"]
     steps:
-      - name: Promoting ${{ matrix.component }}
+      - name: Promoting API
         if: ${{ matrix.tag != '' }}
         uses: shrink/actions-docker-registry-tag@v3
         with:
-          registry: ${{ env.REGISTRY }}
-          repository: ${{ github.repository }}/${{ matrix.component }}
+          registry: ghcr.io
+          repository: ${{ github.repository }}/api
           target: test
           tags: ${{ matrix.tag }}
 
-      - name: Promoting ${{ matrix.component }}
+      - name: Promoting API
         if: ${{ matrix.tag == '' }}
         run: echo "Tag is empty, promotion step skipped"
 
   deploy-prod:
     name: PROD Deployment
-    needs:
-      - image-promotions
+    needs: [image-promotions]
     runs-on: ubuntu-22.04
     environment:
       name: prod
-    env:
-      ZONE: prod
-      PREV: test
-      DOMAIN: apps.silver.devops.gov.bc.ca
     steps:
       - uses: actions/checkout@v4
 
@@ -231,7 +138,8 @@ jobs:
             -p ORACLEDB_HOST=${{ secrets.ORACLEDB_HOST }}
             -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }}
             -p ORACLEDB_SECRET=${{ secrets.ORACLEDB_SECRET }}
-            -p ZONE=${{ env.ZONE }}
+            -p ZONE=prod
+
       - name: Publish API
         uses: bcgov-nr/action-gwa-publish@v0.1.0
         with:
@@ -244,7 +152,7 @@ jobs:
         uses: matt-ball/newman-action@master
         with:
           collection: postman/FCA.postman_collection.json
-          envVar: '[{"key":"URL_FCA","value":"https://${{ env.NAME }}-prod-backend.${{ env.DOMAIN }}"}]'
+          envVar: '[{"key":"URL_FCA","value":"https://${{ github.event.repository.name }}-prod-backend.${{ env.DOMAIN }}"}]'
           reporters: '["cli"]'
           folder: '["general"]'
 
@@ -252,6 +160,6 @@ jobs:
         uses: matt-ball/newman-action@master
         with:
           collection: postman/FCA.postman_collection.json
-          envVar: '[{"key":"URL_FCA","value":"https://${{ env.NAME }}-prod.api.gov.bc.ca"}]'
+          envVar: '[{"key":"URL_FCA","value":"https://${{ github.event.repository.name }}-prod.api.gov.bc.ca"}]'
           reporters: '["cli"]'
           folder: '["general"]'
