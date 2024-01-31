@@ -26,26 +26,19 @@ jobs:
       contents: read
       security-events: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Initialize
-        uses: github/codeql-action/init@v3
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v3
         with:
           languages: java
 
-      - name: Set up JDK 17 and Caching maven dependencies
-        uses: actions/setup-java@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: "temurin"
           java-version: "17"
           cache: "maven"
 
-      - name: Build for Java
-        run: ./mvnw clean package
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+      - run: ./mvnw clean package
+      - uses: github/codeql-action/analyze@v3
 
   sonarcloud:
     name: Static Analysis
@@ -185,19 +178,18 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        component: [api, init]
         tag: [prod, "${{ needs.deploy-test.outputs.tag }}"]
     steps:
-      - name: Promoting ${{ matrix.component }}
+      - name: Promoting API
         if: ${{ matrix.tag != '' }}
         uses: shrink/actions-docker-registry-tag@v3
         with:
           registry: ${{ env.REGISTRY }}
-          repository: ${{ github.repository }}/${{ matrix.component }}
+          repository: ${{ github.repository }}/api
           target: test
           tags: ${{ matrix.tag }}
 
-      - name: Promoting ${{ matrix.component }}
+      - name: Promoting API
         if: ${{ matrix.tag == '' }}
         run: echo "Tag is empty, promotion step skipped"
 

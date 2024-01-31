@@ -53,11 +53,7 @@ jobs:
           git-push: "false"
           git-branch: refs/heads/${{ github.head_ref }}
 
-      - name: Checkout pr
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
-
+      - uses: actions/checkout@v4
       - name: Comment PR
         continue-on-error: true
         uses: thollander/actions-comment-pull-request@v2
@@ -65,7 +61,6 @@ jobs:
         with:
           message: |
             # Current changelog
-
             ${{ steps.changelog.outputs.clean_changelog }}
           comment_tag: "# Current changelog"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -121,36 +116,26 @@ jobs:
     permissions:
       checks: write
       pull-requests: write
-    needs:
-      - build-backend
+    needs: [build-backend]
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 17 and Caching maven dependencies
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: "temurin"
           java-version: "17"
           cache: "maven"
 
-      - name: Tests
-        run: ./mvnw verify -P all-tests checkstyle:checkstyle -Dcheckstyle.skip=false
+      - run: ./mvnw verify -P all-tests checkstyle:checkstyle -Dcheckstyle.skip=false
 
   deploy-dev:
     name: DEV Deployment
-    needs:
-      - build-backend
-      - tests-backend
+    needs: [build-backend, tests-backend]
     runs-on: ubuntu-22.04
     timeout-minutes: 15
     environment:
       name: dev
-    env:
-      DOMAIN: apps.silver.devops.gov.bc.ca
     steps:
       - uses: actions/checkout@v4
-
       - name: Deploys
         uses: bcgov-nr/action-deployer-openshift@v2.0.0
         with:
