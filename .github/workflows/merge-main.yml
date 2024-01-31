@@ -117,7 +117,6 @@ jobs:
           overwrite: true
           verification_path: /health
           parameters:
-            -p PROMOTE=${{ github.repository }}/api:${{ env.ZONE }}
             -p ORACLEDB_USER=${{ secrets.ORACLEDB_USERNAME }}
             -p ORACLEDB_PASSWORD=${{ secrets.ORACLEDB_PASSWORD }}
             -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }}
@@ -226,7 +225,6 @@ jobs:
           overwrite: true
           verification_path: /health
           parameters:
-            -p PROMOTE=${{ github.repository }}/api:${{ env.ZONE }}
             -p ORACLEDB_USER=${{ secrets.ORACLEDB_USERNAME }}
             -p ORACLEDB_PASSWORD=${{ secrets.ORACLEDB_PASSWORD }}
             -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }}
