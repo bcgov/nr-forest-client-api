@@ -107,7 +107,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
   deploy:
-    name: DEV Deployment
+    name: Deploy
     needs: [build]
     runs-on: ubuntu-22.04
     timeout-minutes: 15
