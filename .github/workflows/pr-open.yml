@@ -33,7 +33,6 @@ jobs:
           ignored_types: '["chore","pr"]'
           type_labels: '{"feat": "feature", "fix": "fix", "bug": "fix", "doc": "documentation", "ci": "ci", "chore": "chore", "breaking": "breaking", "BREAKING CHANGE": "breaking"}'
 
-      - uses: actions/checkout@v4
       - name: Conventional Changelog Update
         continue-on-error: true
         uses: TriPSs/conventional-changelog-action@v5
@@ -46,7 +45,6 @@ jobs:
           git-push: "false"
           git-branch: refs/heads/${{ github.head_ref }}
 
-      - uses: actions/checkout@v4
       - name: Comment PR
         continue-on-error: true
         uses: thollander/actions-comment-pull-request@v2
@@ -101,7 +99,6 @@ jobs:
     environment:
       name: dev
     steps:
-      - uses: actions/checkout@v4
       - name: Deploys
         uses: bcgov-nr/action-deployer-openshift@v2.0.0
         with:
@@ -123,6 +120,8 @@ jobs:
   postman:
     name: Smoke Test
     needs: [deploy]
+    env:
+      ENVVAR: '[{"key":"URL_FCA","value":"https://${{ github.event.repository.name }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}"}]'
     environment:
       name: dev
     runs-on: ubuntu-latest
@@ -137,7 +136,7 @@ jobs:
         uses: matt-ball/newman-action@master
         with:
           collection: postman/FCA.postman_collection.json
-          envVar: '[{"key":"URL_FCA","value":"https://${{ github.event.repository.name }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}"}]'
+          envVar: ${{ env.ENVVAR}}
           reporters: '["cli"]'
           folder: '["general"]'
 
@@ -145,14 +144,14 @@ jobs:
         uses: matt-ball/newman-action@master
         with:
           collection: postman/FCA.postman_collection.json
-          envVar: '[{"key":"URL_FCA","value":"https://${{ github.event.repository.name }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}"}]'
+          envVar: ${{ env.ENVVAR }}
           iterationData: postman/FCA_postman_tests_dev.json
           reporters: '["cli", "junit"]'
           reporter: '{ "junit" : { "export" : "./postman/report.xml" } }'
 
       - name: Postman Smoke Test Report
         uses: mikepenz/action-junit-report@v4
-        if: success() || failure() # always run even if the previous step fails
+        if: always() # always run even if the previous step fails
         with:
           report_paths: "postman/report.xml"
           commit: ${{ github.event.pull_request.head.sha }}
