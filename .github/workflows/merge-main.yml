@@ -18,69 +18,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  codeql:
-    name: Semantic Code Analysis
-    runs-on: ubuntu-22.04
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: github/codeql-action/init@v3
-        with:
-          languages: java
-
-      - uses: actions/setup-java@v4
-        with:
-          distribution: "temurin"
-          java-version: "17"
-          cache: "maven"
-
-      - run: ./mvnw clean package
-      - uses: github/codeql-action/analyze@v3
-
-  sonarcloud:
-    name: Static Analysis
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: bcgov-nr/action-test-and-analyse-java@v1.0.0
-        with:
-          commands: |
-            mvn -B verify -P all-tests checkstyle:checkstyle -Dcheckstyle.skip=false --file pom.xml
-          dir: .
-          java-cache: maven
-          java-distribution: temurin
-          java-version: "17"
-          sonar_args: >
-            -Dsonar.organization=bcgov-sonarcloud
-            -Dsonar.projectKey=bcgov_forest-client-api
-          sonar_token: ${{ secrets.SONAR_TOKEN }}
-
-  trivy-repo:
-    name: Repository Report
-    needs:
-      - codeql
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Run Trivy vulnerability scanner in repo mode
-        uses: aquasecurity/trivy-action@0.16.1
-        with:
-          scan-type: "fs"
-          format: "sarif"
-          output: "trivy-results.sarif"
-          ignore-unfixed: true
-          severity: "CRITICAL,HIGH"
-          scanners: "vuln,secret,config"
-
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: "trivy-results.sarif"
-
   deploy-test:
     name: TEST Deployment
     needs:
