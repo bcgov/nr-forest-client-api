@@ -116,16 +116,14 @@ jobs:
           oc_token: ${{ secrets.OC_TOKEN }}
           overwrite: true
           verification_path: /health
-          penetration_test: false
           parameters:
-            -p ZONE=${{ env.ZONE }} -p NAME=${{ github.event.repository.name }}
-            -p PROMOTE=${{ github.repository }}/api:${{ env.ZONE }}
             -p ORACLEDB_USER=${{ secrets.ORACLEDB_USERNAME }}
             -p ORACLEDB_PASSWORD=${{ secrets.ORACLEDB_PASSWORD }}
             -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }}
             -p ORACLEDB_HOST=${{ secrets.ORACLEDB_HOST }}
             -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }}
             -p ORACLEDB_SECRET=${{ secrets.ORACLEDB_SECRET }}
+            -p ZONE=${{ env.ZONE }}
 
       - name: Publish API
         uses: bcgov-nr/action-gwa-publish@v0.1.0
@@ -225,17 +223,15 @@ jobs:
           oc_server: ${{ secrets.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
           overwrite: true
-          penetration_test: false
           verification_path: /health
           parameters:
-            -p ZONE=${{ env.ZONE }} -p NAME=${{ github.event.repository.name }}
-            -p PROMOTE=${{ github.repository }}/api:${{ env.ZONE }}
             -p ORACLEDB_USER=${{ secrets.ORACLEDB_USERNAME }}
             -p ORACLEDB_PASSWORD=${{ secrets.ORACLEDB_PASSWORD }}
             -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }}
             -p ORACLEDB_HOST=${{ secrets.ORACLEDB_HOST }}
             -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }}
             -p ORACLEDB_SECRET=${{ secrets.ORACLEDB_SECRET }}
+            -p ZONE=${{ env.ZONE }}
       - name: Publish API
         uses: bcgov-nr/action-gwa-publish@v0.1.0
         with:
