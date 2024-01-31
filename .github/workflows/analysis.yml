@@ -20,7 +20,7 @@ jobs:
       - uses: bcgov-nr/action-test-and-analyse-java@v1.0.0
         with:
           commands: |
-            mvn -B verify -Pall-tests checkstyle:checkstyle -Dcheckstyle.skip=false
+            mvn -B verify -P all-tests checkstyle:checkstyle -Dcheckstyle.skip=false
           dir: .
           java-cache: maven
           java-distribution: temurin
