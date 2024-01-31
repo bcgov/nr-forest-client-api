@@ -1,4 +1,4 @@
-name: Unit Tests and Analysis
+name: Analysis
 
 on:
   pull_request:
@@ -20,7 +20,8 @@ jobs:
       - uses: bcgov-nr/action-test-and-analyse-java@v1.0.0
         with:
           commands: |
-            mvn -B verify -Pall-tests checkstyle:checkstyle -Dcheckstyle.skip=false --file pom.xml
+            mvn -B verify -Pall-tests checkstyle:checkstyle -Dcheckstyle.skip=false
+          dir: .
           java-cache: maven
           java-distribution: temurin
           java-version: "17"
