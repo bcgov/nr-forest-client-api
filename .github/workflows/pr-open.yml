@@ -19,7 +19,6 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v4
-
       - name: Pull request size and stability labels
         uses: actions/labeler@v5
         continue-on-error: true
@@ -34,11 +33,7 @@ jobs:
           ignored_types: '["chore","pr"]'
           type_labels: '{"feat": "feature", "fix": "fix", "bug": "fix", "doc": "documentation", "ci": "ci", "chore": "chore", "breaking": "breaking", "BREAKING CHANGE": "breaking"}'
 
-      - name: Checkout branch
-        uses: actions/checkout@v4
-        with:
-          ref: refs/heads/${{ github.head_ref }}
-
+      - uses: actions/checkout@v4
       - name: Conventional Changelog Update
         continue-on-error: true
         uses: TriPSs/conventional-changelog-action@v5
@@ -69,7 +64,7 @@ jobs:
     permissions:
       pull-requests: write
     steps:
-      - name: PR Greeting
+      - name: Greeting
         uses: bcgov-nr/action-pr-description-add@v1.1.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -84,19 +79,12 @@ jobs:
             [Main Merge Workflow](https://github.com/${{ github.repository }}/actions/workflows/merge-main.yml)
 
   build:
-    name: Backend Image Build
-    env:
-      COMPONENT: backend
-      ZONE: ${{ github.event.number }}
-      NAME: ghcr.io/${{ github.repository }}/api:${{ github.event.number }}
+    name: Build
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - uses: bcgov-nr/action-builder-ghcr@v2.0.1
         with:
           package: api
@@ -104,7 +92,6 @@ jobs:
           build_file: Dockerfile
           tag: ${{ github.event.number }}
           tag_fallback: test
-          token: ${{ secrets.GITHUB_TOKEN }}
 
   deploy:
     name: Deploy
