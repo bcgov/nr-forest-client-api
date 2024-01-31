@@ -32,7 +32,7 @@ jobs:
   # If merged into main, then handle any image promotions
   image-promotions:
     name: Image Promotions
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
+    # if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
     runs-on: ubuntu-22.04
     steps:
       - name: Promoting API
@@ -48,7 +48,7 @@ jobs:
   merge-notification:
     name: Merge Notification
     runs-on: ubuntu-22.04
-    # if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
     steps:
       - name: Pre-merge update
         uses: mshick/add-pr-comment@v2
