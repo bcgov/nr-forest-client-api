@@ -117,7 +117,6 @@ jobs:
           overwrite: true
           verification_path: /health
           parameters:
-            -p ZONE=${{ env.ZONE }} -p NAME=${{ github.event.repository.name }}
             -p PROMOTE=${{ github.repository }}/api:${{ env.ZONE }}
             -p ORACLEDB_USER=${{ secrets.ORACLEDB_USERNAME }}
             -p ORACLEDB_PASSWORD=${{ secrets.ORACLEDB_PASSWORD }}
@@ -125,6 +124,7 @@ jobs:
             -p ORACLEDB_HOST=${{ secrets.ORACLEDB_HOST }}
             -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }}
             -p ORACLEDB_SECRET=${{ secrets.ORACLEDB_SECRET }}
+            -p ZONE=${{ env.ZONE }}
 
       - name: Publish API
         uses: bcgov-nr/action-gwa-publish@v0.1.0
@@ -226,7 +226,6 @@ jobs:
           overwrite: true
           verification_path: /health
           parameters:
-            -p ZONE=${{ env.ZONE }} -p NAME=${{ github.event.repository.name }}
             -p PROMOTE=${{ github.repository }}/api:${{ env.ZONE }}
             -p ORACLEDB_USER=${{ secrets.ORACLEDB_USERNAME }}
             -p ORACLEDB_PASSWORD=${{ secrets.ORACLEDB_PASSWORD }}
@@ -234,6 +233,7 @@ jobs:
             -p ORACLEDB_HOST=${{ secrets.ORACLEDB_HOST }}
             -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }}
             -p ORACLEDB_SECRET=${{ secrets.ORACLEDB_SECRET }}
+            -p ZONE=${{ env.ZONE }}
       - name: Publish API
         uses: bcgov-nr/action-gwa-publish@v0.1.0
         with:
