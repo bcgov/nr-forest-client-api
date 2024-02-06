@@ -22,14 +22,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Postman Smoke Test on Openshift
-        uses: matt-ball/newman-action@master
-        with:
-          collection: postman/FCA.postman_collection.json
-          envVar: '[{"key":"URL_FCA","value":"https://${{ github.event.repository.name }}-${{ matrix.package }}-backend.${{ env.OS_DOMAIN }}"}]'
-          reporters: '["cli"]'
-          folder: '["general"]'
-
       - name: Postman Smoke Test on API Gateway
         uses: matt-ball/newman-action@master
         with:
