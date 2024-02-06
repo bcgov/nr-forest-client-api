@@ -56,8 +56,8 @@ parameters:
     description: The amount of storage the cert PVC should have
     value: 25Mi
 objects:
-  - apiVersion: v1
-    kind: Secret
+  - kind: Secret
+    apiVersion: v1
     metadata:
       name: ${NAME}-${ZONE}-${COMPONENT}
       labels:
@@ -69,8 +69,8 @@ objects:
       oracle-host: "${ORACLEDB_HOST}"
       oracle-service: "${ORACLEDB_SERVICENAME}"
       oracle-secret: "${ORACLEDB_SECRET}"
-  - apiVersion: v1
-    kind: ImageStream
+  - kind: ImageStream
+    apiVersion: v1
     metadata:
       labels:
         app: ${NAME}-${ZONE}
@@ -85,8 +85,8 @@ objects:
             name: ghcr.io/bcgov/${NAME}/api:${ZONE}
           referencePolicy:
             type: Local
-  - apiVersion: v1
-    kind: PersistentVolumeClaim
+  - kind: PersistentVolumeClaim
+    apiVersion: v1
     metadata:
       labels:
         app: ${NAME}-${ZONE}
@@ -98,8 +98,8 @@ objects:
         requests:
           storage: ${CERT_PVC_SIZE}
       storageClassName: netapp-file-standard
-  - apiVersion: v1
-    kind: DeploymentConfig
+  - kind: DeploymentConfig
+    apiVersion: v1
     metadata:
       labels:
         app: ${NAME}-${ZONE}
@@ -228,8 +228,8 @@ objects:
               volumeMounts:
                 - mountPath: /cert
                   name: ${NAME}-${ZONE}-${COMPONENT}
-  - apiVersion: v1
-    kind: Service
+  - kind: Service
+    apiVersion: v1
     metadata:
       labels:
         app: ${NAME}-${ZONE}
@@ -242,25 +242,8 @@ objects:
           targetPort: 3001
       selector:
         deploymentconfig: ${NAME}-${ZONE}-${COMPONENT}
-  - apiVersion: route.openshift.io/v1
-    kind: Route
-    metadata:
-      labels:
-        app: ${NAME}-${ZONE}
-      name: ${NAME}-${ZONE}-${COMPONENT}
-    spec:
-      host: ${NAME}-${ZONE}-${COMPONENT}.${DOMAIN}
-      port:
-        targetPort: 3001-tcp
-      to:
-        kind: Service
-        name: ${NAME}-${ZONE}-${COMPONENT}
-        weight: 100
-      tls:
-        termination: edge
-        insecureEdgeTerminationPolicy: Redirect
-  - apiVersion: networking.k8s.io/v1
-    kind: NetworkPolicy
+  - kind: NetworkPolicy
+    apiVersion: networking.k8s.io/v1
     metadata:
       name: allow-from-openshift-ingress
       labels:
@@ -274,8 +257,8 @@ objects:
                   network.openshift.io/policy-group: ingress
       policyTypes:
         - Ingress
-  - apiVersion: networking.k8s.io/v1
-    kind: NetworkPolicy
+  - kind: NetworkPolicy
+    apiVersion: networking.k8s.io/v1
     metadata:
       name: allow-same-namespace
       labels:
@@ -287,8 +270,8 @@ objects:
             - podSelector: {}
       policyTypes:
         - Ingress
-  - apiVersion: networking.k8s.io/v1
-    kind: NetworkPolicy
+  - kind: NetworkPolicy
+    apiVersion: networking.k8s.io/v1
     metadata:
       name: allow-traffic-from-gateway-to-your-api
     spec:
