@@ -1,7 +1,7 @@
 # Created by https://www.toptal.com/developers/gitignore/api/java,maven,eclipse,intellij+all,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=java,maven,eclipse,intellij+all,visualstudiocode
 
-### Eclipse ###
+### IDEs ###
 .metadata
 bin/
 tmp/
@@ -13,6 +13,7 @@ local.properties
 .settings/
 .loadpath
 .recommenders
+.vscode
 
 # External tool builders
 .externalToolBuilders/

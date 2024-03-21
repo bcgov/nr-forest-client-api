@@ -25,16 +25,62 @@ spring:
       maxIdleTime: 45000
       maxCreateConnectionTime: 90000
       poolName: ForestClientApiPool
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  sleuth:
+    propagation-keys:
+      - X-TRACE-ID
+    baggage-keys:
+      - X-TRACE-ID
+    log:
+      slf4j:
+        whitelisted-mdc-keys:
+          - X-TRACE-ID
 
 management:
+  enable-native-support: true
   endpoint:
+    metrics:
+      enabled: false
     health:
       show-details: always
+    prometheus:
+      enabled: true
   endpoints:
     web:
+      path-mapping:
+        prometheus: metrics
       base-path: /
       exposure:
-        include: health,metrics
+        include: health,info,metrics,otlp,tracing,httptrace,prometheus
+  httpexchanges:
+    recording:
+      include: principal,request-headers,response-headers,cookie-headers,time-taken,authorization-header,remote-address,session-id
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  tracing:
+    enabled: false
+    baggage:
+      remote-fields:
+        - X-TRACE-ID
+      correlation:
+        fields:
+          - X-TRACE-ID
+    sampling:
+      probability: 0.75
+  zipkin:
+    metrics:
+      export:
+        enabled: true
+info:
+  app:
+    name: ${spring.application.name}
+    zone: ${APP_ZONE:local}
 
 springdoc:
   enable-native-support: true
@@ -61,3 +107,28 @@ ca:
           keystore: ${ORACLEDB_KEYSTORE:jssecacerts.jks}
           secret: ${ORACLEDB_SECRET:changeit}
           schema: THE
+
+logging:
+  pattern:
+    correlation: "[${spring.application.name:},%X{${X-TRACE-ID:traceId}:-},%X{spanId:-}] "
+
+
+# Profile Specific Properties
+---
+spring:
+  config:
+    activate:
+      on-profile: container
+  sleuth:
+    propagation-keys:
+      - X-TRACE-ID
+    baggage-keys:
+      - X-TRACE-ID
+    log:
+      slf4j:
+        whitelisted-mdc-keys:
+          - X-TRACE-ID
+
+logging:
+  pattern:
+    console: "{\"time\": \"%d{${LOG_DATEFORMAT_PATTERN:yyyy-MM-dd HH:mm:ss.SSS}}\", \"level\": \"${LOG_LEVEL:%5p}\", \"app\":\"${spring.application.name:-}\", \"traceId\":\"%X{${X-TRACE-ID:traceId}:-}\", \"spanId\":\"%X{spanId:-}\", \"pid\": \"${PID: }\", \"thread\": \"%t\", \"source\": \"%logger{63}:%L\", \"message\": \"%m${LOG_EXCEPTION_CONVERSION_WORD:%wEx}\"}%n"

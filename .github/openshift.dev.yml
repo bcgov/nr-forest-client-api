@@ -1,0 +1,42 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: ${NAME}
+  annotations:
+    description: "Nr-Forest-Client-Api"
+    tags: "nr-forest-client-api"
+    iconClass: icon-js
+labels:
+  app: ${NAME}-${ZONE}
+  app.kubernetes.io/part-of: ${NAME}-${ZONE}
+parameters:
+  - name: NAME
+    description: Module name
+    value: nr-forest-client-api
+  - name: ZONE
+    description: Deployment zone, e.g. pr-### or prod
+    required:
+      true
+  - name: COMPONENT
+    description: Component name
+    value: backend
+  - name: DOMAIN
+    value: apps.silver.devops.gov.bc.ca
+objects:
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    labels:
+      app: ${NAME}-${ZONE}
+    name: ${NAME}-${ZONE}-${COMPONENT}
+  spec:
+    host: ${NAME}-${ZONE}-${COMPONENT}.${DOMAIN}
+    port:
+      targetPort: 3001-tcp
+    to:
+      kind: Service
+      name: ${NAME}-${ZONE}-${COMPONENT}
+      weight: 100
+    tls:
+      termination: edge
+      insecureEdgeTerminationPolicy: Redirect

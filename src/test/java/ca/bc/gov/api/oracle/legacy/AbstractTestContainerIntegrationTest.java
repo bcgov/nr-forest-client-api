@@ -1,5 +1,8 @@
 package ca.bc.gov.api.oracle.legacy;
 
+import com.github.dockerjava.api.DockerClient;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -7,7 +10,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.OracleContainer;
+import org.testcontainers.containers.startupcheck.StartupCheckStrategy;
+import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
@@ -16,13 +22,19 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @ContextConfiguration
 public abstract class AbstractTestContainerIntegrationTest {
 
-  static final OracleContainer database;
+  static final GenericContainer database;
 
   static {
-    database = new OracleContainer("gvenzl/oracle-xe:18.4.0-slim-faststart")
-        .withDatabaseName("legacyfsa")
-        .withUsername("THE")
-        .withPassword(UUID.randomUUID().toString().substring(24));
+    database = new GenericContainer("gvenzl/oracle-free:23.3-slim-faststart")
+        .withEnv("ORACLE_RANDOM_PASSWORD","yes")
+        .withEnv("APP_USER","THE")
+        .withEnv("APP_USER_PASSWORD",UUID.randomUUID().toString().substring(24))
+        .withExposedPorts(1521)
+        .waitingFor(
+            new LogMessageWaitStrategy()
+                .withRegEx(".*DATABASE IS READY TO USE.*")
+                .withStartupTimeout(Duration.of(15, ChronoUnit.MINUTES))
+        );
     database.start();
   }
 
@@ -32,12 +44,13 @@ public abstract class AbstractTestContainerIntegrationTest {
     registry
         .add(
             "ca.bc.gov.nrs.oracle.database",
-            database::getDatabaseName);
+            () -> "THE");
 
     registry
         .add(
             "ca.bc.gov.nrs.oracle.service",
-            database::getDatabaseName);
+            () -> "FREEPDB1"
+        );
 
     registry
         .add(
@@ -52,17 +65,17 @@ public abstract class AbstractTestContainerIntegrationTest {
     registry
         .add(
             "ca.bc.gov.nrs.oracle.username",
-            database::getUsername);
+            () -> database.getEnvMap().get("APP_USER"));
 
     registry
         .add(
             "ca.bc.gov.nrs.oracle.schema",
-            database::getUsername
+            () -> database.getEnvMap().get("APP_USER")
         );
 
     registry
         .add(
             "ca.bc.gov.nrs.oracle.password",
-            database::getPassword);
+            () -> database.getEnvMap().get("APP_USER_PASSWORD"));
   }
 }

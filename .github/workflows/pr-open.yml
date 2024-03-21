@@ -1,11 +1,9 @@
-name: Pull Request Open
+name: PR
 
 on:
   pull_request:
 
 env:
-  REGISTRY: ghcr.io
-  NAME: ${{ github.event.repository.name }}
   DOMAIN: apps.silver.devops.gov.bc.ca
 
 concurrency:
@@ -21,7 +19,6 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v4
-
       - name: Pull request size and stability labels
         uses: actions/labeler@v5
         continue-on-error: true
@@ -36,11 +33,6 @@ jobs:
           ignored_types: '["chore","pr"]'
           type_labels: '{"feat": "feature", "fix": "fix", "bug": "fix", "doc": "documentation", "ci": "ci", "chore": "chore", "breaking": "breaking", "BREAKING CHANGE": "breaking"}'
 
-      - name: Checkout branch
-        uses: actions/checkout@v4
-        with:
-          ref: refs/heads/${{ github.head_ref }}
-
       - name: Conventional Changelog Update
         continue-on-error: true
         uses: TriPSs/conventional-changelog-action@v5
@@ -53,11 +45,6 @@ jobs:
           git-push: "false"
           git-branch: refs/heads/${{ github.head_ref }}
 
-      - name: Checkout pr
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
-
       - name: Comment PR
         continue-on-error: true
         uses: thollander/actions-comment-pull-request@v2
@@ -65,20 +52,17 @@ jobs:
         with:
           message: |
             # Current changelog
-
             ${{ steps.changelog.outputs.clean_changelog }}
           comment_tag: "# Current changelog"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   pr-greeting:
-    name: PR Greeting
-    env:
-      PREFIX: ${{ github.event.repository.name }}-${{ github.event.number }}
+    name: Greeting
     runs-on: ubuntu-22.04
     permissions:
       pull-requests: write
     steps:
-      - name: PR Greeting
+      - name: Greeting
         uses: bcgov-nr/action-pr-description-add@v1.1.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -87,25 +71,18 @@ jobs:
             Thanks for the PR!
 
             Any successful deployments (not always required) will be available below.
-            [API](https://${{ env.NAME }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}/) available
+            [API](https://${{ github.event.repository.name }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}/) available
 
             Once merged, code will be promoted and handed off to following workflow run.
             [Main Merge Workflow](https://github.com/${{ github.repository }}/actions/workflows/merge-main.yml)
 
-  build-backend:
-    name: Backend Image Build
-    env:
-      COMPONENT: backend
-      ZONE: ${{ github.event.number }}
-      NAME: ghcr.io/${{ github.repository }}/api:${{ github.event.number }}
+  build:
+    name: Build
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - uses: bcgov-nr/action-builder-ghcr@v2.0.1
         with:
           package: api
@@ -113,44 +90,15 @@ jobs:
           build_file: Dockerfile
           tag: ${{ github.event.number }}
           tag_fallback: test
-          token: ${{ secrets.GITHUB_TOKEN }}
 
-  tests-backend:
-    name: Backend Unit Tests
-    runs-on: ubuntu-22.04
-    permissions:
-      checks: write
-      pull-requests: write
-    needs:
-      - build-backend
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 17 and Caching maven dependencies
-        uses: actions/setup-java@v4
-        with:
-          distribution: "temurin"
-          java-version: "17"
-          cache: "maven"
-
-      - name: Tests
-        run: ./mvnw verify -P all-tests checkstyle:checkstyle -Dcheckstyle.skip=false
-
-  deploy-dev:
-    name: DEV Deployment
-    needs:
-      - build-backend
-      - tests-backend
+  deploy:
+    name: Deploy
+    needs: [build]
     runs-on: ubuntu-22.04
     timeout-minutes: 15
     environment:
       name: dev
-    env:
-      DOMAIN: apps.silver.devops.gov.bc.ca
     steps:
-      - uses: actions/checkout@v4
-
       - name: Deploys
         uses: bcgov-nr/action-deployer-openshift@v2.0.0
         with:
@@ -161,23 +109,28 @@ jobs:
           overwrite: true
           verification_path: /health
           parameters:
-            -p ZONE=${{ github.event.number }} -p NAME=${{ github.event.repository.name }}
-            -p PROMOTE=${{ github.repository }}/api:${{ github.event.number }}
             -p ORACLEDB_USER=${{ secrets.ORACLEDB_USERNAME }}
             -p ORACLEDB_PASSWORD=${{ secrets.ORACLEDB_PASSWORD }}
             -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }}
             -p ORACLEDB_HOST=${{ secrets.ORACLEDB_HOST }}
             -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }}
             -p ORACLEDB_SECRET=${{ secrets.ORACLEDB_SECRET }}
+            -p ZONE=${{ github.event.number }}
+
+      - name: Deploy dev route
+        uses: bcgov-nr/action-deployer-openshift@v2.0.0
+        with:
+          file: .github/openshift.dev.yml
+          oc_namespace: ${{ secrets.OC_NAMESPACE }}
+          oc_server: ${{ secrets.OC_SERVER }}
+          oc_token: ${{ secrets.OC_TOKEN }}
+          overwrite: true
+          parameters:
+            -p ZONE=${{ github.event.number }}
 
   postman:
     name: Smoke Test
-    env:
-      COMPONENT: backend
-      ZONE: ${{ github.event.number }}
-      DOMAIN: apps.silver.devops.gov.bc.ca
-    needs:
-      - deploy-dev
+    needs: [deploy]
     environment:
       name: dev
     runs-on: ubuntu-latest
@@ -187,14 +140,12 @@ jobs:
       checks: write
       pull-requests: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
       - name: API Health check
         uses: matt-ball/newman-action@master
         with:
           collection: postman/FCA.postman_collection.json
-          envVar: '[{"key":"URL_FCA","value":"https://${{ env.NAME }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}"}]'
+          envVar: '[{"key":"URL_FCA","value":"https://${{ github.event.repository.name }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}"}]'
           reporters: '["cli"]'
           folder: '["general"]'
 
@@ -202,14 +153,14 @@ jobs:
         uses: matt-ball/newman-action@master
         with:
           collection: postman/FCA.postman_collection.json
-          envVar: '[{"key":"URL_FCA","value":"https://${{ env.NAME }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}"}]'
+          envVar: '[{"key":"URL_FCA","value":"https://${{ github.event.repository.name }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}"}]'
           iterationData: postman/FCA_postman_tests_dev.json
           reporters: '["cli", "junit"]'
           reporter: '{ "junit" : { "export" : "./postman/report.xml" } }'
 
       - name: Postman Smoke Test Report
         uses: mikepenz/action-junit-report@v4
-        if: success() || failure() # always run even if the previous step fails
+        if: always() # always run even if the previous step fails
         with:
           report_paths: "postman/report.xml"
           commit: ${{ github.event.pull_request.head.sha }}
