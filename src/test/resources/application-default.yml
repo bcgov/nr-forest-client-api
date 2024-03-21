@@ -6,7 +6,7 @@ spring:
     banner-mode: "off"
     allow-bean-definition-overriding: true
   r2dbc:
-    url: r2dbc:oracle://${ca.bc.gov.nrs.oracle.host}:${ca.bc.gov.nrs.oracle.port}/${ca.bc.gov.nrs.oracle.database}
+    url: r2dbc:oracle://${ca.bc.gov.nrs.oracle.host}:${ca.bc.gov.nrs.oracle.port}/${ca.bc.gov.nrs.oracle.service}
     username: ${ca.bc.gov.nrs.oracle.username}
     password: ${ca.bc.gov.nrs.oracle.password}
     pool:
