@@ -122,6 +122,10 @@ objects:
         type: Rolling
       template:
         metadata:
+          annotations:
+            prometheus.io/scrape: "true"
+            prometheus.io/port: "3001"
+            prometheus.io/path: "/metrics"
           labels:
             app: ${NAME}-${ZONE}
             deploymentconfig: ${NAME}-${ZONE}-${COMPONENT}
@@ -196,6 +200,10 @@ objects:
                       key: oracle-secret
                 - name: ORACLEDB_KEYSTORE
                   value: /cert/jssecacerts
+                - name: TZ
+                  value: America/Vancouver
+                - name: APP_ZONE
+                  value: ${ZONE}
               ports:
                 - containerPort: 3001
                   protocol: TCP
