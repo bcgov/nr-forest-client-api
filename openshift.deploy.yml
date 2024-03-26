@@ -25,13 +25,13 @@ parameters:
   - name: DOMAIN
     value: apps.silver.devops.gov.bc.ca
   - name: CPU_REQUEST
-    value: 10m
+    value: 75m
   - name: CPU_LIMIT
-    value: 25m
+    value: 200m
   - name: MEMORY_REQUEST
-    value: 75Mi
+    value: 150Mi
   - name: MEMORY_LIMIT
-    value: 75Mi
+    value: 150Mi
   - name: ORACLEDB_USER
     description: Oracle database user name
     required: true
