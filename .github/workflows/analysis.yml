@@ -17,7 +17,7 @@ jobs:
     if: ${{ ! github.event.pull_request.draft }}
     runs-on: ubuntu-22.04
     steps:
-      - uses: bcgov-nr/action-test-and-analyse-java@v1.0.0
+      - uses: bcgov-nr/action-test-and-analyse-java@v1.0.1
         with:
           commands: |
             mvn -B verify -P all-tests checkstyle:checkstyle -Dcheckstyle.skip=false
@@ -72,7 +72,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - uses: aquasecurity/trivy-action@0.16.1
+      - uses: aquasecurity/trivy-action@0.18.0
         with:
           format: "sarif"
           ignore-unfixed: true
