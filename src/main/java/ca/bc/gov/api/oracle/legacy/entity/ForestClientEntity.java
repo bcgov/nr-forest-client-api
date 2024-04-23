@@ -1,5 +1,7 @@
 package ca.bc.gov.api.oracle.legacy.entity;
 
+import static ca.bc.gov.api.oracle.legacy.ApplicationConstants.ORACLE_ATTRIBUTE_SCHEMA;
+import static ca.bc.gov.api.oracle.legacy.ApplicationConstants.INDIVIDUAL;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -18,7 +20,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "FOREST_CLIENT", schema = "THE")
+@Table(name = "FOREST_CLIENT", schema = ORACLE_ATTRIBUTE_SCHEMA)
 public class ForestClientEntity {
 
   @Id
@@ -66,11 +68,12 @@ public class ForestClientEntity {
 
   @Transient
   public String getName() {
-    if (Objects.equals(this.clientTypeCode, "I")) {
+    if (Objects.equals(this.clientTypeCode, INDIVIDUAL)) {
       return Stream.of(this.legalFirstName, this.legalMiddleName, this.clientName)
           .filter(Objects::nonNull)
           .collect(Collectors.joining(" "));
-    } else {
+    } 
+    else {
       return this.clientName;
     }
   }
