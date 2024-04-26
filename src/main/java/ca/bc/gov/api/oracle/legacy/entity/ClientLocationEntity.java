@@ -1,5 +1,6 @@
 package ca.bc.gov.api.oracle.legacy.entity;
 
+import static ca.bc.gov.api.oracle.legacy.ApplicationConstants.ORACLE_ATTRIBUTE_SCHEMA;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,11 +15,12 @@ import org.springframework.data.relational.core.mapping.Table;
 @AllArgsConstructor
 @With
 @Builder
-@Table(name = "CLIENT_LOCATION", schema = "THE")
+@Table(name = "CLIENT_LOCATION", schema = ORACLE_ATTRIBUTE_SCHEMA)
 public class ClientLocationEntity {
 
   @Column("CLIENT_NUMBER")
   private String clientNumber;
+  
   @Column("CLIENT_LOCN_CODE")
   private String locationCode;
 

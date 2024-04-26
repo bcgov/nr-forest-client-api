@@ -13,8 +13,11 @@ import org.springframework.data.relational.core.mapping.Column;
 @With
 @Builder
 public class ClientLocationIdEntity {
+  
   @Column("CLIENT_NUMBER")
   private String clientNumber;
+  
   @Column("CLIENT_LOCN_CODE")
   private String locationCode;
+  
 }

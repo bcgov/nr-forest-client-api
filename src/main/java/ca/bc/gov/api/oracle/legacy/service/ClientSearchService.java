@@ -1,0 +1,106 @@
+package ca.bc.gov.api.oracle.legacy.service;
+
+import static org.springframework.data.relational.core.query.Criteria.where;
+
+import ca.bc.gov.api.oracle.legacy.dto.ClientPublicViewDto;
+import ca.bc.gov.api.oracle.legacy.entity.ForestClientEntity;
+import ca.bc.gov.api.oracle.legacy.util.ClientMapper;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
+import org.springframework.data.relational.core.query.Criteria;
+import org.springframework.data.relational.core.query.Query;
+import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class ClientSearchService {
+
+  private final R2dbcEntityTemplate template;
+
+  /**
+   * This method is used to create a search criteria based on a list of client IDs. It first logs
+   * the IDs of the clients to be searched. Then, it creates an empty query criteria. If the list of
+   * IDs is not null and not empty, it adds a query criteria to search for clients with client
+   * numbers in the IDs list. Finally, it returns the created search criteria.
+   *
+   * @param ids The list of client IDs to be used in the search criteria.
+   * @return The created search criteria.
+   */
+  public Criteria searchById(List<String> ids) {
+    log.info("Searching for clients with ids {}", ids);
+
+    // Create an empty query criteria.
+    Criteria queryCriteria = Criteria.empty();
+
+    // If the ids list is not empty, add a query criteria to search for clients with client numbers in the ids list.
+    if (ids != null && !ids.isEmpty()) {
+      queryCriteria = queryCriteria
+          .and(where("clientNumber").in(ids));
+    }
+
+    // Return search criteria
+    return queryCriteria;
+  }
+
+  /**
+   * This method is used to search for clients based on a given query criteria, page number, and
+   * page size. It first creates a query based on the provided query criteria. Then, it counts the
+   * total number of clients that match the search query. It retrieves the specific page of clients
+   * based on the page number and size. The clients are sorted in ascending order by client number
+   * and then by client name. Each retrieved client entity is then mapped to a DTO (Data Transfer
+   * Object). The count of total matching clients is also set in each client DTO. Finally, it logs
+   * the client number of each retrieved client.
+   *
+   * @param queryCriteria The criteria used to search for clients.
+   * @param page          The page number of the clients to retrieve.
+   * @param size          The number of clients to retrieve per page.
+   * @return A Flux stream of ClientPublicViewDto objects.
+   */
+  public Flux<ClientPublicViewDto> searchClientByQuery(
+      final Criteria queryCriteria,
+      final Integer page,
+      final Integer size
+  ) {
+    // Create a query based on the query criteria.
+    Query searchQuery = Query.query(queryCriteria);
+
+    log.info("Searching for clients with query {} {}",
+        queryCriteria,
+        queryCriteria.isEmpty()
+    );
+
+    if(queryCriteria.isEmpty()) {
+      return Flux.empty();
+    }
+
+    // Count the total number of clients that match the search query.
+    return template
+        .count(searchQuery, ForestClientEntity.class)
+        .doOnNext(count -> log.info("Found {} clients", count))
+        // Retrieve the clients based on the search query, page number, and size.
+        .flatMapMany(count ->
+            template
+                .select(
+                    searchQuery
+                        .with(PageRequest.of(page, size))
+                        .sort(
+                            Sort
+                                .by(Sort.Order.asc("clientNumber"))
+                                .and(Sort.by(Sort.Order.asc("clientName")))
+                        ),
+                    ForestClientEntity.class
+                )
+                // Map each client entity to a DTO and set the count of total matching clients.
+                .map(ClientMapper::mapEntityToDto)
+                // Add the total count on each retrieved client.
+                .doOnNext(client -> client.setCount(count))
+        )
+        .doOnNext(client -> log.info("Found client with id {}", client.getClientNumber()));
+  }
+}

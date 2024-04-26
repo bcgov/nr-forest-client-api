@@ -1,6 +1,5 @@
 package ca.bc.gov.api.oracle.legacy.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
