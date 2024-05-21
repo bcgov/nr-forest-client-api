@@ -66,6 +66,7 @@
     <netty.version>4.1.109.Final</netty.version>
 		<testcontainers.version>1.19.8</testcontainers.version>
     <oci.revision>${project.version}</oci.revision>
+    <flyway.version>10.13.0</flyway.version>
   </properties>
 
   <dependencies>
@@ -160,7 +161,11 @@
     <dependency>
       <groupId>org.flywaydb</groupId>
       <artifactId>flyway-core</artifactId>
-      <version>9.22.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-database-oracle</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
