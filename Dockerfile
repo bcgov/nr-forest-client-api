@@ -3,7 +3,8 @@ FROM ghcr.io/graalvm/native-image:ol8-java17-22.3.3 AS build
 
 # Install Maven
 RUN microdnf update -y && \
-    microdnf install -y maven
+    microdnf install -y maven && \
+    microdnf clean all
 
 # Receiving app version
 ARG APP_VERSION=0.0.1
