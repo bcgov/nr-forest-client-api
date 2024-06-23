@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.2.5</version>
+		<version>3.3.1</version>
     <relativePath/>
   </parent>
 
@@ -63,7 +63,7 @@
 
     <junit-jupiter-api.version>5.9.1</junit-jupiter-api.version>
     <junit-platform.version>1.9.1</junit-platform.version>
-    <netty.version>4.1.109.Final</netty.version>
+    <netty.version>4.1.111.Final</netty.version>
 		<testcontainers.version>1.19.8</testcontainers.version>
     <oci.revision>${project.version}</oci.revision>
     <flyway.version>10.13.0</flyway.version>
@@ -201,7 +201,7 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-web</artifactId>
-        <version>6.1.7</version>
+        <version>6.1.10</version>
       </dependency>
       <dependency>
         <groupId>io.netty</groupId>
@@ -235,7 +235,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>3.2.5</version>
+        <version>3.3.0</version>
         <executions>
           <execution>
             <id>integration-tests</id>
@@ -258,7 +258,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.2.5</version>
+        <version>3.3.0</version>
         <configuration>
           <argLine>@{argLine}</argLine>
           <skipTests>${skip.unit.tests}</skipTests>
@@ -386,7 +386,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.6.3</version>
+        <version>3.7.0</version>
         <configuration>
           <source>8</source>
           <doctitle>Javadoc Documentation for ${project.name} ${project.version}
@@ -399,7 +399,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-				<version>3.3.1</version>
+				<version>3.4.0</version>
         <configuration>
           <skip>${checkstyle.skip}</skip>
           <configLocation>google_checks.xml</configLocation>
