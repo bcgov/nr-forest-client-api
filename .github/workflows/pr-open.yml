@@ -106,7 +106,7 @@ jobs:
       name: dev
     steps:
       - name: Deploys
-        uses: bcgov-nr/action-deployer-openshift@v2.3.0
+        uses: bcgov-nr/action-deployer-openshift@v3.0.0
         with:
           file: openshift.deploy.yml
           oc_namespace: ${{ secrets.OC_NAMESPACE }}
@@ -124,7 +124,7 @@ jobs:
             -p ZONE=${{ github.event.number }}
 
       - name: Deploy dev route
-        uses: bcgov-nr/action-deployer-openshift@v2.3.0
+        uses: bcgov-nr/action-deployer-openshift@v3.0.0
         with:
           file: .github/openshift.dev.yml
           oc_namespace: ${{ secrets.OC_NAMESPACE }}
