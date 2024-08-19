@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 public class ApplicationConstants {
   
   public static final String ORACLE_ATTRIBUTE_SCHEMA = "THE";
-
   public static final String INDIVIDUAL = "I";
   public static final String X_TOTAL_COUNT = "X-Total-Count";
   
