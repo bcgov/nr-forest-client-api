@@ -65,7 +65,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Greeting
-        uses: bcgov-nr/action-pr-description-add@v1.1.1
+        uses: bcgov-nr/action-pr-description-add@v1.1.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           add_markdown: |
@@ -86,7 +86,7 @@ jobs:
       contents: read
       packages: write
     steps:
-      - uses: bcgov-nr/action-builder-ghcr@v2.0.2
+      - uses: bcgov-nr/action-builder-ghcr@v2.2.0
         with:
           package: api
           tag: ${{ github.event.number }}
