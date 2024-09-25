@@ -13,13 +13,15 @@ ARG APP_VERSION=0.0.1
 WORKDIR /app
 COPY pom.xml ./
 COPY src ./src
+COPY mvnw ./
+COPY .mvn/wrapper/maven-wrapper.properties ./.mvn/wrapper/maven-wrapper.properties
 
 # Setting app version
 RUN mvn versions:set -DnewVersion=${APP_VERSION} -f pom.xml -DskipTests -Dtests.skip=true -Dskip.unit.tests=true && \
     mvn versions:commit -f pom.xml -DskipTests -Dtests.skip=true -Dskip.unit.tests=true
 
 # Build
-RUN mvn -Pnative native:compile
+RUN ./mvnw -Pnative native:compile
 
 
 ### Deployer

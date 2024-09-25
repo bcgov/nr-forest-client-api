@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.2.5</version>
+		<version>3.3.2</version>
     <relativePath/>
   </parent>
 
@@ -29,7 +29,6 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>17</java.version>
     <jdk.version>17</jdk.version>
-    <maven.compiler.version>3.10.1</maven.compiler.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
 
@@ -63,8 +62,8 @@
 
     <junit-jupiter-api.version>5.9.1</junit-jupiter-api.version>
     <junit-platform.version>1.9.1</junit-platform.version>
-    <netty.version>4.1.109.Final</netty.version>
-		<testcontainers.version>1.19.8</testcontainers.version>
+    <netty.version>4.1.112.Final</netty.version>
+		<testcontainers.version>1.20.1</testcontainers.version>
     <oci.revision>${project.version}</oci.revision>
     <flyway.version>10.13.0</flyway.version>
   </properties>
@@ -110,7 +109,7 @@
     <dependency>
       <groupId>org.springdoc</groupId>
       <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
-      <version>2.5.0</version>
+      <version>2.6.0</version>
     </dependency>
 
     <dependency>
@@ -125,7 +124,7 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      <version>3.14.0</version>
+      <version>3.16.0</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
@@ -235,7 +234,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>3.2.5</version>
+        <version>3.4.0</version>
         <executions>
           <execution>
             <id>integration-tests</id>
@@ -258,7 +257,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.2.5</version>
+        <version>3.4.0</version>
         <configuration>
           <argLine>@{argLine}</argLine>
           <skipTests>${skip.unit.tests}</skipTests>
@@ -386,7 +385,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.6.3</version>
+        <version>3.8.0</version>
         <configuration>
           <source>8</source>
           <doctitle>Javadoc Documentation for ${project.name} ${project.version}
@@ -399,7 +398,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-				<version>3.3.1</version>
+				<version>3.4.0</version>
         <configuration>
           <skip>${checkstyle.skip}</skip>
           <configLocation>google_checks.xml</configLocation>
@@ -421,7 +420,7 @@
       <plugin>
         <groupId>org.cyclonedx</groupId>
         <artifactId>cyclonedx-maven-plugin</artifactId>
-				<version>2.8.0</version>
+				<version>2.8.1</version>
         <executions>
           <execution>
             <phase>validate</phase>
@@ -489,6 +488,7 @@
         <build.profile.id>native</build.profile.id>
         <skip.integration.tests>true</skip.integration.tests>
         <skip.unit.tests>true</skip.unit.tests>
+        <checkstyle.skip>true</checkstyle.skip>
       </properties>
     </profile>
   </profiles>
