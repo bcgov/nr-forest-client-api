@@ -105,8 +105,8 @@ public class ClientController {
    */
   @GetMapping("/findByClientNumberOrName/{clientNumberOrName}")
   @Operation(
-      summary = "Search clients by client number or client name." 
-    		  	+ " It will return active and inactive",
+      summary = "Search clients by client number or client name."
+                + " It will return active and inactive",
       responses = {
           @ApiResponse(
               responseCode = "200",
