@@ -1,7 +1,8 @@
 package ca.bc.gov.api.oracle.legacy.entity;
 
-import static ca.bc.gov.api.oracle.legacy.ApplicationConstants.ORACLE_ATTRIBUTE_SCHEMA;
 import static ca.bc.gov.api.oracle.legacy.ApplicationConstants.INDIVIDUAL;
+import static ca.bc.gov.api.oracle.legacy.ApplicationConstants.ORACLE_ATTRIBUTE_SCHEMA;
+
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -70,10 +71,9 @@ public class ForestClientEntity {
   public String getName() {
     if (Objects.equals(this.clientTypeCode, INDIVIDUAL)) {
       return Stream.of(this.legalFirstName, this.legalMiddleName, this.clientName)
-          .filter(Objects::nonNull)
-          .collect(Collectors.joining(" "));
-    } 
-    else {
+              .filter(Objects::nonNull)
+              .collect(Collectors.joining(" "));
+    } else {
       return this.clientName;
     }
   }

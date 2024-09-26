@@ -34,10 +34,8 @@ import reactor.core.publisher.Mono;
  */
 @RestController
 @Slf4j
-@Tag(
-	name = "Client API", 
-	description = "Deals with client data checks and validation"
-)
+@Tag(name = "Client API", 
+     description = "Deals with client data checks and validation")
 @RequestMapping(value = "/api/clients", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class ClientController {

@@ -34,7 +34,7 @@ public class MetricConfiguration {
         .commonTags(
             "version", appVersion,
             "app", appName,
-            "zone",appZone
+            "zone", appZone
         )
         .meterFilter(ignoreTag())
         .meterFilter(distribution());
