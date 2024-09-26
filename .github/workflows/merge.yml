@@ -18,7 +18,7 @@ concurrency:
 jobs:
   deploy-test:
     name: TEST Deployment
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     outputs:
       tag: ${{ steps.changelog.outputs.tag }}
     permissions:
@@ -87,7 +87,7 @@ jobs:
   image-promotions:
     name: Image Promotions
     needs: [deploy-test]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         tag: [prod, "${{ needs.deploy-test.outputs.tag }}"]
@@ -108,7 +108,7 @@ jobs:
   deploy-prod:
     name: PROD Deployment
     needs: [image-promotions]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     environment:
       name: prod
     steps:
