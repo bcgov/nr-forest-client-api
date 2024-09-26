@@ -1,6 +1,7 @@
 package ca.bc.gov.api.oracle.legacy.entity;
 
 import static ca.bc.gov.api.oracle.legacy.ApplicationConstants.ORACLE_ATTRIBUTE_SCHEMA;
+
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -38,7 +38,8 @@ public class ClientSearchService {
     // Create an empty query criteria.
     Criteria queryCriteria = Criteria.empty();
 
-    // If the ids list is not empty, add a query criteria to search for clients with client numbers in the ids list.
+    /* If the list of IDs is not empty, add a query criterion to search for clients 
+       with client numbers in the list of IDs.*/
     if (ids != null && !ids.isEmpty()) {
       queryCriteria = queryCriteria
           .and(where("clientNumber").in(ids));
@@ -75,7 +76,7 @@ public class ClientSearchService {
         queryCriteria.isEmpty()
     );
 
-    if(queryCriteria.isEmpty()) {
+    if (queryCriteria.isEmpty()) {
       return Flux.empty();
     }
 

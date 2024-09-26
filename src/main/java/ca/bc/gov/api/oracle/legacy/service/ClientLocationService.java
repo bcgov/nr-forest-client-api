@@ -20,10 +20,24 @@ public class ClientLocationService {
 
   private final ClientLocationRepository repository;
 
+  /**
+   * Counts the number of locations associated with a given client.
+   *
+   * @param clientNumber the client number for which to count locations
+   * @return a {@link Mono} emitting the count of locations
+   */
   public Mono<Long> countClientLocations(String clientNumber) {
     return repository.countByClientNumber(clientNumber);
   }
 
+  /**
+   * Retrieves a paginated list of client locations.
+   *
+   * @param clientNumber the client number for which to retrieve locations
+   * @param page the page number (0-based) to retrieve
+   * @param size the number of items per page
+   * @return a {@link Flux} emitting a list of {@link ClientLocationDto} objects
+   */
   public Flux<ClientLocationDto> listClientLocations(
       String clientNumber,
       Integer page,
@@ -58,10 +72,18 @@ public class ClientLocationService {
             );
   }
 
+  /**
+   * Retrieves the details of a specific client location based on client number and location code.
+   *
+   * @param clientNumber the client number associated with the location
+   * @param locationNumber the location code for the specific location
+   * @return a {@link Mono} emitting a {@link ClientLocationDto} object containing the location details,
+   *         or an error if the location is not found
+   */
   public Mono<ClientLocationDto> getClientLocationDetails(String clientNumber,
       String locationNumber) {
     return repository
-        .findByClientNumberAndLocationCode(clientNumber,locationNumber)
+        .findByClientNumberAndLocationCode(clientNumber, locationNumber)
         .map(entity -> new ClientLocationDto(
                 entity.getClientNumber(),
                 entity.getLocationCode(),

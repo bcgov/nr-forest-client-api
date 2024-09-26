@@ -17,7 +17,7 @@ jobs:
   # Clean up OpenShift when PR closed, no conditions
   cleanup-openshift:
     name: Cleanup OpenShift
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     environment:
       name: dev
     steps:
@@ -33,7 +33,7 @@ jobs:
   image-promotions:
     name: Image Promotions
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Promoting API
         uses: shrink/actions-docker-registry-tag@v4
@@ -47,7 +47,7 @@ jobs:
   # Notify when PR merged and branch = main
   merge-notification:
     name: Merge Notification
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
     steps:
       - name: Pre-merge update

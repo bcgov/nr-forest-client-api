@@ -34,10 +34,8 @@ import reactor.core.publisher.Mono;
  */
 @RestController
 @Slf4j
-@Tag(
-	name = "Client API", 
-	description = "Deals with client data checks and validation"
-)
+@Tag(name = "Client API", 
+     description = "Deals with client data checks and validation")
 @RequestMapping(value = "/api/clients", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class ClientController {
@@ -107,8 +105,8 @@ public class ClientController {
    */
   @GetMapping("/findByClientNumberOrName/{clientNumberOrName}")
   @Operation(
-      summary = "Search clients by client number or client name." 
-    		  	+ " It will return active and inactive",
+      summary = "Search clients by client number or client name."
+                + " It will return active and inactive",
       responses = {
           @ApiResponse(
               responseCode = "200",
