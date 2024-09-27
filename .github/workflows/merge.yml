@@ -18,7 +18,7 @@ concurrency:
 jobs:
   deploy-test:
     name: TEST Deployment
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     outputs:
       tag: ${{ steps.changelog.outputs.tag }}
     permissions:
@@ -29,7 +29,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Deploys
-        uses: bcgov-nr/action-deployer-openshift@v3.0.0
+        uses: bcgov-nr/action-deployer-openshift@v3.0.1
         with:
           file: openshift.deploy.yml
           oc_namespace: ${{ secrets.OC_NAMESPACE }}
@@ -37,6 +37,7 @@ jobs:
           oc_token: ${{ secrets.OC_TOKEN }}
           overwrite: true
           verification_path: /health
+          oc_version: "4.13"
           parameters:
             -p ORACLEDB_USER=${{ secrets.ORACLEDB_USERNAME }}
             -p ORACLEDB_PASSWORD=${{ secrets.ORACLEDB_PASSWORD }}
@@ -87,7 +88,7 @@ jobs:
   image-promotions:
     name: Image Promotions
     needs: [deploy-test]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         tag: [prod, "${{ needs.deploy-test.outputs.tag }}"]
@@ -108,14 +109,14 @@ jobs:
   deploy-prod:
     name: PROD Deployment
     needs: [image-promotions]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     environment:
       name: prod
     steps:
       - uses: actions/checkout@v4
 
       - name: Deploys
-        uses: bcgov-nr/action-deployer-openshift@v3.0.0
+        uses: bcgov-nr/action-deployer-openshift@v3.0.1
         with:
           file: openshift.deploy.yml
           oc_namespace: ${{ secrets.OC_NAMESPACE }}
@@ -123,6 +124,7 @@ jobs:
           oc_token: ${{ secrets.OC_TOKEN }}
           overwrite: true
           verification_path: /health
+          oc_version: "4.13"
           parameters:
             -p ORACLEDB_USER=${{ secrets.ORACLEDB_USERNAME }}
             -p ORACLEDB_PASSWORD=${{ secrets.ORACLEDB_PASSWORD }}

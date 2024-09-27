@@ -13,7 +13,7 @@ concurrency:
 jobs:
   pr-validation:
     name: Pull Request Validation
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       pull-requests: write
@@ -21,6 +21,7 @@ jobs:
       semver: ${{ steps.changelog.outputs.tag }}
     steps:
       - uses: actions/checkout@v4
+
       - name: Pull request size and stability labels
         uses: actions/labeler@v5
         continue-on-error: true
@@ -60,7 +61,7 @@ jobs:
 
   pr-greeting:
     name: Greeting
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       pull-requests: write
     steps:
@@ -77,6 +78,7 @@ jobs:
 
             Once merged, code will be promoted and handed off to following workflow run.
             [Main Merge Workflow](https://github.com/${{ github.repository }}/actions/workflows/merge-main.yml)
+
 
   build:
     name: Build
@@ -97,22 +99,24 @@ jobs:
             APP_VERSION=${{ needs.pr-validation.outputs.semver }}-${{ github.event.number }}
           
 
+
   deploy:
     name: Deploy
     needs: [build]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     environment:
       name: dev
     steps:
       - name: Deploys
-        uses: bcgov-nr/action-deployer-openshift@v3.0.0
+        uses: bcgov-nr/action-deployer-openshift@v3.0.1
         with:
           file: openshift.deploy.yml
           oc_namespace: ${{ secrets.OC_NAMESPACE }}
           oc_server: ${{ secrets.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
           overwrite: true
+          oc_version: "4.13"
           verification_path: /health
           parameters:
             -p ORACLEDB_USER=${{ secrets.ORACLEDB_USERNAME }}
@@ -124,12 +128,13 @@ jobs:
             -p ZONE=${{ github.event.number }}
 
       - name: Deploy dev route
-        uses: bcgov-nr/action-deployer-openshift@v3.0.0
+        uses: bcgov-nr/action-deployer-openshift@v3.0.1
         with:
           file: .github/openshift.dev.yml
           oc_namespace: ${{ secrets.OC_NAMESPACE }}
           oc_server: ${{ secrets.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
+          oc_version: "4.13"
           overwrite: true
           parameters:
             -p ZONE=${{ github.event.number }}
