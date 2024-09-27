@@ -10,7 +10,7 @@ concurrency:
 
 jobs:
   zap_scan:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     name: Penetration Tests
     steps:
       - name: ZAP Scan
