@@ -104,9 +104,9 @@ jobs:
     name: Deploy
     needs: [build]
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
-    environment:
-      name: dev
+      timeout-minutes: 15
+      environment:
+        name: dev
     steps:
       - name: Deploys
         uses: bcgov-nr/action-deployer-openshift@v3.0.1
