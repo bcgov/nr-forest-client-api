@@ -95,7 +95,7 @@ objects:
         matchLabels:
           deployment: ${NAME}-${ZONE}-${COMPONENT}
       strategy:
-        type: Rolling
+        type: RollingUpdate
       template:
         metadata:
           annotations:
