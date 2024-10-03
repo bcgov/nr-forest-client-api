@@ -19,11 +19,12 @@ parameters:
   - name: ZONE
     description: Deployment zone, e.g. pr-### or prod
     required: true
-  - name: IMAGE_TAG
-    description: Image tag to use
-    value: latest
-  - name: DOMAIN
-    value: apps.silver.devops.gov.bc.ca
+  - name: REGISTRY
+    description: Container registry to import from (internal is image-registry.openshift-image-registry.svc:5000)
+    value: ghcr.io
+  - name: ORG
+    description: Organization name
+    value: bcgov
   - name: CPU_REQUEST
     value: 75m
   - name: CPU_LIMIT
@@ -82,8 +83,8 @@ objects:
         requests:
           storage: ${CERT_PVC_SIZE}
       storageClassName: netapp-file-standard
-  - kind: DeploymentConfig
-    apiVersion: v1
+  - kind: Deployment
+    apiVersion: apps/v1
     metadata:
       labels:
         app: ${NAME}-${ZONE}
@@ -91,7 +92,8 @@ objects:
     spec:
       replicas: 1
       selector:
-        deploymentconfig: ${NAME}-${ZONE}-${COMPONENT}
+        matchLabels:
+          deployment: ${NAME}-${ZONE}-${COMPONENT}
       strategy:
         type: Rolling
       template:
@@ -102,7 +104,7 @@ objects:
             prometheus.io/path: "/metrics"
           labels:
             app: ${NAME}-${ZONE}
-            deploymentconfig: ${NAME}-${ZONE}-${COMPONENT}
+            deployment: ${NAME}-${ZONE}-${COMPONENT}
         spec:
           volumes:
             - name: ${NAME}-${ZONE}-${COMPONENT}
@@ -136,7 +138,7 @@ objects:
                   cpu: ${CPU_REQUEST}
                   memory: ${MEMORY_REQUEST}
           containers:
-            - image: ghcr.io/bcgov/nr-forest-client-api/api:${ZONE}
+            - image: ${REGISTRY}/${ORG}/${NAME}/${COMPONENT}/api:${ZONE}
               imagePullPolicy: Always
               name: ${NAME}
               env:
@@ -223,7 +225,7 @@ objects:
           port: 80
           targetPort: 3001
       selector:
-        deploymentconfig: ${NAME}-${ZONE}-${COMPONENT}
+        deployment: ${NAME}-${ZONE}-${COMPONENT}
   - kind: NetworkPolicy
     apiVersion: networking.k8s.io/v1
     metadata:
