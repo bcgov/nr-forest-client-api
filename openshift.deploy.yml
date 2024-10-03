@@ -146,7 +146,7 @@ objects:
                   cpu: ${CPU_REQUEST}
                   memory: ${MEMORY_REQUEST}
           containers:
-            - image: ghcr.io/bcgov/${NAME}/api:${ZONE}
+            - image: ghcr.io/bcgov/nr-forest-client-api/api:${ZONE}
               imagePullPolicy: Always
               name: ${NAME}
               env:
