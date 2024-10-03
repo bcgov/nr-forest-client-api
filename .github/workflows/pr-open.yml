@@ -80,6 +80,7 @@ jobs:
             [Main Merge Workflow](https://github.com/${{ github.repository }}/actions/workflows/merge-main.yml)
 
 
+
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -97,7 +98,6 @@ jobs:
           build_file: Dockerfile
           build_args: |
             APP_VERSION=${{ needs.pr-validation.outputs.semver }}-${{ github.event.number }}
-          
 
 
   deploy:
