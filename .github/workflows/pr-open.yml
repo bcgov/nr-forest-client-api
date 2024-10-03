@@ -139,7 +139,6 @@ jobs:
           overwrite: true
           parameters:
             -p ZONE=${{ github.event.number }}
-            -p TAG=${{ github.event.number }}
 
   postman:
     name: Smoke Test
