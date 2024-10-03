@@ -19,6 +19,9 @@ parameters:
   - name: ZONE
     description: Deployment zone, e.g. pr-### or prod
     required: true
+  - name: TAG
+    description: The image tag to deploy
+    required: true
   - name: REGISTRY
     description: Container registry to import from (internal is image-registry.openshift-image-registry.svc:5000)
     value: ghcr.io
@@ -138,7 +141,7 @@ objects:
                   cpu: ${CPU_REQUEST}
                   memory: ${MEMORY_REQUEST}
           containers:
-            - image: ${REGISTRY}/${ORG}/${NAME}/${COMPONENT}:${ZONE}
+            - image: ${REGISTRY}/${ORG}/${NAME}/${COMPONENT}:${TAG}
               imagePullPolicy: Always
               name: ${NAME}
               env:
