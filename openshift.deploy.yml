@@ -69,22 +69,6 @@ objects:
       oracle-host: "${ORACLEDB_HOST}"
       oracle-service: "${ORACLEDB_SERVICENAME}"
       oracle-secret: "${ORACLEDB_SECRET}"
-  - kind: ImageStream
-    apiVersion: v1
-    metadata:
-      labels:
-        app: ${NAME}-${ZONE}
-      name: ${NAME}-${ZONE}-${COMPONENT}
-    spec:
-      lookupPolicy:
-        local: false
-      tags:
-        - name: ${IMAGE_TAG}
-          from:
-            kind: DockerImage
-            name: ghcr.io/bcgov/${NAME}/api:${ZONE}
-          referencePolicy:
-            type: Local
   - kind: PersistentVolumeClaim
     apiVersion: v1
     metadata:
@@ -162,7 +146,7 @@ objects:
                   cpu: ${CPU_REQUEST}
                   memory: ${MEMORY_REQUEST}
           containers:
-            - image: ${NAME}-${ZONE}-${COMPONENT}:${IMAGE_TAG}
+            - image: ghcr.io/bcgov/${NAME}/api:${ZONE}
               imagePullPolicy: Always
               name: ${NAME}
               env:
