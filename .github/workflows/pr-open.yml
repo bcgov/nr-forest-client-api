@@ -156,7 +156,7 @@ jobs:
         uses: matt-ball/newman-action@master
         with:
           collection: postman/FCA.postman_collection.json
-          envVar: '[{"key":"URL_FCA","value":"https://${{ github.event.repository.name }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}"}]'
+          envVar: '[{"key":"URL_FCA","value":"https://${{ github.event.repository.name }}-${{ github.event.number }}-api.${{ env.DOMAIN }}"}]'
           reporters: '["cli"]'
           folder: '["general"]'
 
@@ -164,7 +164,7 @@ jobs:
         uses: matt-ball/newman-action@master
         with:
           collection: postman/FCA.postman_collection.json
-          envVar: '[{"key":"URL_FCA","value":"https://${{ github.event.repository.name }}-${{ github.event.number }}-backend.${{ env.DOMAIN }}"}]'
+          envVar: '[{"key":"URL_FCA","value":"https://${{ github.event.repository.name }}-${{ github.event.number }}-api.${{ env.DOMAIN }}"}]'
           iterationData: postman/FCA_postman_tests_dev.json
           reporters: '["cli", "junit"]'
           reporter: '{ "junit" : { "export" : "./postman/report.xml" } }'
