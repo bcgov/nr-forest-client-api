@@ -59,6 +59,10 @@ parameters:
   - name: CERT_PVC_SIZE
     description: The amount of storage the cert PVC should have
     value: 25Mi
+  - name: RANDOM_EXPRESSION
+    description: Random expression to make sure deployments update
+    from: "[a-zA-Z0-9]{32}"
+    generate: expression
 objects:
   - kind: Secret
     apiVersion: v1
@@ -130,6 +134,8 @@ objects:
                       key: oracle-secret
                 - name: ORACLEDB_PORT
                   value: "1543"
+                - name: RANDOM_EXPRESSION
+                  value: ${RANDOM_EXPRESSION}
               volumeMounts:
                 - name: ${NAME}-${ZONE}-${COMPONENT}
                   mountPath: /cert
