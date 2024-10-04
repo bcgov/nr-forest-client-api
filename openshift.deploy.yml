@@ -15,15 +15,19 @@ parameters:
     value: nr-forest-client-api
   - name: COMPONENT
     description: Component name
-    value: backend
+    value: api
   - name: ZONE
     description: Deployment zone, e.g. pr-### or prod
     required: true
-  - name: IMAGE_TAG
-    description: Image tag to use
-    value: latest
-  - name: DOMAIN
-    value: apps.silver.devops.gov.bc.ca
+  - name: TAG
+    description: The image tag to deploy
+    required: true
+  - name: REGISTRY
+    description: Container registry to import from (internal is image-registry.openshift-image-registry.svc:5000)
+    value: ghcr.io
+  - name: ORG
+    description: Organization name
+    value: bcgov
   - name: CPU_REQUEST
     value: 75m
   - name: CPU_LIMIT
@@ -55,6 +59,10 @@ parameters:
   - name: CERT_PVC_SIZE
     description: The amount of storage the cert PVC should have
     value: 25Mi
+  - name: RANDOM_EXPRESSION
+    description: Random expression to make sure deployments update
+    from: "[a-zA-Z0-9]{32}"
+    generate: expression
 objects:
   - kind: Secret
     apiVersion: v1
@@ -69,22 +77,6 @@ objects:
       oracle-host: "${ORACLEDB_HOST}"
       oracle-service: "${ORACLEDB_SERVICENAME}"
       oracle-secret: "${ORACLEDB_SECRET}"
-  - kind: ImageStream
-    apiVersion: v1
-    metadata:
-      labels:
-        app: ${NAME}-${ZONE}
-      name: ${NAME}-${ZONE}-${COMPONENT}
-    spec:
-      lookupPolicy:
-        local: false
-      tags:
-        - name: ${IMAGE_TAG}
-          from:
-            kind: DockerImage
-            name: ghcr.io/bcgov/${NAME}/api:${ZONE}
-          referencePolicy:
-            type: Local
   - kind: PersistentVolumeClaim
     apiVersion: v1
     metadata:
@@ -98,28 +90,19 @@ objects:
         requests:
           storage: ${CERT_PVC_SIZE}
       storageClassName: netapp-file-standard
-  - kind: DeploymentConfig
-    apiVersion: v1
+  - kind: Deployment
+    apiVersion: apps/v1
     metadata:
       labels:
         app: ${NAME}-${ZONE}
       name: ${NAME}-${ZONE}-${COMPONENT}
     spec:
       replicas: 1
-      triggers:
-        - type: ConfigChange
-        - type: ImageChange
-          imageChangeParams:
-            automatic: true
-            containerNames:
-              - ${NAME}
-            from:
-              kind: ImageStreamTag
-              name: ${NAME}-${ZONE}-${COMPONENT}:${IMAGE_TAG}
       selector:
-        deploymentconfig: ${NAME}-${ZONE}-${COMPONENT}
+        matchLabels:
+          deployment: ${NAME}-${ZONE}-${COMPONENT}
       strategy:
-        type: Rolling
+        type: RollingUpdate
       template:
         metadata:
           annotations:
@@ -128,7 +111,7 @@ objects:
             prometheus.io/path: "/metrics"
           labels:
             app: ${NAME}-${ZONE}
-            deploymentconfig: ${NAME}-${ZONE}-${COMPONENT}
+            deployment: ${NAME}-${ZONE}-${COMPONENT}
         spec:
           volumes:
             - name: ${NAME}-${ZONE}-${COMPONENT}
@@ -151,6 +134,8 @@ objects:
                       key: oracle-secret
                 - name: ORACLEDB_PORT
                   value: "1543"
+                - name: RANDOM_EXPRESSION
+                  value: ${RANDOM_EXPRESSION}
               volumeMounts:
                 - name: ${NAME}-${ZONE}-${COMPONENT}
                   mountPath: /cert
@@ -162,7 +147,7 @@ objects:
                   cpu: ${CPU_REQUEST}
                   memory: ${MEMORY_REQUEST}
           containers:
-            - image: ${NAME}-${ZONE}-${COMPONENT}:${IMAGE_TAG}
+            - image: ${REGISTRY}/${ORG}/${NAME}/${COMPONENT}:${TAG}
               imagePullPolicy: Always
               name: ${NAME}
               env:
@@ -249,7 +234,7 @@ objects:
           port: 80
           targetPort: 3001
       selector:
-        deploymentconfig: ${NAME}-${ZONE}-${COMPONENT}
+        deployment: ${NAME}-${ZONE}-${COMPONENT}
   - kind: NetworkPolicy
     apiVersion: networking.k8s.io/v1
     metadata:

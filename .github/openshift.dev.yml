@@ -19,7 +19,7 @@ parameters:
       true
   - name: COMPONENT
     description: Component name
-    value: backend
+    value: api
   - name: DOMAIN
     value: apps.silver.devops.gov.bc.ca
 objects:

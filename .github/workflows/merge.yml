@@ -4,8 +4,11 @@ on:
   push:
     branches: [main]
     paths-ignore:
-      - "**.md"
-  workflow_dispatch:
+      - '*.md'
+      - '.github/**'
+      - '.github/graphics/**'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '!.github/workflows/**'
 
 env:
   DOMAIN: apps.silver.devops.gov.bc.ca
@@ -16,8 +19,19 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  init:
+    name: Initialize
+    outputs:
+      pr: ${{ steps.pr.outputs.pr }}
+    runs-on: ubuntu-24.04
+    steps:
+      # Get PR number for squash merges to main
+      - id: pr
+        uses: bcgov-nr/action-get-pr@v0.0.1
+
   deploy-test:
     name: TEST Deployment
+    needs: [init]
     runs-on: ubuntu-24.04
     outputs:
       tag: ${{ steps.changelog.outputs.tag }}
@@ -46,6 +60,7 @@ jobs:
             -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }}
             -p ORACLEDB_SECRET=${{ secrets.ORACLEDB_SECRET }}
             -p ZONE=test
+            -p TAG=${{ needs.init.outputs.pr }}
 
       - name: Publish API
         uses: bcgov-nr/action-gwa-publish@v0.1.0
@@ -63,52 +78,9 @@ jobs:
           reporters: '["cli"]'
           folder: '["general"]'
 
-      - name: Conventional Changelog Update
-        uses: TriPSs/conventional-changelog-action@v5
-        id: changelog
-        continue-on-error: true
-        with:
-          github-token: ${{ github.token }}
-          output-file: "CHANGELOG.md"
-          skip-version-file: "true"
-          skip-commit: "true"
-          git-push: "true"
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
-        if: ${{ steps.changelog.outputs.tag != '' }}
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          token: ${{ github.token }}
-          tag_name: ${{ steps.changelog.outputs.tag }}
-          name: ${{ steps.changelog.outputs.tag }}
-          body: ${{ steps.changelog.outputs.clean_changelog }}
-
-  image-promotions:
-    name: Image Promotions
-    needs: [deploy-test]
-    runs-on: ubuntu-24.04
-    strategy:
-      matrix:
-        tag: [prod, "${{ needs.deploy-test.outputs.tag }}"]
-    steps:
-      - name: Promoting API
-        if: ${{ matrix.tag != '' }}
-        uses: shrink/actions-docker-registry-tag@v4
-        with:
-          registry: ghcr.io
-          repository: ${{ github.repository }}/api
-          target: test
-          tags: ${{ matrix.tag }}
-
-      - name: Promoting API
-        if: ${{ matrix.tag == '' }}
-        run: echo "Tag is empty, promotion step skipped"
-
   deploy-prod:
     name: PROD Deployment
-    needs: [image-promotions]
+    needs: [deploy-test, init]
     runs-on: ubuntu-24.04
     environment:
       name: prod
@@ -133,6 +105,7 @@ jobs:
             -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }}
             -p ORACLEDB_SECRET=${{ secrets.ORACLEDB_SECRET }}
             -p ZONE=prod
+            -p TAG=${{ needs.init.outputs.pr }}
 
       - name: Publish API
         uses: bcgov-nr/action-gwa-publish@v0.1.0
