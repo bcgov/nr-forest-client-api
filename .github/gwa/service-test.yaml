@@ -1,6 +1,6 @@
 services:
   - name: nr-forest-client-api-test
-    host: nr-forest-client-api-test-backend.d2723f-test.svc
+    host: nr-forest-client-api-test-api.d2723f-test.svc
     tags: [ns.nr-d2723f.test]
     port: 80
     protocol: http
