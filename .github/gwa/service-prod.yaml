@@ -1,6 +1,6 @@
 services:
   - name: nr-forest-client-api-prod
-    host: nr-forest-client-api-prod-backend.d2723f-prod.svc
+    host: nr-forest-client-api-prod-api.d2723f-prod.svc
     tags: [ns.nr-d2723f.prod]
     port: 80
     protocol: http
