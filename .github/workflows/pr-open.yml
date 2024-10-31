@@ -78,10 +78,7 @@ jobs:
 
             Once merged, code will be promoted and handed off to following workflow run.
             [Main Merge Workflow](https://github.com/${{ github.repository }}/actions/workflows/merge-main.yml)
-
-
-
-
+            
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -98,7 +95,7 @@ jobs:
           build_context: ./
           build_file: Dockerfile
           build_args: |
-            APP_VERSION=${{ needs.pr-validation.outputs.semver }}-${{ github.event.number }}
+            APP_VERSION=${{ github.event.number }}
 
   deploy:
     name: Deploy
