@@ -29,13 +29,13 @@ parameters:
     description: Organization name
     value: bcgov
   - name: CPU_REQUEST
-    value: 75m
+    value: 250m
   - name: CPU_LIMIT
-    value: 200m
+    value: 500m
   - name: MEMORY_REQUEST
-    value: 150Mi
+    value: 512Mi
   - name: MEMORY_LIMIT
-    value: 150Mi
+    value: 1024Mi
   - name: ORACLEDB_USER
     description: Oracle database user name
     required: true
