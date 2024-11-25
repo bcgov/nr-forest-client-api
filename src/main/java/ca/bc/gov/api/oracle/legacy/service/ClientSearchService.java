@@ -4,10 +4,12 @@ import static org.springframework.data.relational.core.query.Criteria.where;
 
 import ca.bc.gov.api.oracle.legacy.dto.ClientPublicViewDto;
 import ca.bc.gov.api.oracle.legacy.entity.ForestClientEntity;
+import ca.bc.gov.api.oracle.legacy.repository.ForestClientRepository;
 import ca.bc.gov.api.oracle.legacy.util.ClientMapper;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
@@ -15,6 +17,7 @@ import org.springframework.data.relational.core.query.Criteria;
 import org.springframework.data.relational.core.query.Query;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +25,7 @@ import reactor.core.publisher.Flux;
 public class ClientSearchService {
 
   private final R2dbcEntityTemplate template;
+  private final ForestClientRepository forestClientRepository;
 
   /**
    * This method is used to create a search criteria based on a list of client IDs. It first logs
@@ -103,5 +107,52 @@ public class ClientSearchService {
                 .doOnNext(client -> client.setCount(count))
         )
         .doOnNext(client -> log.info("Found client with id {}", client.getClientNumber()));
+  }
+
+  /**
+   * Constructs a search {@link Criteria} object based on the provided client name, acronym, or 
+   * number.
+   * This method normalizes input values for case-insensitive searches and validates the client 
+   * number.
+   *
+   * @param name the name of the client to search for, or null if not specified.
+   * @param acronym the acronym of the client to search for, or null if not specified.
+   * @param number the unique number of the client to search for, or null if not specified.
+   * @return a {@link Mono} emitting the constructed {@link Criteria} object for the search.
+   *
+   * @implNote Input values are transformed to uppercase for case-insensitivity. The client 
+   * number is validated using {@link #checkClientNumber(String)}. Repository results are 
+   * mapped to a search criteria object.
+   */
+  public Mono<Criteria> searchByAcronymNameNumber(String name, String acronym, String number) {
+    log.info("Searching for clients with name {}, acronym {} or number {}", name, acronym, number);
+
+    String searchName = StringUtils.isNotBlank(name) ? name.toUpperCase() : null;
+    String searchAcronym = StringUtils.isNotBlank(acronym) ? acronym.toUpperCase() : null;
+    String searchNumber = StringUtils.isNotBlank(number) ? checkClientNumber(number) : null;
+
+    return
+    forestClientRepository
+        .searchNumberByNameAcronymNumber(
+            searchName,
+            searchAcronym,
+            searchNumber
+        )
+        .collectList()
+        .map(this::searchById);
+
+  }
+
+  private String checkClientNumber(String clientNumber) {
+    if(StringUtils.isBlank(clientNumber)) {
+      return clientNumber;
+    }
+
+    try {
+      Integer parsed = Integer.parseInt(clientNumber);
+      return String.format("%08d", parsed);
+    } catch (NumberFormatException nfe) {
+      return clientNumber;
+    }
   }
 }
