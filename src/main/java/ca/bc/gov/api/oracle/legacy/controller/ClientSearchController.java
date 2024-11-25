@@ -116,6 +116,22 @@ public class ClientSearchController {
             .putIfAbsent(ApplicationConstants.X_TOTAL_COUNT, List.of(dto.getCount().toString())));
   }
 
+  /**
+   * Searches for clients based on the provided parameters using a fuzzy match algorithm.
+   * The search is case-insensitive and has a threshold cutout of 0.8 for the fuzzy match.
+   *
+   * @param page the one-based page number to retrieve, defaults to 0 if not provided.
+   * @param size the number of results per page, defaults to 10 if not provided.
+   * @param name the name of the client to search for (optional).
+   * @param acronym the acronym of the client to search for (optional).
+   * @param number the unique number of the client to search for (optional).
+   * @param serverResponse the {@link ServerHttpResponse} to include response headers.
+   * @return a reactive stream of {@link ClientPublicViewDto} objects representing matching 
+   * clients.
+   *
+   * @apiNote This method provides a paginated, fuzzy search for client details. Results 
+   * include a total record count in the response headers under {@code X-Total-Count}.
+   */
   @GetMapping("/by")
   @Operation(
       summary = "Search for clients",

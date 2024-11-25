@@ -109,6 +109,21 @@ public class ClientSearchService {
         .doOnNext(client -> log.info("Found client with id {}", client.getClientNumber()));
   }
 
+  /**
+   * Constructs a search {@link Criteria} object based on the provided client name, acronym, or 
+   * number.
+   * This method normalizes input values for case-insensitive searches and validates the client 
+   * number.
+   *
+   * @param name the name of the client to search for, or null if not specified.
+   * @param acronym the acronym of the client to search for, or null if not specified.
+   * @param number the unique number of the client to search for, or null if not specified.
+   * @return a {@link Mono} emitting the constructed {@link Criteria} object for the search.
+   *
+   * @implNote Input values are transformed to uppercase for case-insensitivity. The client 
+   * number is validated using {@link #checkClientNumber(String)}. Repository results are 
+   * mapped to a search criteria object.
+   */
   public Mono<Criteria> searchByAcronymNameNumber(String name, String acronym, String number) {
     log.info("Searching for clients with name {}, acronym {} or number {}", name, acronym, number);
 
