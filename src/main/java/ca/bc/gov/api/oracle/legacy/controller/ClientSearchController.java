@@ -116,4 +116,71 @@ public class ClientSearchController {
             .putIfAbsent(ApplicationConstants.X_TOTAL_COUNT, List.of(dto.getCount().toString())));
   }
 
+  @GetMapping("/by")
+  @Operation(
+      summary = "Search for clients",
+      description = """
+          Search for clients based on the provided parameters.
+          It uses a fuzzy match to search for the client name.
+          The cutout for the fuzzy match is 0.8. The search is case insensitive.""",
+      tags = {"Client Search API"},
+      responses = {
+          @ApiResponse(
+              responseCode = "200",
+              description = "Successfully retrieved clients",
+              content = @Content(
+                  mediaType = MediaType.APPLICATION_JSON_VALUE,
+                  array = @ArraySchema(
+                      schema = @Schema(
+                          name = "ClientView",
+                          implementation = ClientPublicViewDto.class
+                      )
+                  )
+              ),
+              headers = {
+                  @Header(
+                      name = ApplicationConstants.X_TOTAL_COUNT,
+                      description = "Total number of records found"
+                  )
+              }
+          )
+      }
+  )
+  public Flux<ClientPublicViewDto> searchByAcronymNameNumber(
+      @Parameter(description = "The one index page number, defaults to 0", example = "0")
+      @RequestParam(value = "page", required = false, defaultValue = "0")
+      Integer page,
+
+      @Parameter(description = "The amount of data to be returned per page, defaults to 10",
+          example = "10")
+      @RequestParam(value = "size", required = false, defaultValue = "10")
+      Integer size,
+
+      @Parameter(description = "The name of the client you're searching", example = "Western Forest Products")
+      @RequestParam(value = "name", required = false)
+      String name,
+
+      @Parameter(description = "The acronym of the client you're searching", example = "WFPS")
+      @RequestParam(value = "acronym", required = false)
+      String acronym,
+
+      @Parameter(description = "The number of the client you're searching", example = "00000001")
+      @RequestParam(value = "number", required = false)
+      String number,
+
+      ServerHttpResponse serverResponse
+  ) {
+
+    log.info("Searching for clients with name {}, acronym {}, number {}", name, acronym, number);
+    return
+        clientSearchService
+            .searchByAcronymNameNumber(name, acronym, number)
+            .flatMapMany(criteria -> clientSearchService.searchClientByQuery(criteria, page, size))
+            .doOnNext(client -> log.info("Found client with id {}", client.getClientNumber()))
+            .doOnNext(dto -> serverResponse.getHeaders()
+                .putIfAbsent(ApplicationConstants.X_TOTAL_COUNT,
+                    List.of(dto.getCount().toString())));
+
+  }
+
 }
