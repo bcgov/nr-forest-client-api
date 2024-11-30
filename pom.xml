@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.5</version>
+		<version>3.4.0</version>
     <relativePath/>
   </parent>
 
@@ -62,8 +62,8 @@
 
     <junit-jupiter-api.version>5.9.1</junit-jupiter-api.version>
     <junit-platform.version>1.9.1</junit-platform.version>
-    <netty.version>4.1.114.Final</netty.version>
-		<testcontainers.version>1.20.3</testcontainers.version>
+    <netty.version>4.1.115.Final</netty.version>
+		<testcontainers.version>1.20.4</testcontainers.version>
     <oci.revision>${project.version}</oci.revision>
     <flyway.version>10.13.0</flyway.version>
   </properties>
@@ -109,7 +109,7 @@
     <dependency>
       <groupId>org.springdoc</groupId>
       <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
-      <version>2.6.0</version>
+      <version>2.7.0</version>
     </dependency>
 
     <dependency>
@@ -200,7 +200,7 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-web</artifactId>
-        <version>6.1.14</version>
+        <version>6.2.0</version>
       </dependency>
       <dependency>
         <groupId>io.netty</groupId>
