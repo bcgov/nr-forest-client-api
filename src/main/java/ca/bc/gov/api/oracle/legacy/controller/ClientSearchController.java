@@ -190,7 +190,7 @@ public class ClientSearchController {
     log.info("Searching for clients with name {}, acronym {}, number {}", name, acronym, number);
     return
         clientSearchService
-            .searchByAcronymNameNumber(name, acronym, number)
+            .searchByAcronymNameNumber(name, acronym, number, page, size)
             .flatMapMany(criteria -> clientSearchService.searchClientByQuery(criteria, page, size))
             .doOnNext(client -> log.info("Found client with id {}", client.getClientNumber()))
             .doOnNext(dto -> serverResponse.getHeaders()

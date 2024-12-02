@@ -30,7 +30,15 @@ public interface ForestClientRepository extends ReactiveCrudRepository<ForestCli
 
 	@Query(value = """
     SELECT
-      CLIENT_NUMBER
+      CLIENT_NUMBER,
+      (
+        CASE WHEN CLIENT_ACRONYM = :acronym THEN 800 ELSE 0 END +
+        CASE WHEN CLIENT_NUMBER = :clientNumber THEN 1000 ELSE 0 END +
+        UTL_MATCH.JARO_WINKLER_SIMILARITY(CLIENT_NAME, :clientName) +
+        UTL_MATCH.JARO_WINKLER_SIMILARITY(LEGAL_FIRST_NAME, :clientName) +
+        UTL_MATCH.JARO_WINKLER_SIMILARITY(LEGAL_MIDDLE_NAME, :clientName) +
+        UTL_MATCH.JARO_WINKLER_SIMILARITY(TRIM(COALESCE(LEGAL_FIRST_NAME || ' ', '') || TRIM(COALESCE(LEGAL_MIDDLE_NAME || ' ', '')) || COALESCE(CLIENT_NAME, '')), :clientName)
+      ) AS score
     FROM THE.FOREST_CLIENT
     WHERE
       UTL_MATCH.JARO_WINKLER_SIMILARITY(CLIENT_NAME, :clientName) >= 80
@@ -39,7 +47,13 @@ public interface ForestClientRepository extends ReactiveCrudRepository<ForestCli
       OR UTL_MATCH.JARO_WINKLER_SIMILARITY(TRIM(COALESCE(LEGAL_FIRST_NAME || ' ', '') || TRIM(COALESCE(LEGAL_MIDDLE_NAME || ' ', '')) || COALESCE(CLIENT_NAME, '')), :clientName) >= 80
       OR CLIENT_ACRONYM = :acronym
       OR CLIENT_NUMBER = :clientNumber
-    ORDER BY CLIENT_NUMBER""")
-	Flux<String> searchNumberByNameAcronymNumber(String clientName, String acronym, String clientNumber);
+    ORDER BY score DESC
+    OFFSET :offset ROWS FETCH NEXT :size ROWS ONLY""")
+	Flux<String> searchNumberByNameAcronymNumber(
+      String clientName,
+      String acronym,
+      String clientNumber,
+      long offset,
+      int size);
 
 }
