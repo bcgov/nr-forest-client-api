@@ -1,5 +1,6 @@
 package ca.bc.gov.api.oracle.legacy.repository;
 
+import ca.bc.gov.api.oracle.legacy.dto.SearchNumberScoreProjection;
 import ca.bc.gov.api.oracle.legacy.entity.ForestClientEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.r2dbc.repository.Query;
@@ -34,22 +35,16 @@ public interface ForestClientRepository extends ReactiveCrudRepository<ForestCli
       (
         CASE WHEN CLIENT_ACRONYM = :acronym THEN 800 ELSE 0 END +
         CASE WHEN CLIENT_NUMBER = :clientNumber THEN 1000 ELSE 0 END +
-        UTL_MATCH.JARO_WINKLER_SIMILARITY(CLIENT_NAME, :clientName) +
-        UTL_MATCH.JARO_WINKLER_SIMILARITY(LEGAL_FIRST_NAME, :clientName) +
-        UTL_MATCH.JARO_WINKLER_SIMILARITY(LEGAL_MIDDLE_NAME, :clientName) +
         UTL_MATCH.JARO_WINKLER_SIMILARITY(TRIM(COALESCE(LEGAL_FIRST_NAME || ' ', '') || TRIM(COALESCE(LEGAL_MIDDLE_NAME || ' ', '')) || COALESCE(CLIENT_NAME, '')), :clientName)
       ) AS score
     FROM THE.FOREST_CLIENT
     WHERE
-      UTL_MATCH.JARO_WINKLER_SIMILARITY(CLIENT_NAME, :clientName) >= 80
-      OR UTL_MATCH.JARO_WINKLER_SIMILARITY(LEGAL_FIRST_NAME, :clientName) >= 80
-      OR UTL_MATCH.JARO_WINKLER_SIMILARITY(LEGAL_MIDDLE_NAME, :clientName) >= 80
-      OR UTL_MATCH.JARO_WINKLER_SIMILARITY(TRIM(COALESCE(LEGAL_FIRST_NAME || ' ', '') || TRIM(COALESCE(LEGAL_MIDDLE_NAME || ' ', '')) || COALESCE(CLIENT_NAME, '')), :clientName) >= 80
+      UTL_MATCH.JARO_WINKLER_SIMILARITY(TRIM(COALESCE(LEGAL_FIRST_NAME || ' ', '') || TRIM(COALESCE(LEGAL_MIDDLE_NAME || ' ', '')) || COALESCE(CLIENT_NAME, '')), :clientName) >= 80
       OR CLIENT_ACRONYM = :acronym
       OR CLIENT_NUMBER = :clientNumber
     ORDER BY score DESC
     OFFSET :offset ROWS FETCH NEXT :size ROWS ONLY""")
-	Flux<String> searchNumberByNameAcronymNumber(
+	Flux<SearchNumberScoreProjection> searchNumberByNameAcronymNumber(
       String clientName,
       String acronym,
       String clientNumber,

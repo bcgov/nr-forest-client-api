@@ -3,6 +3,7 @@ package ca.bc.gov.api.oracle.legacy.service;
 import static org.springframework.data.relational.core.query.Criteria.where;
 
 import ca.bc.gov.api.oracle.legacy.dto.ClientPublicViewDto;
+import ca.bc.gov.api.oracle.legacy.dto.SearchNumberScoreProjection;
 import ca.bc.gov.api.oracle.legacy.entity.ForestClientEntity;
 import ca.bc.gov.api.oracle.legacy.repository.ForestClientRepository;
 import ca.bc.gov.api.oracle.legacy.util.ClientMapper;
@@ -147,6 +148,7 @@ public class ClientSearchService {
                 pageRequest.getOffset(),
                 pageRequest.getPageSize()
             )
+            .map(SearchNumberScoreProjection::getClientNumber)
             .collectList()
             .map(this::searchById);
 
