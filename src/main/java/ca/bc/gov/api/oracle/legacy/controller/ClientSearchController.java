@@ -126,11 +126,11 @@ public class ClientSearchController {
    * @param acronym the acronym of the client to search for (optional).
    * @param number the unique number of the client to search for (optional).
    * @param serverResponse the {@link ServerHttpResponse} to include response headers.
-   * @return a reactive stream of {@link ClientPublicViewDto} objects representing matching 
-   * clients.
+   * @return a reactive stream of {@link ClientPublicViewDto} objects representing matching
+   *         clients.
    *
-   * @apiNote This method provides a paginated, fuzzy search for client details. Results 
-   * include a total record count in the response headers under {@code X-Total-Count}.
+   * @apiNote This method provides a paginated, fuzzy search for client details. Results
+   *          include a total record count in the response headers under {@code X-Total-Count}.
    */
   @GetMapping("/by")
   @Operation(
@@ -163,24 +163,28 @@ public class ClientSearchController {
       }
   )
   public Flux<ClientPublicViewDto> searchByAcronymNameNumber(
-      @Parameter(description = "The one index page number, defaults to 0", example = "0")
+      @Parameter(description = "The one index page number, defaults to 0", 
+                 example = "0")
       @RequestParam(value = "page", required = false, defaultValue = "0")
       Integer page,
 
       @Parameter(description = "The amount of data to be returned per page, defaults to 10",
-          example = "10")
+                 example = "10")
       @RequestParam(value = "size", required = false, defaultValue = "10")
       Integer size,
 
-      @Parameter(description = "The name of the client you're searching", example = "Western Forest Products")
+      @Parameter(description = "The name of the client you're searching", 
+                 example = "Western Forest Products")
       @RequestParam(value = "name", required = false)
       String name,
 
-      @Parameter(description = "The acronym of the client you're searching", example = "WFPS")
+      @Parameter(description = "The acronym of the client you're searching", 
+                 example = "WFPS")
       @RequestParam(value = "acronym", required = false)
       String acronym,
 
-      @Parameter(description = "The number of the client you're searching", example = "00000001")
+      @Parameter(description = "The number of the client you're searching", 
+                 example = "00000001")
       @RequestParam(value = "number", required = false)
       String number,
 
