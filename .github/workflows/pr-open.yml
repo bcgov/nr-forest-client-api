@@ -66,7 +66,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Greeting
-        uses: bcgov-nr/action-pr-description-add@v1.2.0
+        uses: bcgov/action-pr-description-add@v1.2.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           add_markdown: |
@@ -87,7 +87,7 @@ jobs:
       contents: read
       packages: write
     steps:
-      - uses: bcgov-nr/action-builder-ghcr@v2.3.0
+      - uses: bcgov/action-builder-ghcr@v2.3.0
         with:
           package: api
           tag: ${{ github.event.number }}
@@ -105,7 +105,7 @@ jobs:
     environment: dev
     steps:
       - name: Deploys
-        uses: bcgov-nr/action-deployer-openshift@v3.0.1
+        uses: bcgov/action-deployer-openshift@v3.0.1
         with:
           file: openshift.deploy.yml
           oc_namespace: ${{ secrets.OC_NAMESPACE }}
@@ -125,7 +125,7 @@ jobs:
             -p TAG=${{ github.event.number }}
 
       - name: Deploy dev route
-        uses: bcgov-nr/action-deployer-openshift@v3.0.1
+        uses: bcgov/action-deployer-openshift@v3.0.1
         with:
           file: .github/openshift.dev.yml
           oc_namespace: ${{ secrets.OC_NAMESPACE }}
