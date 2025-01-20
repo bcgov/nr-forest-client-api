@@ -9,7 +9,7 @@ jobs:
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     runs-on: ubuntu-24.04
     steps:
-      - uses: bcgov-nr/action-test-and-analyse-java@v1.0.2
+      - uses: bcgov/action-test-and-analyse-java@v1.0.2
         name: Backend Coverage
         with:
           commands: |
