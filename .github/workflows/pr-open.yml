@@ -51,7 +51,7 @@ jobs:
       - name: Comment PR
         continue-on-error: true
         uses: thollander/actions-comment-pull-request@v3
-        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        if: steps.changelog.outputs.skipped == 'false'
         with:
           message: |
             # Current changelog
