@@ -38,7 +38,7 @@ jobs:
 
       - name: Conventional Changelog Update
         continue-on-error: true
-        uses: TriPSs/conventional-changelog-action@v5
+        uses: TriPSs/conventional-changelog-action@v6
         id: changelog
         with:
           github-token: ${{ github.token }}
@@ -51,7 +51,7 @@ jobs:
       - name: Comment PR
         continue-on-error: true
         uses: thollander/actions-comment-pull-request@v3
-        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        if: steps.changelog.outputs.skipped == 'false'
         with:
           message: |
             # Current changelog
@@ -66,7 +66,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Greeting
-        uses: bcgov-nr/action-pr-description-add@v1.1.2
+        uses: bcgov/action-pr-description-add@v1.2.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           add_markdown: |
@@ -81,13 +81,13 @@ jobs:
             
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [pr-validation]
     permissions:
       contents: read
       packages: write
     steps:
-      - uses: bcgov-nr/action-builder-ghcr@v2.2.0
+      - uses: bcgov/action-builder-ghcr@v2.3.0
         with:
           package: api
           tag: ${{ github.event.number }}
@@ -105,7 +105,7 @@ jobs:
     environment: dev
     steps:
       - name: Deploys
-        uses: bcgov-nr/action-deployer-openshift@v3.0.1
+        uses: bcgov/action-deployer-openshift@v3.2.0
         with:
           file: openshift.deploy.yml
           oc_namespace: ${{ secrets.OC_NAMESPACE }}
@@ -125,7 +125,7 @@ jobs:
             -p TAG=${{ github.event.number }}
 
       - name: Deploy dev route
-        uses: bcgov-nr/action-deployer-openshift@v3.0.1
+        uses: bcgov/action-deployer-openshift@v3.2.0
         with:
           file: .github/openshift.dev.yml
           oc_namespace: ${{ secrets.OC_NAMESPACE }}
@@ -140,7 +140,7 @@ jobs:
     name: Smoke Test
     needs: [deploy]
     environment: dev
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       packages: write
