@@ -1,10 +1,10 @@
 ### Builder
 FROM ghcr.io/graalvm/native-image:ol8-java17-22.3.3 AS build
 
-# Install Maven
-RUN microdnf update -y && \
-    microdnf install -y maven && \
-    microdnf clean all
+# Install Maven manually (latest version)
+RUN curl -fsSL https://downloads.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz | \
+    tar -xz -C /opt && \
+    ln -s /opt/apache-maven-3.9.9/bin/mvn /usr/local/bin/mvn
 
 # Receiving app version
 ARG APP_VERSION=0.0.1
