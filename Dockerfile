@@ -2,7 +2,9 @@
 FROM ghcr.io/graalvm/native-image:ol8-java17-22.3.3 AS build
 
 # Install Maven
-RUN microdnf update -y && \
+# Add Fedora EPEL repo and install newer Maven
+RUN microdnf install -y epel-release && \
+    microdnf update -y && \
     microdnf install -y maven && \
     microdnf clean all
 
