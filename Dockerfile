@@ -1,7 +1,7 @@
 ### Builder
 FROM ghcr.io/graalvm/native-image:ol9-java17-22.3.3 AS build
 
-# Receiving app version
+# App version
 ARG APP_VERSION=0.0.1
 
 # Copy
