@@ -3,9 +3,11 @@ FROM ghcr.io/graalvm/native-image:ol8-java17-22.3.3 AS build
 
 # Install Maven
 # Add Fedora EPEL repo and install newer Maven
-RUN microdnf install -y epel-release && \
-    microdnf update -y && \
-    microdnf install -y maven && \
+RUN microdnf install -y oraclelinux-release-el8 --setopt=install_weak_deps=False && \
+    microdnf config-manager --set-enabled ol8_developer_EPEL && \
+    microdnf install -y epel-release --setopt=install_weak_deps=False && \
+    microdnf update -y --setopt=install_weak_deps=False && \
+    microdnf install -y maven --setopt=install_weak_deps=False && \
     microdnf clean all
 
 RUN mvn -v
