@@ -1,10 +1,5 @@
 ### Builder
-FROM ghcr.io/graalvm/native-image:ol8-java17-22.3.3 AS build
-
-# Install Maven
-RUN microdnf update -y && \
-    microdnf install -y maven && \
-    microdnf clean all
+FROM ghcr.io/graalvm/native-image:ol9-java17-22.3.3 AS build
 
 # Receiving app version
 ARG APP_VERSION=0.0.1
@@ -16,9 +11,12 @@ COPY src ./src
 COPY mvnw ./
 COPY .mvn/wrapper/maven-wrapper.properties ./.mvn/wrapper/maven-wrapper.properties
 
+# Ensure mvnw has execution permissions
+RUN chmod +x mvnw
+
 # Setting app version
-RUN mvn versions:set -DnewVersion=${APP_VERSION} -f pom.xml -DskipTests -Dtests.skip=true -Dskip.unit.tests=true && \
-    mvn versions:commit -f pom.xml -DskipTests -Dtests.skip=true -Dskip.unit.tests=true
+RUN ./mvnw versions:set -DnewVersion=${APP_VERSION} -f pom.xml -DskipTests -Dtests.skip=true -Dskip.unit.tests=true && \
+    ./mvnw versions:commit -f pom.xml -DskipTests -Dtests.skip=true -Dskip.unit.tests=true
 
 # Build
 RUN ./mvnw -Pnative native:compile

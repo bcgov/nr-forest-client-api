@@ -83,7 +83,7 @@ hash_string() {
   str="${1:-}" h=0
   while [ -n "$str" ]; do
     char="${str%"${str#?}"}"
-    h=$(((h * 31 + $(printf %d "'$char")) % 4294967296))
+    h=$(((h * 31 + $(LC_CTYPE=C printf %d "'$char")) % 4294967296))
     str="${str#?}"
   done
   printf %x\\n $h
