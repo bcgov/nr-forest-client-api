@@ -65,7 +65,7 @@
     <netty.version>4.1.119.Final</netty.version>
 		<testcontainers.version>1.20.6</testcontainers.version>
     <oci.revision>${project.version}</oci.revision>
-    <logback.version>1.5.17</logback.version>
+    <logback.version>1.5.18</logback.version>
     <flyway.version>10.13.0</flyway.version>
   </properties>
 
