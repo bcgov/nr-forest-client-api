@@ -67,6 +67,7 @@
     <oci.revision>${project.version}</oci.revision>
     <logback.version>1.5.18</logback.version>
     <flyway.version>10.13.0</flyway.version>
+    <oracle-driver.version>23.7.0.25.01</oracle-driver.version>
   </properties>
 
   <dependencies>
@@ -221,7 +222,7 @@
       <dependency>
         <groupId>com.oracle.database.jdbc</groupId>
         <artifactId>ojdbc11</artifactId>
-        <version>21.17.0.0</version>
+        <version>${oracle-driver.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
