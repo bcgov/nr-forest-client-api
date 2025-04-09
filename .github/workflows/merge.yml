@@ -50,7 +50,6 @@ jobs:
           oc_server: ${{ secrets.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
           overwrite: true
-          verification_path: /health
           oc_version: "4.13"
           parameters:
             -p ORACLEDB_USER=${{ secrets.ORACLEDB_USERNAME }}
@@ -95,7 +94,6 @@ jobs:
           oc_server: ${{ secrets.OC_SERVER }}
           oc_token: ${{ secrets.OC_TOKEN }}
           overwrite: true
-          verification_path: /health
           oc_version: "4.13"
           parameters:
             -p ORACLEDB_USER=${{ secrets.ORACLEDB_USERNAME }}

@@ -56,8 +56,8 @@ jobs:
           message: |
             # Current changelog
             ${{ steps.changelog.outputs.clean_changelog }}
-          comment_tag: "# Current changelog"
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          comment-tag: "# Current changelog"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
   pr-greeting:
     name: Greeting
@@ -113,7 +113,6 @@ jobs:
           oc_token: ${{ secrets.OC_TOKEN }}
           overwrite: true
           oc_version: "4.13"
-          verification_path: /health
           parameters:
             -p ORACLEDB_USER=${{ secrets.ORACLEDB_USERNAME }}
             -p ORACLEDB_PASSWORD=${{ secrets.ORACLEDB_PASSWORD }}
