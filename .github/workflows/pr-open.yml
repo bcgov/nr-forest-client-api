@@ -20,16 +20,16 @@ jobs:
     outputs:
       semver: ${{ steps.changelog.outputs.tag }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
       - name: Pull request size and stability labels
-        uses: actions/labeler@v5
+        uses: actions/labeler@8558fd74291d67161a8a78ce36a881fa63b766a9 # v5
         continue-on-error: true
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Conventional Label
-        uses: bcoe/conventional-release-labels@v1
+        uses: bcoe/conventional-release-labels@886f696738527c7be444262c327c89436dfb95a8 # v1
         continue-on-error: true
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -38,7 +38,7 @@ jobs:
 
       - name: Conventional Changelog Update
         continue-on-error: true
-        uses: TriPSs/conventional-changelog-action@v6
+        uses: TriPSs/conventional-changelog-action@67139193614f5b9e8db87da1bd4240922b34d765 # v6
         id: changelog
         with:
           github-token: ${{ github.token }}
@@ -50,7 +50,7 @@ jobs:
 
       - name: Comment PR
         continue-on-error: true
-        uses: thollander/actions-comment-pull-request@v3
+        uses: thollander/actions-comment-pull-request@24bffb9b452ba05a4f3f77933840a6a841d1b32b # v3
         if: steps.changelog.outputs.skipped == 'false'
         with:
           message: |
@@ -66,7 +66,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Greeting
-        uses: bcgov/action-pr-description-add@v2.0.0
+        uses: bcgov/action-pr-description-add@14338bfe0278ead273b3c1189e5aa286ff6709c4 # v2.0.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           add_markdown: |
@@ -87,7 +87,7 @@ jobs:
       contents: read
       packages: write
     steps:
-      - uses: bcgov/action-builder-ghcr@v2.3.0
+      - uses: bcgov/action-builder-ghcr@ace71f7a527ca6fc43c15c7806314be5a4579d2c # v2.3.0
         with:
           package: api
           tag: ${{ github.event.number }}
@@ -105,7 +105,7 @@ jobs:
     environment: dev
     steps:
       - name: Deploys
-        uses: bcgov/action-deployer-openshift@v4.0.0
+        uses: bcgov/action-deployer-openshift@d972993c70aba88e4f2fe66a66c4b7149fa9fcad # v4.0.0
         with:
           file: openshift.deploy.yml
           oc_namespace: ${{ secrets.OC_NAMESPACE }}
@@ -124,7 +124,7 @@ jobs:
             -p TAG=${{ github.event.number }}
 
       - name: Deploy dev route
-        uses: bcgov/action-deployer-openshift@v4.0.0
+        uses: bcgov/action-deployer-openshift@d972993c70aba88e4f2fe66a66c4b7149fa9fcad # v4.0.0
         with:
           file: .github/openshift.dev.yml
           oc_namespace: ${{ secrets.OC_NAMESPACE }}
@@ -146,7 +146,7 @@ jobs:
       checks: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - name: API Health check
         uses: matt-ball/newman-action@master
         with:
@@ -165,7 +165,7 @@ jobs:
           reporter: '{ "junit" : { "export" : "./postman/report.xml" } }'
 
       - name: Postman Smoke Test Report
-        uses: mikepenz/action-junit-report@v5
+        uses: mikepenz/action-junit-report@cf701569b05ccdd861a76b8607a66d76f6fd4857 # v5
         if: always() # always run even if the previous step fails
         with:
           report_paths: "postman/report.xml"
