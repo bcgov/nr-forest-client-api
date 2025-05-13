@@ -27,7 +27,7 @@ jobs:
     steps:
       # Get PR number for squash merges to main
       - id: pr
-        uses: bcgov/action-get-pr@v0.0.1
+        uses: bcgov/action-get-pr@21f9351425cd55a98e869ee28919a512aa30647d # v0.0.1
 
   deploy-test:
     name: TEST Deployment
@@ -41,9 +41,9 @@ jobs:
     environment:
       name: test
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - name: Deploys
-        uses: bcgov/action-deployer-openshift@v4.0.0
+        uses: bcgov/action-deployer-openshift@d972993c70aba88e4f2fe66a66c4b7149fa9fcad # v4.0.0
         with:
           file: openshift.deploy.yml
           oc_namespace: ${{ secrets.OC_NAMESPACE }}
@@ -62,7 +62,7 @@ jobs:
             -p TAG=${{ needs.init.outputs.pr }}
 
       - name: Publish API
-        uses: bcgov/action-gwa-publish@v0.1.0
+        uses: bcgov/action-gwa-publish@f11f9b506e45928741eebec9141867de87947a90 # v0.1.0
         with:
           namespace: ${{ env.NS }}
           client_id: ${{ secrets.GWA_ACCT_ID }}
@@ -84,10 +84,10 @@ jobs:
     environment:
       name: prod
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
       - name: Deploys
-        uses: bcgov/action-deployer-openshift@v4.0.0
+        uses: bcgov/action-deployer-openshift@d972993c70aba88e4f2fe66a66c4b7149fa9fcad # v4.0.0
         with:
           file: openshift.deploy.yml
           oc_namespace: ${{ secrets.OC_NAMESPACE }}
@@ -106,7 +106,7 @@ jobs:
             -p TAG=${{ needs.init.outputs.pr }}
 
       - name: Publish API
-        uses: bcgov/action-gwa-publish@v0.1.0
+        uses: bcgov/action-gwa-publish@f11f9b506e45928741eebec9141867de87947a90 # v0.1.0
         with:
           namespace: ${{ env.NS }}
           client_id: ${{ secrets.GWA_ACCT_ID }}
