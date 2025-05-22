@@ -62,7 +62,7 @@
 
     <junit-jupiter-api.version>5.9.1</junit-jupiter-api.version>
     <junit-platform.version>1.9.1</junit-platform.version>
-    <netty.version>4.1.119.Final</netty.version>
+    <netty.version>4.2.1.Final</netty.version>
     <testcontainers.version>1.21.0</testcontainers.version>
     <oci.revision>${project.version}</oci.revision>
     <logback.version>1.5.18</logback.version>
@@ -212,7 +212,7 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-web</artifactId>
-        <version>6.2.6</version>
+        <version>6.2.7</version>
       </dependency>
       <dependency>
         <groupId>io.netty</groupId>
