@@ -41,7 +41,7 @@ jobs:
           path: target/**/checkstyle-result.xml
 
       - name: Publish Test Report
-        uses: mikepenz/action-junit-report@cf701569b05ccdd861a76b8607a66d76f6fd4857 # v5
+        uses: mikepenz/action-junit-report@65fe03598d8d251738592a497a9e8547a5c48eaa # v5
         continue-on-error: true
         if: github.event_name == 'pull_request' && (success() || failure())
         with:
