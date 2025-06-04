@@ -20,10 +20,10 @@ jobs:
     outputs:
       semver: ${{ steps.changelog.outputs.tag }}
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - uses: actions/checkout@v4
 
       - name: Pull request size and stability labels
-        uses: actions/labeler@8558fd74291d67161a8a78ce36a881fa63b766a9 # v5
+        uses: actions/labeler@v5
         continue-on-error: true
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
@@ -145,7 +145,7 @@ jobs:
       checks: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - uses: actions/checkout@v4
       - name: API Health check
         uses: matt-ball/newman-action@master
         with:
