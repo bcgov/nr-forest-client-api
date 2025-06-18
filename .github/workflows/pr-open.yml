@@ -87,7 +87,7 @@ jobs:
       contents: read
       packages: write
     steps:
-      - uses: bcgov/action-builder-ghcr@ec30e4ce1ac3c25c93ec26cf370ecba028dc478e # v3.0.1
+      - uses: bcgov/action-builder-ghcr@fd17bc1cbb16a60514e0df3966d42dff9fc232bc # v4.0.0
         with:
           package: api
           tag_fallback: test
