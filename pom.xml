@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.5.0</version>
+    <version>3.5.3</version>
     <relativePath />
   </parent>
 
@@ -31,17 +31,24 @@
     <jdk.version>17</jdk.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
-
     <skip.integration.tests>true</skip.integration.tests>
     <skip.unit.tests>false</skip.unit.tests>
     <jacoco.skip>true</jacoco.skip>
     <checkstyle.skip>true</checkstyle.skip>
-
     <jacoco.output.data>${project.build.directory}/coverage-reports</jacoco.output.data>
-
     <timestamp>${maven.build.timestamp}</timestamp>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
-
+    <testcontainers.version>1.21.2</testcontainers.version>
+    <oci.revision>${project.version}</oci.revision>
+    <logback.version>1.5.18</logback.version>
+    <flyway.version>10.13.0</flyway.version>
+    <oracle-driver.version>23.8.0.25.04</oracle-driver.version>
+    <selenium.version>4.33.0</selenium.version>
+    <mockito.version>5.18.0</mockito.version>
+    <jooq.version>3.20.5</jooq.version>
+    <netty.version>4.1.119.Final</netty.version>
+    <org.junit.version>5.13.1</org.junit.version>
+    <junit.version>4.13.2</junit.version>
     <sonar.organization>bcgov-sonarcloud</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.projectKey>bcgov_forest-client-api</sonar.projectKey>
@@ -59,15 +66,6 @@
     </sonar.coverage.exclusions>
     <sonar.java.checkstyle.reportPaths>target/checkstyle-result.xml
     </sonar.java.checkstyle.reportPaths>
-
-    <junit-jupiter-api.version>5.9.1</junit-jupiter-api.version>
-    <junit-platform.version>1.9.1</junit-platform.version>
-    <netty.version>4.1.119.Final</netty.version>
-    <testcontainers.version>1.21.1</testcontainers.version>
-    <oci.revision>${project.version}</oci.revision>
-    <logback.version>1.5.18</logback.version>
-    <flyway.version>10.13.0</flyway.version>
-    <oracle-driver.version>23.8.0.25.04</oracle-driver.version>
   </properties>
 
   <dependencies>
@@ -133,7 +131,18 @@
       <artifactId>lombok</artifactId>
       <optional>true</optional>
     </dependency>
-
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <version>${org.junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
@@ -210,6 +219,33 @@
         <scope>import</scope>
       </dependency>
       <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>${org.junit.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-bom</artifactId>
+        <version>${mockito.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jooq</groupId>
+        <artifactId>jooq-bom</artifactId>
+        <version>${jooq.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-web</artifactId>
         <version>6.2.8</version>
@@ -223,6 +259,13 @@
         <groupId>com.oracle.database.jdbc</groupId>
         <artifactId>ojdbc11</artifactId>
         <version>${oracle-driver.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>selenium-bom</artifactId>
+        <version>${selenium.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
