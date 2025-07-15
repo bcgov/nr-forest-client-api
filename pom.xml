@@ -38,16 +38,16 @@
     <jacoco.output.data>${project.build.directory}/coverage-reports</jacoco.output.data>
     <timestamp>${maven.build.timestamp}</timestamp>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
-    <testcontainers.version>1.21.2</testcontainers.version>
+    <testcontainers.version>1.21.3</testcontainers.version>
     <oci.revision>${project.version}</oci.revision>
     <logback.version>1.5.18</logback.version>
     <flyway.version>10.13.0</flyway.version>
     <oracle-driver.version>23.8.0.25.04</oracle-driver.version>
-    <selenium.version>4.33.0</selenium.version>
+    <selenium.version>4.34.0</selenium.version>
     <mockito.version>5.18.0</mockito.version>
     <jooq.version>3.20.5</jooq.version>
     <netty.version>4.1.119.Final</netty.version>
-    <org.junit.version>5.13.1</org.junit.version>
+    <org.junit.version>5.13.3</org.junit.version>
     <junit.version>4.13.2</junit.version>
     <sonar.organization>bcgov-sonarcloud</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
