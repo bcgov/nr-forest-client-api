@@ -497,6 +497,25 @@
         </configuration>
       </plugin>
 
+      <plugin>
+        <groupId>org.graalvm.nativeimage</groupId>
+        <artifactId>native-image-maven-plugin</artifactId>
+        <version>21.2.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>native-image</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <buildArgs>
+            <buildArg>-Dio.netty.transport.noNative=true</buildArg>
+            <buildArg>-Dio.netty.allocator.type=unpooled</buildArg>
+          </buildArgs>
+        </configuration>
+      </plugin>
+
     </plugins>
     <finalName>nr-forest-client-api</finalName>
   </build>

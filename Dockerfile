@@ -19,12 +19,7 @@ RUN ./mvnw versions:set -DnewVersion=${APP_VERSION} -f pom.xml -DskipTests -Dtes
     ./mvnw versions:commit -f pom.xml -DskipTests -Dtests.skip=true -Dskip.unit.tests=true
 
 # Build
-RUN ./mvnw -Pnative native:compile \
-    -Dspring.native.remove-xml-support=true \
-    -Dspring.native.remove-spel-support=true \
-    -Dspring.native.remove-jmx-support=true \
-    -Dio.netty.transport.noNative=true \
-    -Dio.netty.allocator.type=unpooled
+RUN ./mvnw -Pnative native:compile
 
 ### Deployer
 FROM gcr.io/distroless/java-base:nonroot@sha256:1e0badbf909aeefa2459b3987c4cdc788ed5ead4f5a360f6e92129e92843d034 AS deploy
