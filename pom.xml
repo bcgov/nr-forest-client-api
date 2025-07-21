@@ -154,11 +154,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>io.projectreactor.netty</groupId>
-      <artifactId>reactor-netty-http</artifactId>
-      <version>1.2.7</version>
-    </dependency>
-    <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers</artifactId>
       <scope>test</scope>
@@ -271,6 +266,11 @@
         <version>${selenium.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.projectreactor.netty</groupId>
+        <artifactId>reactor-netty-http</artifactId>
+        <version>1.2.7</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
