@@ -250,11 +250,11 @@
         <artifactId>spring-web</artifactId>
         <version>6.2.8</version>
       </dependency>
-      <dependency>
+      <!-- <dependency>
         <groupId>io.netty</groupId>
         <artifactId>netty-codec-http</artifactId>
         <version>${netty.version}</version>
-      </dependency>
+      </dependency> -->
       <dependency>
         <groupId>com.oracle.database.jdbc</groupId>
         <artifactId>ojdbc11</artifactId>
