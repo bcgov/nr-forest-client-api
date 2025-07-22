@@ -46,7 +46,6 @@
     <selenium.version>4.34.0</selenium.version>
     <mockito.version>5.18.0</mockito.version>
     <jooq.version>3.20.5</jooq.version>
-    <netty.version>4.2.3.Final</netty.version>
     <org.junit.version>5.13.3</org.junit.version>
     <junit.version>4.13.2</junit.version>
     <sonar.organization>bcgov-sonarcloud</sonar.organization>
@@ -250,11 +249,6 @@
         <artifactId>spring-web</artifactId>
         <version>6.2.8</version>
       </dependency>
-      <!-- <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-codec-http</artifactId>
-        <version>${netty.version}</version>
-      </dependency> -->
       <dependency>
         <groupId>com.oracle.database.jdbc</groupId>
         <artifactId>ojdbc11</artifactId>
