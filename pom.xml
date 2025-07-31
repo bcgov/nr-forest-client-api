@@ -42,7 +42,7 @@
     <oci.revision>${project.version}</oci.revision>
     <logback.version>1.5.18</logback.version>
     <flyway.version>10.13.0</flyway.version>
-    <oracle-driver.version>23.8.0.25.04</oracle-driver.version>
+    <oracle-driver.version>23.9.0.25.07</oracle-driver.version>
     <selenium.version>4.34.0</selenium.version>
     <mockito.version>5.18.0</mockito.version>
     <jooq.version>3.20.5</jooq.version>
