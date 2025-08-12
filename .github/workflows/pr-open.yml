@@ -20,7 +20,7 @@ jobs:
     outputs:
       semver: ${{ steps.changelog.outputs.tag }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Pull request size and stability labels
         uses: actions/labeler@v5
@@ -145,7 +145,7 @@ jobs:
       checks: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: API Health check
         uses: matt-ball/newman-action@master
         with:
