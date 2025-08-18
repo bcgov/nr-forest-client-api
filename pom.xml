@@ -44,7 +44,7 @@
     <flyway.version>10.13.0</flyway.version>
     <oracle-driver.version>23.9.0.25.07</oracle-driver.version>
     <selenium.version>4.35.0</selenium.version>
-    <mockito.version>5.18.0</mockito.version>
+    <mockito.version>5.19.0</mockito.version>
     <jooq.version>3.20.6</jooq.version>
     <org.junit.version>5.13.4</org.junit.version>
     <junit.version>4.13.2</junit.version>
@@ -444,7 +444,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.11.2</version>
+        <version>3.11.3</version>
         <configuration>
           <source>8</source>
           <doctitle>Javadoc Documentation for ${project.name} ${project.version}
