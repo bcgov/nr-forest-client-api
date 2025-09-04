@@ -20,10 +20,10 @@ jobs:
     outputs:
       semver: ${{ steps.changelog.outputs.tag }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
 
       - name: Pull request size and stability labels
-        uses: actions/labeler@v5
+        uses: actions/labeler@8558fd74291d67161a8a78ce36a881fa63b766a9 # v5
         continue-on-error: true
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
@@ -38,7 +38,7 @@ jobs:
 
       - name: Conventional Changelog Update
         continue-on-error: true
-        uses: TriPSs/conventional-changelog-action@67139193614f5b9e8db87da1bd4240922b34d765 # v6
+        uses: TriPSs/conventional-changelog-action@5f00b899ccbbcbc112bd6d715d5e76e7a9e4501d # v6
         id: changelog
         with:
           github-token: ${{ github.token }}
@@ -145,7 +145,7 @@ jobs:
       checks: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
       - name: API Health check
         uses: matt-ball/newman-action@master
         with:
