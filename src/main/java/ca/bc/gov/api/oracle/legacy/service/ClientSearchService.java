@@ -19,6 +19,7 @@ import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.data.relational.core.query.Criteria;
 import org.springframework.data.relational.core.query.Query;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -152,6 +153,34 @@ public class ClientSearchService {
             .collectList()
             .map(this::searchById);
 
+  }
+  /**
+   * Searches for clients based on the provided list of IDs and an optional name filter. The search
+   * results are paginated according to the specified page number and size.
+   *
+   * @param id   A list of client IDs to search for.
+   * @param name An optional name filter to refine the search results.
+   * @param page The page number to retrieve (0-based).
+   * @param size The number of results per page.
+   * @return A Flux stream of matching clients as ClientPublicViewDto objects.
+   * @implNote This method is currently a placeholder and returns null. The implementation should
+   * include logic to perform the search using the provided parameters and return the appropriate
+   * results.
+   */
+  public Flux<ClientPublicViewDto> searchByIdsAndName(List<String> id, String name, Integer page, Integer size) {
+    log.info("Searching by ids {} and name {}, page: {}, size: {}", id, name, page, size);
+
+    String searchName = StringUtils.isNotBlank(name) ? name.toUpperCase() : null;
+    List<String> searchIds = !CollectionUtils.isEmpty(id) ? id : List.of();
+
+    return forestClientRepository
+        .searchByIdsAndName(
+            searchIds,
+            searchName,
+            (page * size.longValue()),
+            size
+        )
+        .map(ClientMapper::mapEntityToDto);
   }
 
   private String checkClientNumber(String clientNumber) {

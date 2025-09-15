@@ -99,18 +99,19 @@ public class ClientSearchController {
       Integer size,
 
       @Parameter(description = "Id of the client you're searching", example = "00000001")
-      @RequestParam(value = "id", required = false)
+      @RequestParam(value = "id")
       List<String> id,
+
+      @Parameter(description = "Name of the client you want to filter by", example = "BOND")
+      @RequestParam(value = "name", required = false)
+      String name,
 
       ServerHttpResponse serverResponse
   ) {
     log.info("Searching for clients with ids {}", id);
-    return clientSearchService
-        .searchClientByQuery(
-            clientSearchService.searchById(id),
-            page,
-            size
-        )
+    return
+        clientSearchService
+            .searchByIdsAndName(id, name,page,size)
         .doOnNext(client -> log.info("Found client with id {}", client.getClientNumber()))
         .doOnNext(dto -> serverResponse.getHeaders()
             .putIfAbsent(ApplicationConstants.X_TOTAL_COUNT, List.of(dto.getCount().toString())));
