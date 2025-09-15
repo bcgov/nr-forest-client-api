@@ -2,6 +2,7 @@ package ca.bc.gov.api.oracle.legacy.controller;
 
 import ca.bc.gov.api.oracle.legacy.AbstractTestContainerIntegrationTest;
 import ca.bc.gov.api.oracle.legacy.dto.ClientPublicViewDto;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +22,7 @@ class ClientSearchControllerIntegrationTest extends AbstractTestContainerIntegra
   @ParameterizedTest
   @MethodSource("searchById")
   @DisplayName("Search clients by ID")
-  void shouldSearchClientsById(Integer returnSize, Object[] ids) {
+  void shouldSearchClientsById(Integer returnSize, List<String> ids) {
 
     System.out.printf("returnSize: %d, ids: %s%n", returnSize, ids);
 
@@ -74,10 +75,9 @@ class ClientSearchControllerIntegrationTest extends AbstractTestContainerIntegra
 
   private static Stream<Arguments> searchById() {
     return Stream.of(
-        Arguments.of(1, new Object[]{"00000001"}),
-        Arguments.of(1, new Object[]{"00000001", "1", "4"}),
-        Arguments.of(0, new Object[]{"00000999"}),
-        Arguments.of(0, null)
+        Arguments.of(1, List.of("00000001")),
+        Arguments.of(1, List.of("00000001", "1", "4")),
+        Arguments.of(0, List.of("00000999"))
     );
   }
 
