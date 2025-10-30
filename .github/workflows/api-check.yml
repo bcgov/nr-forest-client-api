@@ -2,7 +2,7 @@ name: API Validation Check
 
 on:
   schedule:
-    - cron: '0 * * * *'
+    - cron: "0 * * * *"
   workflow_dispatch:
 
 concurrency:
@@ -15,12 +15,12 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-        package: [ test, prod ]
+        package: [test, prod]
     env:
       OS_DOMAIN: apps.silver.devops.gov.bc.ca
       GTW_DOMAIN: api.gov.bc.ca
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/checkout@v5
 
       - name: Postman Smoke Test on API Gateway
         uses: matt-ball/newman-action@master
