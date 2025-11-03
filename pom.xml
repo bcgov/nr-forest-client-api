@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.5.6</version>
+    <version>3.5.7</version>
     <relativePath />
   </parent>
 
@@ -42,8 +42,8 @@
     <oci.revision>${project.version}</oci.revision>
     <logback.version>1.5.20</logback.version>
     <flyway.version>10.13.0</flyway.version>
-    <oracle-driver.version>23.9.0.25.07</oracle-driver.version>
-    <selenium.version>4.37.0</selenium.version>
+    <oracle-driver.version>23.26.0.0.0</oracle-driver.version>
+    <selenium.version>4.38.0</selenium.version>
     <mockito.version>5.20.0</mockito.version>
     <jooq.version>3.20.8</jooq.version>
     <org.junit.version>5.14.0</org.junit.version>
@@ -264,12 +264,12 @@
       <dependency>
         <groupId>io.projectreactor.netty</groupId>
         <artifactId>reactor-netty-http</artifactId>
-        <version>1.2.10</version>
+        <version>1.2.11</version>
       </dependency>
       <dependency>
         <groupId>io.netty</groupId>
         <artifactId>netty-bom</artifactId>
-        <version>4.1.125.Final</version>
+        <version>4.2.7.Final</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
