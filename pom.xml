@@ -261,17 +261,17 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <dependency>
-        <groupId>io.projectreactor.netty</groupId>
-        <artifactId>reactor-netty-http</artifactId>
-        <version>1.2.10</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-bom</artifactId>
-        <version>4.1.125.Final</version>
-        <type>pom</type>
-        <scope>import</scope>
+      <dependency> 
+        <groupId>io.projectreactor.netty</groupId> 
+        <artifactId>reactor-netty-http</artifactId> 
+        <version>1.2.11</version> 
+      </dependency> 
+      <dependency> 
+        <groupId>io.netty</groupId> 
+        <artifactId>netty-bom</artifactId> 
+        <version>4.1.125.Final</version> 
+        <type>pom</type> 
+        <scope>import</scope> 
       </dependency>
     </dependencies>
   </dependencyManagement>
