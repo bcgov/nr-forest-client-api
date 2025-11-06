@@ -23,7 +23,7 @@ RUN ./mvnw -Pnative native:compile
 
 
 ### Deployer
-FROM gcr.io/distroless/java-base:nonroot@sha256:3f93d45c56b7d53a73c5a8b6868920c844f8202997d82fc453d659ddb7a2de6b AS deploy
+FROM gcr.io/distroless/java-base:nonroot@sha256:b85cbbafb1374ea11f48d2ba819fef9251d832504d0473f6aba3d3aa2c3cd8a2 AS deploy
 ARG PORT=3001
 
 # Copy
