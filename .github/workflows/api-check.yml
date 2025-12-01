@@ -20,7 +20,7 @@ jobs:
       OS_DOMAIN: apps.silver.devops.gov.bc.ca
       GTW_DOMAIN: api.gov.bc.ca
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Postman Smoke Test on API Gateway
         uses: matt-ball/newman-action@master
