@@ -41,7 +41,7 @@ jobs:
     environment:
       name: test
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Deploys
         uses: bcgov/action-deployer-openshift@d972993c70aba88e4f2fe66a66c4b7149fa9fcad # v4.0.0
         with:
@@ -83,7 +83,7 @@ jobs:
     environment:
       name: prod
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Deploys
         uses: bcgov/action-deployer-openshift@d972993c70aba88e4f2fe66a66c4b7149fa9fcad # v4.0.0
