@@ -43,9 +43,9 @@
     <logback.version>1.5.21</logback.version>
     <flyway.version>10.13.0</flyway.version>
     <oracle-driver.version>23.26.0.0.0</oracle-driver.version>
-    <selenium.version>4.38.0</selenium.version>
-    <mockito.version>5.20.0</mockito.version>
-    <jooq.version>3.20.9</jooq.version>
+    <selenium.version>4.39.0</selenium.version>
+    <mockito.version>5.21.0</mockito.version>
+    <jooq.version>3.20.10</jooq.version>
     <org.junit.version>6.0.1</org.junit.version>
     <junit.version>4.13.2</junit.version>
     <sonar.organization>bcgov-sonarcloud</sonar.organization>
