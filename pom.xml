@@ -315,6 +315,9 @@
               <includes>
                 <include>**/*IntegrationTest.java</include>
               </includes>
+              <systemPropertyVariables>
+                <io.netty.transport.noNative>true</io.netty.transport.noNative>
+              </systemPropertyVariables>
             </configuration>
           </execution>
         </executions>
@@ -335,6 +338,9 @@
               cucumber.junit-platform.naming-strategy=long
             </configurationParameters>
           </properties>
+          <systemPropertyVariables>
+            <io.netty.transport.noNative>true</io.netty.transport.noNative>
+          </systemPropertyVariables>
         </configuration>
       </plugin>
 
