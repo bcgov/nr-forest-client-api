@@ -194,14 +194,11 @@
 		      "script": {
 		        "type": "text/javascript",
 		        "exec": [
-		          "// Force a valid query string for smoke tests",
+		          "// Always send Spring-compatible query params",
 		          "pm.variables.set(",
 		          "  \"BYNAME_QUERY_STRING\",",
-		          "  \"clientTypeCodes=B,U&page=0&size=20\"",
-		          ");",
-		          "",
-		          "// Smoke test always expects 200",
-		          "pm.variables.set(\"BYNAME_CODE\", \"200\");"
+		          "  \"clientTypeCodes=B&clientTypeCodes=U&page=0&size=20\"",
+		          ");"
 		        ]
 		      }
 		    },
@@ -210,23 +207,28 @@
 		      "script": {
 		        "type": "text/javascript",
 		        "exec": [
-		          "pm.test(\"Status check test (200)\", () => {",
-		          "    pm.response.to.have.status(200);",
+		          "pm.test(\"Status is 200\", () => {",
+		          "  pm.response.to.have.status(200);",
 		          "});",
 		          "",
-		          "const jsonData = pm.response.json();",
+		          "let jsonData;",
+		          "try {",
+		          "  jsonData = pm.response.json();",
+		          "} catch (e) {",
+		          "  pm.expect.fail(\"Response is not JSON: \" + pm.response.text());",
+		          "}",
 		          "",
 		          "pm.test(\"Response is an array\", () => {",
-		          "    pm.expect(jsonData).to.be.an('array');",
+		          "  pm.expect(jsonData).to.be.an('array');",
 		          "});",
 		          "",
 		          "const listSchema = {",
-		          "    \"type\": \"array\",",
-		          "    \"items\": utils.schemas.publicViewDto",
+		          "  \"type\": \"array\",",
+		          "  \"items\": utils.schemas.publicViewDto",
 		          "};",
 		          "",
-		          "pm.test('Schema is valid', () => {",
-		          "    pm.response.to.have.jsonSchema(listSchema);",
+		          "pm.test(\"Schema is valid\", () => {",
+		          "  pm.response.to.have.jsonSchema(listSchema);",
 		          "});"
 		        ]
 		      }
