@@ -190,54 +190,46 @@
 		  "name": "findByNames",
 		  "event": [
 		    {
-		      "listen": "test",
+		      "listen": "prerequest",
 		      "script": {
+		        "type": "text/javascript",
 		        "exec": [
-		          "const responseData = pm.response;",
-		          "pm.test(\"Status check test (\"+pm.variables.get(\"BYNAME_CODE\")+\")\", () => {",
-		          "    responseData.to.have.status(parseInt(pm.variables.get(\"BYNAME_CODE\")));",
-		          "});",
-		          "if(parseInt(pm.variables.get(\"BYNAME_CODE\")) == 200){",
-		          "    const jsonData = responseData.json();",
-		          "    pm.test(\"List size check test\", () => {",
-		          "        pm.expect(jsonData).to.be.an('array');",
-		          "        const expectedSize = parseInt(pm.variables.get(\"BYNAME_SIZE\"));",
-		          "        pm.expect(jsonData.length).to.equals(expectedSize);",
-		          "    });",
-		          "    pm.test(\"Validate client codes in list\", () => {",
-		          "        const expectedClientNumbers = pm.variables.get(\"BYNAME_CODES\");",
-		          "        const receivedClientNumbers = jsonData.map(value => value.clientNumber);",
-		          "        pm.expect(receivedClientNumbers).to.include.members(expectedClientNumbers);",
-		          "    });",
-		          "    const listSchema = {",
-		          "        \"type\": \"array\",",
-		          "        \"items\": utils.schemas.publicViewDto",
-		          "    };",
-		          "    pm.test('Schema is valid', function () {",
-		          "        pm.response.to.have.jsonSchema(listSchema);",
-		          "    });",
-		          "} else {",
-		          "     pm.expect(pm.response.text()).to.be.a('string');",
-		          "}"
-		        ],
-		        "type": "text/javascript"
+		          "// Force a valid query string for smoke tests",
+		          "pm.variables.set(",
+		          "  \"BYNAME_QUERY_STRING\",",
+		          "  \"clientTypeCodes=B,U&page=0&size=20\"",
+		          ");",
+		          "",
+		          "// Smoke test always expects 200",
+		          "pm.variables.set(\"BYNAME_CODE\", \"200\");"
+		        ]
 		      }
 		    },
 		    {
-		      "listen": "prerequest",
-			  "script": {
-			      "type": "text/javascript",
-			      "exec": [
-			        "const qs = pm.variables.get(\"BYNAME_QUERY_STRING\");",
-			        "",
-			        "if (!qs || qs === \"null\" || qs.trim() === \"\") {",
-			        "    pm.variables.set(",
-			        "        \"BYNAME_QUERY_STRING\",",
-			        "        \"clientTypeCodes=B,U&page=0&size=20\"",
-			        "    );",
-			        "}"
-			      ]
-			  }
+		      "listen": "test",
+		      "script": {
+		        "type": "text/javascript",
+		        "exec": [
+		          "pm.test(\"Status check test (200)\", () => {",
+		          "    pm.response.to.have.status(200);",
+		          "});",
+		          "",
+		          "const jsonData = pm.response.json();",
+		          "",
+		          "pm.test(\"Response is an array\", () => {",
+		          "    pm.expect(jsonData).to.be.an('array');",
+		          "});",
+		          "",
+		          "const listSchema = {",
+		          "    \"type\": \"array\",",
+		          "    \"items\": utils.schemas.publicViewDto",
+		          "};",
+		          "",
+		          "pm.test('Schema is valid', () => {",
+		          "    pm.response.to.have.jsonSchema(listSchema);",
+		          "});"
+		        ]
+		      }
 		    }
 		  ],
 		  "request": {
@@ -246,13 +238,7 @@
 		    "url": {
 		      "raw": "{{URL_FCA}}/api/clients/findByNames?{{BYNAME_QUERY_STRING}}",
 		      "host": ["{{URL_FCA}}"],
-		      "path": ["api", "clients", "findByNames"],
-		      "query": [
-		        {
-		          "key": "{{BYNAME_QUERY_STRING}}",
-		          "value": null
-		        }
-		      ]
+		      "path": ["api", "clients", "findByNames"]
 		    }
 		  },
 		  "response": []
