@@ -225,14 +225,19 @@
 		    },
 		    {
 		      "listen": "prerequest",
-		      "script": {
-		        "exec": [
-		          "if (!pm.variables.get(\"BYNAME_QUERY_STRING\") || pm.variables.get(\"BYNAME_QUERY_STRING\") === \"null\") {",
-		          "    pm.variables.set(\"BYNAME_QUERY_STRING\", \"clientTypeCodes=B,U&page=0&size=20\");",
-		          "}"
-		        ],
-		        "type": "text/javascript"
-		      }
+			  "script": {
+			      "type": "text/javascript",
+			      "exec": [
+			        "const qs = pm.variables.get(\"BYNAME_QUERY_STRING\");",
+			        "",
+			        "if (!qs || qs === \"null\" || qs.trim() === \"\") {",
+			        "    pm.variables.set(",
+			        "        \"BYNAME_QUERY_STRING\",",
+			        "        \"clientTypeCodes=B,U&page=0&size=20\"",
+			        "    );",
+			        "}"
+			      ]
+			  }
 		    }
 		  ],
 		  "request": {
