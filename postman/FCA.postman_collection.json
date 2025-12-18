@@ -222,7 +222,7 @@
 							"\r",
 							"    pm.test('Schema is valid', function () {\r",
 							"        pm.response.to.have.jsonSchema(listSchema);\r",
-							"    });\r",
+							"});",
 							"\r",
 							"}else{\r",
 							"     pm.expect(pm.response.text()).to.be.a('string');\r",
@@ -235,7 +235,12 @@
 					"listen": "prerequest",
 					"script": {
 						"exec": [
-							""
+							"const qs = pm.variables.get(\"BYNAME_QUERY_STRING\");\r",
+							"\r",
+							"if (!qs || qs.trim() === \"\") {\r",
+							"    console.log(\"Skipping findByNames request: empty BYNAME_QUERY_STRING\");\r",
+							"    postman.setNextRequest(null);\r",
+							"}\r"
 						],
 						"type": "text/javascript"
 					}
