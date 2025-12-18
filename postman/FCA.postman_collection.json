@@ -187,112 +187,70 @@
 			"response": []
 		},
 		{
-			"name": "findByNames",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"const responseData = pm.response;\r",
-							"\r",
-							"pm.test(\"Status check test (\"+pm.variables.get(\"BYNAME_CODE\")+\")\", () => {\r",
-							"    responseData.to.have.status(parseInt(pm.variables.get(\"BYNAME_CODE\")));\r",
-							"});\r",
-							"\r",
-							"if(parseInt(pm.variables.get(\"BYNAME_CODE\")) == 200){\r",
-							"\r",
-							"    const jsonData = responseData.json();    \r",
-							"        \r",
-							"    pm.test(\"List size check test\", () => {\r",
-							"        pm.expect(jsonData).to.be.an('array');\r",
-							"        const expectedSize = parseInt(pm.variables.get(\"BYNAME_SIZE\"));\r",
-							"        pm.expect(jsonData.length).to.equals(expectedSize);\r",
-							"    });\r",
-							"\r",
-							"    pm.test(\"Validate client codes in list\", () => {    \r",
-							"        const expectedClientNumbers = pm.variables.get(\"BYNAME_CODES\");\r",
-							"        const receivedClientNumbers = jsonData.map(value => value.clientNumber);    \r",
-							"        pm.expect(receivedClientNumbers).to.include.members(expectedClientNumbers);\r",
-							"    });\r",
-							"\r",
-							"    const listSchema = {\r",
-							"        \"type\": \"array\",\r",
-							"        \"items\": utils.schemas.publicViewDto\r",
-							"    };\r",
-							"\r",
-							"    pm.test('Schema is valid', function () {\r",
-							"        pm.response.to.have.jsonSchema(listSchema);\r",
-							"    });\r",
-							"\r",
-							"}else{\r",
-							"     pm.expect(pm.response.text()).to.be.a('string');\r",
-							"}"
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{URL_FCA}}/api/clients/findByNames?{{BYNAME_QUERY_STRING}}",
-					"host": [
-						"{{URL_FCA}}"
-					],
-					"path": [
-						"api",
-						"clients",
-						"findByNames"
-					],
-					"query": [
-						{
-							"key": "clientName",
-							"value": "\" \"",
-							"disabled": true
-						},
-						{
-							"key": "clientFirstName",
-							"value": "james",
-							"disabled": true
-						},
-						{
-							"key": "clientMiddleName",
-							"value": "",
-							"disabled": true
-						},
-						{
-							"key": "clientTypeCodes",
-							"value": "A,B",
-							"disabled": true
-						},
-						{
-							"key": "page",
-							"value": "0",
-							"disabled": true
-						},
-						{
-							"key": "size",
-							"value": "20",
-							"disabled": true
-						},
-						{
-							"key": "{{BYNAME_QUERY_STRING}}",
-							"value": null
-						}
-					]
-				}
-			},
-			"response": []
+		  "name": "findByNames",
+		  "event": [
+		    {
+		      "listen": "test",
+		      "script": {
+		        "exec": [
+		          "const responseData = pm.response;",
+		          "pm.test(\"Status check test (\"+pm.variables.get(\"BYNAME_CODE\")+\")\", () => {",
+		          "    responseData.to.have.status(parseInt(pm.variables.get(\"BYNAME_CODE\")));",
+		          "});",
+		          "if(parseInt(pm.variables.get(\"BYNAME_CODE\")) == 200){",
+		          "    const jsonData = responseData.json();",
+		          "    pm.test(\"List size check test\", () => {",
+		          "        pm.expect(jsonData).to.be.an('array');",
+		          "        const expectedSize = parseInt(pm.variables.get(\"BYNAME_SIZE\"));",
+		          "        pm.expect(jsonData.length).to.equals(expectedSize);",
+		          "    });",
+		          "    pm.test(\"Validate client codes in list\", () => {",
+		          "        const expectedClientNumbers = pm.variables.get(\"BYNAME_CODES\");",
+		          "        const receivedClientNumbers = jsonData.map(value => value.clientNumber);",
+		          "        pm.expect(receivedClientNumbers).to.include.members(expectedClientNumbers);",
+		          "    });",
+		          "    const listSchema = {",
+		          "        \"type\": \"array\",",
+		          "        \"items\": utils.schemas.publicViewDto",
+		          "    };",
+		          "    pm.test('Schema is valid', function () {",
+		          "        pm.response.to.have.jsonSchema(listSchema);",
+		          "    });",
+		          "} else {",
+		          "     pm.expect(pm.response.text()).to.be.a('string');",
+		          "}"
+		        ],
+		        "type": "text/javascript"
+		      }
+		    },
+		    {
+		      "listen": "prerequest",
+		      "script": {
+		        "exec": [
+		          "if (!pm.variables.get(\"BYNAME_QUERY_STRING\") || pm.variables.get(\"BYNAME_QUERY_STRING\") === \"null\") {",
+		          "    pm.variables.set(\"BYNAME_QUERY_STRING\", \"clientTypeCodes=B,U&page=0&size=20\");",
+		          "}"
+		        ],
+		        "type": "text/javascript"
+		      }
+		    }
+		  ],
+		  "request": {
+		    "method": "GET",
+		    "header": [],
+		    "url": {
+		      "raw": "{{URL_FCA}}/api/clients/findByNames?{{BYNAME_QUERY_STRING}}",
+		      "host": ["{{URL_FCA}}"],
+		      "path": ["api", "clients", "findByNames"],
+		      "query": [
+		        {
+		          "key": "{{BYNAME_QUERY_STRING}}",
+		          "value": null
+		        }
+		      ]
+		    }
+		  },
+		  "response": []
 		},
 		{
 			"name": "findByAcronym",
