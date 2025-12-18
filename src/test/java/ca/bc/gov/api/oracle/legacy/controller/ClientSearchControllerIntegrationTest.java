@@ -1,23 +1,17 @@
 package ca.bc.gov.api.oracle.legacy.controller;
 
-import ca.bc.gov.api.oracle.legacy.AbstractTestContainerIntegrationTest;
-import ca.bc.gov.api.oracle.legacy.dto.ClientPublicViewDto;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.reactive.server.WebTestClient;
+import ca.bc.gov.api.oracle.legacy.AbstractTestContainerIntegrationTest;
+import ca.bc.gov.api.oracle.legacy.dto.ClientPublicViewDto;
 
 @DisplayName("Integration Test | Client Search Handler")
 class ClientSearchControllerIntegrationTest extends AbstractTestContainerIntegrationTest {
-
-  @Autowired
-  private WebTestClient webTestClient;
 
   @ParameterizedTest
   @MethodSource("searchById")

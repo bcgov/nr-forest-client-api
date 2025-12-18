@@ -1,7 +1,5 @@
 package ca.bc.gov.api.oracle.legacy.controller;
 
-import ca.bc.gov.api.oracle.legacy.AbstractTestContainerIntegrationTest;
-import ca.bc.gov.api.oracle.legacy.dto.ClientLocationDto;
 import java.net.URI;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -10,16 +8,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.util.UriBuilder;
+import ca.bc.gov.api.oracle.legacy.AbstractTestContainerIntegrationTest;
+import ca.bc.gov.api.oracle.legacy.dto.ClientLocationDto;
 
 @DisplayName("Integration Test | Client Location Handler")
 class ClientLocationControllerIntegrationTest extends AbstractTestContainerIntegrationTest {
-
-  @Autowired
-  private WebTestClient webTestClient;
 
   @ParameterizedTest(name = "Client {0} in page {1} size {2} should give status {3}")
   @MethodSource("locationsClients")

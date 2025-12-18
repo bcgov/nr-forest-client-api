@@ -1,18 +1,13 @@
 package ca.bc.gov.api.oracle.legacy.controller;
 
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import ca.bc.gov.api.oracle.legacy.AbstractTestContainerIntegrationTest;
 import ca.bc.gov.api.oracle.legacy.dto.ClientPublicViewDto;
 import ca.bc.gov.api.oracle.legacy.dto.ClientViewDto;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.reactive.server.WebTestClient;
 
 @DisplayName("Integration Test | Client Handler")
 class ClientControllerIntegrationTest extends AbstractTestContainerIntegrationTest {
-
-  @Autowired
-  private WebTestClient webTestClient;
 
   @Test
   @DisplayName("Search client by client number")
