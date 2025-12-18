@@ -257,37 +257,33 @@
 					"query": [
 						{
 							"key": "clientName",
-							"value": "\" \"",
-							"disabled": true
+							"value": "Baxter",
+							"disabled": false
 						},
 						{
 							"key": "clientFirstName",
-							"value": "james",
-							"disabled": true
+							"value": "James",
+							"disabled": false
 						},
 						{
 							"key": "clientMiddleName",
 							"value": "",
-							"disabled": true
+							"disabled": false
 						},
 						{
 							"key": "clientTypeCodes",
-							"value": "A,B",
-							"disabled": true
+							"value": "B,U",
+							"disabled": false
 						},
 						{
 							"key": "page",
 							"value": "0",
-							"disabled": true
+							"disabled": false
 						},
 						{
 							"key": "size",
 							"value": "20",
-							"disabled": true
-						},
-						{
-							"key": "{{BYNAME_QUERY_STRING}}",
-							"value": null
+							"disabled": false
 						}
 					]
 				}
