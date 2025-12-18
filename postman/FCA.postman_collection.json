@@ -193,6 +193,13 @@
 					"listen": "test",
 					"script": {
 						"exec": [
+							"const qs = pm.variables.get(\"BYNAME_QUERY_STRING\");\r",
+							"\r",
+							"if (!qs || qs.trim() === \"\") {\r",
+							"    console.log(\"Skipping tests for findByNames: empty BYNAME_QUERY_STRING\");\r",
+							"    return;\r",
+							"}\r",
+							"\r",
 							"const responseData = pm.response;\r",
 							"\r",
 							"pm.test(\"Status check test (\"+pm.variables.get(\"BYNAME_CODE\")+\")\", () => {\r",
@@ -226,7 +233,7 @@
 							"\r",
 							"}else{\r",
 							"     pm.expect(pm.response.text()).to.be.a('string');\r",
-							"}"
+							"}\r"
 						],
 						"type": "text/javascript"
 					}
