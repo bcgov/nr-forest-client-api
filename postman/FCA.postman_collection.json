@@ -190,19 +190,6 @@
 		  "name": "findByNames",
 		  "event": [
 		    {
-		      "listen": "prerequest",
-		      "script": {
-		        "type": "text/javascript",
-		        "exec": [
-		          "// Always send Spring-compatible query params",
-		          "pm.variables.set(",
-		          "  \"BYNAME_QUERY_STRING\",",
-		          "  \"clientTypeCodes=B&clientTypeCodes=U&page=0&size=20\"",
-		          ");"
-		        ]
-		      }
-		    },
-		    {
 		      "listen": "test",
 		      "script": {
 		        "type": "text/javascript",
@@ -238,9 +225,14 @@
 		    "method": "GET",
 		    "header": [],
 		    "url": {
-		      "raw": "{{URL_FCA}}/api/clients/findByNames?{{BYNAME_QUERY_STRING}}",
 		      "host": ["{{URL_FCA}}"],
-		      "path": ["api", "clients", "findByNames"]
+		      "path": ["api", "clients", "findByNames"],
+		      "query": [
+		        { "key": "clientTypeCodes", "value": "B" },
+		        { "key": "clientTypeCodes", "value": "U" },
+		        { "key": "page", "value": "0" },
+		        { "key": "size", "value": "20" }
+		      ]
 		    }
 		  },
 		  "response": []
