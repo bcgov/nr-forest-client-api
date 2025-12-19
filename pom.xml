@@ -261,6 +261,18 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <dependency> 
+        <groupId>io.projectreactor.netty</groupId> 
+        <artifactId>reactor-netty-http</artifactId> 
+        <version>1.2.11</version> 
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-bom</artifactId>
+        <version>4.1.129.Final</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -303,6 +315,9 @@
               <includes>
                 <include>**/*IntegrationTest.java</include>
               </includes>
+              <systemPropertyVariables>
+                <io.netty.transport.noNative>true</io.netty.transport.noNative>
+              </systemPropertyVariables>
             </configuration>
           </execution>
         </executions>
@@ -323,6 +338,9 @@
               cucumber.junit-platform.naming-strategy=long
             </configurationParameters>
           </properties>
+          <systemPropertyVariables>
+            <io.netty.transport.noNative>true</io.netty.transport.noNative>
+          </systemPropertyVariables>
         </configuration>
       </plugin>
 

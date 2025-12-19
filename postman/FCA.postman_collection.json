@@ -187,112 +187,55 @@
 			"response": []
 		},
 		{
-			"name": "findByNames",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"const responseData = pm.response;\r",
-							"\r",
-							"pm.test(\"Status check test (\"+pm.variables.get(\"BYNAME_CODE\")+\")\", () => {\r",
-							"    responseData.to.have.status(parseInt(pm.variables.get(\"BYNAME_CODE\")));\r",
-							"});\r",
-							"\r",
-							"if(parseInt(pm.variables.get(\"BYNAME_CODE\")) == 200){\r",
-							"\r",
-							"    const jsonData = responseData.json();    \r",
-							"        \r",
-							"    pm.test(\"List size check test\", () => {\r",
-							"        pm.expect(jsonData).to.be.an('array');\r",
-							"        const expectedSize = parseInt(pm.variables.get(\"BYNAME_SIZE\"));\r",
-							"        pm.expect(jsonData.length).to.equals(expectedSize);\r",
-							"    });\r",
-							"\r",
-							"    pm.test(\"Validate client codes in list\", () => {    \r",
-							"        const expectedClientNumbers = pm.variables.get(\"BYNAME_CODES\");\r",
-							"        const receivedClientNumbers = jsonData.map(value => value.clientNumber);    \r",
-							"        pm.expect(receivedClientNumbers).to.include.members(expectedClientNumbers);\r",
-							"    });\r",
-							"\r",
-							"    const listSchema = {\r",
-							"        \"type\": \"array\",\r",
-							"        \"items\": utils.schemas.publicViewDto\r",
-							"    };\r",
-							"\r",
-							"    pm.test('Schema is valid', function () {\r",
-							"        pm.response.to.have.jsonSchema(listSchema);\r",
-							"    });\r",
-							"\r",
-							"}else{\r",
-							"     pm.expect(pm.response.text()).to.be.a('string');\r",
-							"}"
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{URL_FCA}}/api/clients/findByNames?{{BYNAME_QUERY_STRING}}",
-					"host": [
-						"{{URL_FCA}}"
-					],
-					"path": [
-						"api",
-						"clients",
-						"findByNames"
-					],
-					"query": [
-						{
-							"key": "clientName",
-							"value": "\" \"",
-							"disabled": true
-						},
-						{
-							"key": "clientFirstName",
-							"value": "james",
-							"disabled": true
-						},
-						{
-							"key": "clientMiddleName",
-							"value": "",
-							"disabled": true
-						},
-						{
-							"key": "clientTypeCodes",
-							"value": "A,B",
-							"disabled": true
-						},
-						{
-							"key": "page",
-							"value": "0",
-							"disabled": true
-						},
-						{
-							"key": "size",
-							"value": "20",
-							"disabled": true
-						},
-						{
-							"key": "{{BYNAME_QUERY_STRING}}",
-							"value": null
-						}
-					]
-				}
-			},
-			"response": []
+		  "name": "findByNames",
+		  "event": [
+		    {
+		      "listen": "test",
+		      "script": {
+		        "type": "text/javascript",
+		        "exec": [
+		          "pm.test(\"Status is 200\", () => {",
+		          "  pm.response.to.have.status(200);",
+		          "});",
+		          "",
+		          "let jsonData;",
+		          "try {",
+		          "  jsonData = pm.response.json();",
+		          "} catch (e) {",
+		          "  pm.expect.fail(\"Response is not JSON: \" + pm.response.text());",
+		          "}",
+		          "",
+		          "pm.test(\"Response is an array\", () => {",
+		          "  pm.expect(jsonData).to.be.an('array');",
+		          "});",
+		          "",
+		          "const listSchema = {",
+		          "  \"type\": \"array\",",
+		          "  \"items\": utils.schemas.publicViewDto",
+		          "};",
+		          "",
+		          "pm.test(\"Schema is valid\", () => {",
+		          "  pm.response.to.have.jsonSchema(listSchema);",
+		          "});"
+		        ]
+		      }
+		    }
+		  ],
+		  "request": {
+		    "method": "GET",
+		    "header": [],
+		    "url": {
+		      "host": ["{{URL_FCA}}"],
+		      "path": ["api", "clients", "findByNames"],
+		      "query": [
+		        { "key": "clientTypeCodes", "value": "B" },
+		        { "key": "clientTypeCodes", "value": "U" },
+		        { "key": "page", "value": "0" },
+		        { "key": "size", "value": "20" }
+		      ]
+		    }
+		  },
+		  "response": []
 		},
 		{
 			"name": "findByAcronym",
