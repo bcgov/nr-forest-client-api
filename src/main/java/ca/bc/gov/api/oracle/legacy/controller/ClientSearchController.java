@@ -164,44 +164,45 @@ public class ClientSearchController {
       }
   )
   public Flux<ClientPublicViewDto> searchByAcronymNameNumber(
-      @Parameter(description = "The one index page number, defaults to 0", 
-                 example = "0")
       @RequestParam(value = "page", required = false, defaultValue = "0")
-      Integer page,
-
-      @Parameter(description = "The amount of data to be returned per page, defaults to 10",
-                 example = "10")
+                    Integer page,
       @RequestParam(value = "size", required = false, defaultValue = "10")
-      Integer size,
-
-      @Parameter(description = "The name of the client you're searching", 
-                 example = "Western Forest Products")
+                    Integer size,
       @RequestParam(value = "name", required = false)
-      String name,
-
-      @Parameter(description = "The acronym of the client you're searching", 
-                 example = "WFPS")
+                    String name,
       @RequestParam(value = "acronym", required = false)
-      String acronym,
-
-      @Parameter(description = "The number of the client you're searching", 
-                 example = "00000001")
+                    String acronym,
       @RequestParam(value = "number", required = false)
-      String number,
-
+                    String number,
       ServerHttpResponse serverResponse
   ) {
 
-    log.info("Searching for clients with name {}, acronym {}, number {}", name, acronym, number);
-    return
-        clientSearchService
-            .searchByAcronymNameNumber(name, acronym, number, page, size)
-            .flatMapMany(criteria -> clientSearchService.searchClientByQuery(criteria, page, size))
-            .doOnNext(client -> log.info("Found client with id {}", client.getClientNumber()))
-            .doOnNext(dto -> serverResponse.getHeaders()
-                .putIfAbsent(ApplicationConstants.X_TOTAL_COUNT,
-                    List.of(dto.getCount().toString())));
+    log.info(
+        "Searching for clients with name='{}', acronym='{}', number='{}'",
+        name,
+        acronym,
+        number
+    );
 
+    return clientSearchService
+        .searchByAcronymNameNumber(name, acronym, number, page, size)
+        .flatMapMany(
+            criteria ->
+                clientSearchService.searchClientByQuery(criteria, page, size)
+        )
+        .doOnNext(
+            client ->
+                serverResponse
+                    .getHeaders()
+                    .putIfAbsent(
+                        ApplicationConstants.X_TOTAL_COUNT,
+                        List.of(
+                            client.getCount() != null
+                                ? client.getCount().toString()
+                                : "0"
+                        )
+                    )
+        );
   }
 
 }
