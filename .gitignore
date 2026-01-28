@@ -228,3 +228,4 @@ config/application-dev-*.yml
 .checkstyle
 config/*.jks
 /.idea/codeStyles/codeStyleConfig.xml
+config/application-dev-mariamar.properties
