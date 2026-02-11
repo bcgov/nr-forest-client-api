@@ -40,12 +40,12 @@
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
     <testcontainers.version>1.21.4</testcontainers.version>
     <oci.revision>${project.version}</oci.revision>
-    <logback.version>1.5.26</logback.version>
+    <logback.version>1.5.27</logback.version>
     <flyway.version>10.13.0</flyway.version>
-    <oracle-driver.version>23.26.0.0.0</oracle-driver.version>
+    <oracle-driver.version>23.26.1.0.0</oracle-driver.version>
     <selenium.version>4.40.0</selenium.version>
     <mockito.version>5.21.0</mockito.version>
-    <jooq.version>3.20.10</jooq.version>
+    <jooq.version>3.20.11</jooq.version>
     <org.junit.version>6.0.2</org.junit.version>
     <junit.version>4.13.2</junit.version>
     <sonar.organization>bcgov-sonarcloud</sonar.organization>
