@@ -181,17 +181,20 @@ public class ClientService {
       return Flux.error(new NoSearchParameterFound("acronym"));
     }
 
+    String normalizedAcronym = acronym.trim().toUpperCase();
+
     return forestClientRepository
-        .findByClientAcronym(acronym)
+        .findByClientAcronym(normalizedAcronym)
         .index()
-        .doOnNext(entity -> log.info("Found entity with acronym {} with number {}", acronym,
+        .doOnNext(entity -> log.info(
+            "Found entity with acronym {} with number {}",
+            normalizedAcronym,
             entity.getT2().getClientNumber()))
         .switchIfEmpty(
-            Mono.error(new ClientNotFoundException("No client found with the acronym " + acronym))
-        )
+            Mono.error(new ClientNotFoundException(
+                "No client found with the acronym " + acronym)))
         .map(dtoIndex ->
-            ClientMapper
-                .mapEntityToDto(dtoIndex.getT2(), dtoIndex.getT1() + 1)
+            ClientMapper.mapEntityToDto(dtoIndex.getT2(), dtoIndex.getT1() + 1)
         );
   }
 
