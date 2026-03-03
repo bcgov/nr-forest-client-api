@@ -66,6 +66,8 @@
     </sonar.coverage.exclusions>
     <sonar.java.checkstyle.reportPaths>target/checkstyle-result.xml
     </sonar.java.checkstyle.reportPaths>
+    <jackson.version>2.21.1</jackson.version>
+    <jackson-bom.version>2.21.0</jackson-bom.version>
   </properties>
 
   <dependencies>
