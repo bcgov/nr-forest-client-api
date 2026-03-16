@@ -7,7 +7,6 @@ import ca.bc.gov.api.oracle.legacy.dto.SearchNumberScoreProjection;
 import ca.bc.gov.api.oracle.legacy.entity.ForestClientEntity;
 import ca.bc.gov.api.oracle.legacy.repository.ForestClientRepository;
 import ca.bc.gov.api.oracle.legacy.util.ClientMapper;
-import java.time.Duration;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
