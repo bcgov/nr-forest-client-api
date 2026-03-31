@@ -68,6 +68,7 @@
     </sonar.java.checkstyle.reportPaths>
     <jackson.version>2.21.1</jackson.version>
     <jackson-bom.version>2.21.1</jackson-bom.version>
+    <spring-security.version>7.0.4</spring-security.version>
   </properties>
 
   <dependencies>
