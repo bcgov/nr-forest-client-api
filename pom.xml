@@ -48,7 +48,7 @@
     <jooq.version>3.20.11</jooq.version>
     <org.junit.version>6.0.3</org.junit.version>
     <junit.version>4.13.2</junit.version>
-    <netty.version>4.1.131.Final</netty.version>
+    <netty.version>4.1.132.Final</netty.version>
     <sonar.organization>bcgov-sonarcloud</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.projectKey>bcgov_forest-client-api</sonar.projectKey>
