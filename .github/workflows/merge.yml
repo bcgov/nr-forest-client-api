@@ -104,7 +104,7 @@ jobs:
             -p TAG=${{ needs.init.outputs.pr }}
 
       - name: Publish API
-        uses: bcgov/action-gwa-publish@f11f9b506e45928741eebec9141867de87947a90 # v0.1.0
+        uses: bcgov/action-gwa-publish@v1.0.0
         with:
           namespace: ${{ env.NS }}
           client_id: ${{ secrets.GWA_ACCT_ID }}
