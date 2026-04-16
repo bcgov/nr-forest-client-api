@@ -2,4 +2,4 @@
 # unless a later match takes precedence, and will be requested for
 # review when someone opens a pull request.
 *       @paulushcgcj @mamartinezmejia
-/.github/workflows/       @paulushcgcj @DerekRoberts
+/.github/workflows/       @paulushcgcj @mamartinezmejia
