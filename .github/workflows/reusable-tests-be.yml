@@ -55,7 +55,7 @@ jobs:
         id: jacoco
         continue-on-error: true
         if: github.event_name == 'pull_request'
-        uses: madrapps/jacoco-report@94dfcf8dae9680be2cfa714ca37fb37790bd7663 # v1.6
+        uses: madrapps/jacoco-report@50d3aff4548aa991e6753342d9ba291084e63848 # v1.7.2
         with:
           paths: target/coverage-reports/merged-test-report/jacoco.xml
           token: ${{ secrets.GITHUB_TOKEN }}
