@@ -45,7 +45,7 @@
     <oracle-driver.version>23.26.1.0.0</oracle-driver.version>
     <selenium.version>4.43.0</selenium.version>
     <mockito.version>5.23.0</mockito.version>
-    <jooq.version>3.21.1</jooq.version>
+    <jooq.version>3.21.2</jooq.version>
     <org.junit.version>6.0.3</org.junit.version>
     <junit.version>4.13.2</junit.version>
     <netty.version>4.1.132.Final</netty.version>
