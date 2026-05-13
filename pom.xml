@@ -42,10 +42,10 @@
     <oci.revision>${project.version}</oci.revision>
     <logback.version>1.5.32</logback.version>
     <flyway.version>10.13.0</flyway.version>
-    <oracle-driver.version>23.26.1.0.0</oracle-driver.version>
-    <selenium.version>4.43.0</selenium.version>
+    <oracle-driver.version>23.26.2.0.0</oracle-driver.version>
+    <selenium.version>4.44.0</selenium.version>
     <mockito.version>5.23.0</mockito.version>
-    <jooq.version>3.21.3</jooq.version>
+    <jooq.version>3.21.4</jooq.version>
     <org.junit.version>6.0.3</org.junit.version>
     <junit.version>4.13.2</junit.version>
     <netty.version>4.1.132.Final</netty.version>
