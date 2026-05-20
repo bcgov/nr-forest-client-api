@@ -46,7 +46,7 @@
     <selenium.version>4.44.0</selenium.version>
     <mockito.version>5.23.0</mockito.version>
     <jooq.version>3.21.4</jooq.version>
-    <org.junit.version>6.0.3</org.junit.version>
+    <org.junit.version>6.1.0</org.junit.version>
     <junit.version>4.13.2</junit.version>
     <netty.version>4.1.132.Final</netty.version>
     <sonar.organization>bcgov-sonarcloud</sonar.organization>
