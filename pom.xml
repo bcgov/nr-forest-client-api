@@ -38,7 +38,7 @@
     <jacoco.output.data>${project.build.directory}/coverage-reports</jacoco.output.data>
     <timestamp>${maven.build.timestamp}</timestamp>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
-    <testcontainers.version>2.0.5</testcontainers.version>
+    <testcontainers.version>2.0.3</testcontainers.version>
     <oci.revision>${project.version}</oci.revision>
     <logback.version>1.5.32</logback.version>
     <flyway.version>10.13.0</flyway.version>
