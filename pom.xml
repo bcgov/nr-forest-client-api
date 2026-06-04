@@ -40,7 +40,7 @@
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
     <testcontainers.version>1.21.4</testcontainers.version>
     <oci.revision>${project.version}</oci.revision>
-    <logback.version>1.5.32</logback.version>
+    <logback.version>1.5.33</logback.version>
     <flyway.version>10.13.0</flyway.version>
     <oracle-driver.version>23.26.2.0.0</oracle-driver.version>
     <selenium.version>4.44.0</selenium.version>
