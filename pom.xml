@@ -38,6 +38,7 @@
     <jacoco.output.data>${project.build.directory}/coverage-reports</jacoco.output.data>
     <timestamp>${maven.build.timestamp}</timestamp>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
+    
     <testcontainers.version>2.0.5</testcontainers.version>
     <oci.revision>${project.version}</oci.revision>
     <logback.version>1.5.34</logback.version>
@@ -49,11 +50,17 @@
     <org.junit.version>6.1.0</org.junit.version>
     <junit.version>4.13.2</junit.version>
     <netty.version>4.1.132.Final</netty.version>
+    <jackson.version>2.21.1</jackson.version>
+    <jackson-bom.version>2.21.1</jackson-bom.version>
+    <opentelemetry-bom.version>1.62.0</opentelemetry-bom.version>
+    
+    <micrometer.version>1.12.4</micrometer.version>
+    <micrometer-tracing.version>1.2.4</micrometer-tracing.version>
+
     <sonar.organization>bcgov-sonarcloud</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.projectKey>bcgov_forest-client-api</sonar.projectKey>
-    <sonar.coverage.jacoco.xmlReportPaths>target/coverage-reports/merged-test-report/jacoco.xml
-    </sonar.coverage.jacoco.xmlReportPaths>
+    <sonar.coverage.jacoco.xmlReportPaths>target/coverage-reports/merged-test-report/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     <sonar.coverage.exclusions>
       **/configuration/**,
       **/exception/**,
@@ -64,11 +71,7 @@
       **/Application*
       **/ApplicationConstants*
     </sonar.coverage.exclusions>
-    <sonar.java.checkstyle.reportPaths>target/checkstyle-result.xml
-    </sonar.java.checkstyle.reportPaths>
-    <jackson.version>2.21.1</jackson.version>
-    <jackson-bom.version>2.21.1</jackson-bom.version>
-    <opentelemetry-bom.version>1.62.0</opentelemetry-bom.version>
+    <sonar.java.checkstyle.reportPaths>target/checkstyle-result.xml</sonar.java.checkstyle.reportPaths>
   </properties>
 
   <dependencies>
@@ -157,21 +160,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>testcontainers</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>oracle-xe</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>r2dbc</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.flywaydb</groupId>
       <artifactId>flyway-core</artifactId>
       <scope>test</scope>
@@ -183,7 +171,17 @@
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>junit-jupiter</artifactId>
+      <artifactId>testcontainers-oracle-xe</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers-r2dbc</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers-junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -292,7 +290,6 @@
               <artifactId>lombok</artifactId>
             </exclude>
           </excludes>
-
         </configuration>
       </plugin>
 
@@ -437,7 +434,7 @@
                     <limit>
                       <counter>LINE</counter>
                       <value>COVEREDRATIO</value>
-                      <minimum>80%</minimum>
+                      <minimum>0.80</minimum>
                     </limit>
                   </limits>
                 </rule>
@@ -452,11 +449,9 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>3.12.0</version>
         <configuration>
-          <source>8</source>
-          <doctitle>Javadoc Documentation for ${project.name} ${project.version}
-          </doctitle>
-          <windowtitle>${project.name} ${project.version}
-          </windowtitle>
+          <source>${java.version}</source>
+          <doctitle>Javadoc Documentation for ${project.name} ${project.version}</doctitle>
+          <windowtitle>${project.name} ${project.version}</windowtitle>
         </configuration>
       </plugin>
 
@@ -495,7 +490,6 @@
           </execution>
         </executions>
         <configuration>
-          <skip>${checkstyle.skip}</skip>
           <projectType>application</projectType>
           <outputFormat>all</outputFormat>
           <outputName>bom</outputName>
