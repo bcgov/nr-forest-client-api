@@ -5,7 +5,6 @@ import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.config.MeterFilter;
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
-import io.micrometer.prometheus.PrometheusMeterRegistry;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -61,12 +60,12 @@ public class MetricConfiguration {
   }
 
   /**
-   * Configures the {@link PrometheusMeterRegistry} for use with Prometheus metrics.
+   * Configures the meter registry for use with Prometheus metrics.
    *
-   * @return a {@link MeterRegistryCustomizer} for Prometheus meter registry configuration.
+   * @return a {@link MeterRegistryCustomizer} for meter registry configuration.
    */
   @Bean
-  public MeterRegistryCustomizer<PrometheusMeterRegistry> prometheusConfiguration() {
+  public MeterRegistryCustomizer<MeterRegistry> prometheusConfiguration() {
     return MeterRegistry::config;
   }
 
