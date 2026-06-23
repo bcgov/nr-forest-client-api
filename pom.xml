@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.5.14</version>
+    <version>3.5.15</version>
     <relativePath />
   </parent>
 
@@ -44,9 +44,9 @@
     <logback.version>1.5.34</logback.version>
     <flyway.version>10.13.0</flyway.version>
     <oracle-driver.version>23.26.2.0.0</oracle-driver.version>
-    <selenium.version>4.44.0</selenium.version>
+    <selenium.version>4.45.0</selenium.version>
     <mockito.version>5.23.0</mockito.version>
-    <jooq.version>3.21.5</jooq.version>
+    <jooq.version>3.21.6</jooq.version>
     <org.junit.version>6.1.0</org.junit.version>
     <junit.version>4.13.2</junit.version>
     <netty.version>4.1.132.Final</netty.version>
