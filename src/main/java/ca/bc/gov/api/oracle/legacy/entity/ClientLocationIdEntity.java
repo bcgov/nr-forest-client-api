@@ -7,17 +7,17 @@ import lombok.NoArgsConstructor;
 import lombok.With;
 import org.springframework.data.relational.core.mapping.Column;
 
+/** Composite identifier for a client location row. */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @With
 @Builder
 public class ClientLocationIdEntity {
-  
+
   @Column("CLIENT_NUMBER")
   private String clientNumber;
-  
+
   @Column("CLIENT_LOCN_CODE")
   private String locationCode;
-  
 }

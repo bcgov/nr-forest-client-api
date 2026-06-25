@@ -3,6 +3,7 @@ package ca.bc.gov.api.oracle.legacy;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+/** Application-wide constants shared across the codebase. */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ApplicationConstants {
   public static final String ORACLE_ATTRIBUTE_SCHEMA = "THE";

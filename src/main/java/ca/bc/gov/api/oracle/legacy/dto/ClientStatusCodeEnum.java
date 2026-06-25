@@ -2,6 +2,7 @@ package ca.bc.gov.api.oracle.legacy.dto;
 
 import lombok.Getter;
 
+/** Enumerates supported client status codes. */
 @Getter
 public enum ClientStatusCodeEnum {
   ACT("Active"),

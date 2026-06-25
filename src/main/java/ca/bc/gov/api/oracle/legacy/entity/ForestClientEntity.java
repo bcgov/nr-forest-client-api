@@ -16,6 +16,7 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+/** Persistence model for forest client data. */
 @Data
 @With
 @Builder
@@ -67,15 +68,18 @@ public class ForestClientEntity {
   @Column("CLIENT_COMMENT")
   private String clientComment;
 
+  /**
+   * Returns the display name for the client.
+   *
+   * @return the composed individual name or the company name
+   */
   @Transient
   public String getName() {
     if (Objects.equals(this.clientTypeCode, INDIVIDUAL)) {
       return Stream.of(this.legalFirstName, this.legalMiddleName, this.clientName)
-              .filter(Objects::nonNull)
-              .collect(Collectors.joining(" "));
-    } else {
-      return this.clientName;
+          .filter(Objects::nonNull)
+          .collect(Collectors.joining(" "));
     }
+    return this.clientName;
   }
-
 }

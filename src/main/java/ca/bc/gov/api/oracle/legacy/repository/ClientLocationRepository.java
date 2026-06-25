@@ -9,18 +9,16 @@ import org.springframework.data.repository.reactive.ReactiveSortingRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface ClientLocationRepository extends
-    ReactiveCrudRepository<ClientLocationEntity, ClientLocationIdEntity>,
-    ReactiveSortingRepository<ClientLocationEntity, ClientLocationIdEntity>,
-    ReactiveQueryByExampleExecutor<ClientLocationEntity> {
+/** Reactive repository for client location persistence operations. */
+public interface ClientLocationRepository
+    extends ReactiveCrudRepository<ClientLocationEntity, ClientLocationIdEntity>,
+        ReactiveSortingRepository<ClientLocationEntity, ClientLocationIdEntity>,
+        ReactiveQueryByExampleExecutor<ClientLocationEntity> {
 
   Flux<ClientLocationEntity> findByClientNumber(String clientNumber, Pageable page);
 
   Mono<ClientLocationEntity> findByClientNumberAndLocationCode(
-      String clientNumber,
-      String locationCode
-  );
+      String clientNumber, String locationCode);
 
   Mono<Long> countByClientNumber(String clientNumber);
-
 }

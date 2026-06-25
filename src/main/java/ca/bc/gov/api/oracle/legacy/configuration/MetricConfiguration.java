@@ -11,12 +11,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * MetricConfiguration sets up custom metrics and configuration for the application's meter
- * registry using Micrometer.
+ * Sets up custom metrics and configuration for the application's meter registry.
  *
- * It applies common tags to all metrics, configures percentile distribution statistics, 
- * and manages Prometheus meter registry configuration. This class also provides a 
- * {@link TimedAspect} bean to support @Timed annotations for methods.
+ * <p>It applies common tags to all metrics, configures percentile distribution statistics,
+ * and manages Prometheus meter registry configuration. This class also provides a
+ * {@link TimedAspect} bean to support {@code @Timed} annotations for methods.
  */
 @Configuration
 public class MetricConfiguration {
@@ -31,10 +30,10 @@ public class MetricConfiguration {
   private String appZone;
 
   /**
-   * Creates a {@link TimedAspect} bean for timing method executions using the @Timed annotation.
+   * Creates a {@link TimedAspect} bean for timing method executions.
    *
-   * @param registry the {@link MeterRegistry} to register the aspect with.
-   * @return a {@link TimedAspect} configured to record method execution times.
+   * @param registry the {@link MeterRegistry} to register the aspect with
+   * @return a {@link TimedAspect} configured to record method execution times
    */
   @Bean
   public TimedAspect timedAspect(MeterRegistry registry) {
@@ -42,10 +41,9 @@ public class MetricConfiguration {
   }
 
   /**
-   * Adds common tags like version, app name, and zone to all metrics registered with the 
-   * {@link MeterRegistry}.
+   * Adds common tags like version, app name, and zone to all registered metrics.
    *
-   * @return a {@link MeterRegistryCustomizer} to configure common tags and filters for metrics.
+   * @return a {@link MeterRegistryCustomizer} to configure common tags and filters for metrics
    */
   @Bean
   public MeterRegistryCustomizer<MeterRegistry> metricsCommonTags() {
@@ -53,8 +51,7 @@ public class MetricConfiguration {
         .commonTags(
             "version", appVersion,
             "app", appName,
-            "zone", appZone
-        )
+            "zone", appZone)
         .meterFilter(ignoreTag())
         .meterFilter(distribution());
   }
@@ -70,28 +67,26 @@ public class MetricConfiguration {
   }
 
   /**
-   * Creates a meter filter that ignores the "type" tag in all registered metrics.
+   * Creates a meter filter that ignores the {@code type} tag in all registered metrics.
    *
-   * @return a {@link MeterFilter} that ignores the "type" tag.
+   * @return a {@link MeterFilter} that ignores the {@code type} tag
    */
   public MeterFilter ignoreTag() {
     return MeterFilter.ignoreTags("type");
   }
 
   /**
-   * Configures a meter filter to enable percentile histograms and track percentiles (0.5, 0.95, 
-   * 0.99) for distribution statistics.
+   * Configures a meter filter to track percentile histograms and percentiles.
    *
-   * @return a {@link MeterFilter} that configures percentile statistics and enables histograms.
+   * @return a {@link MeterFilter} that configures percentile statistics and histograms
    */
   public MeterFilter distribution() {
     return new MeterFilter() {
 
       @Override
-      public DistributionStatisticConfig configure(Meter.Id id,
-          DistributionStatisticConfig config) {
-        return DistributionStatisticConfig
-            .builder()
+      public DistributionStatisticConfig configure(
+          Meter.Id id, DistributionStatisticConfig config) {
+        return DistributionStatisticConfig.builder()
             .percentiles(0.5, 0.95, 0.99)
             .percentilesHistogram(true)
             .build()
@@ -99,5 +94,4 @@ public class MetricConfiguration {
       }
     };
   }
-
 }

@@ -13,10 +13,12 @@ import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+/** Reactive repository for forest client persistence operations. */
 @Repository
-public interface ForestClientRepository extends ReactiveCrudRepository<ForestClientEntity, String>,
-    ReactiveQueryByExampleExecutor<ForestClientEntity>,
-    ReactiveSortingRepository<ForestClientEntity, String> {
+public interface ForestClientRepository
+    extends ReactiveCrudRepository<ForestClientEntity, String>,
+        ReactiveQueryByExampleExecutor<ForestClientEntity>,
+        ReactiveSortingRepository<ForestClientEntity, String> {
 
   Flux<ForestClientEntity> findByClientTypeCodeNot(String clientTypeCode, Pageable pageable);
 
@@ -27,12 +29,11 @@ public interface ForestClientRepository extends ReactiveCrudRepository<ForestCli
   Flux<ForestClientEntity> findByClientNumberContainingOrClientNameContaining(
       String clientNumber, String clientName, Pageable pageable);
 
-  Mono<Long> countByClientNumberContainingOrClientNameContaining(String clientNumber,
-      String clientName);
-
+  Mono<Long> countByClientNumberContainingOrClientNameContaining(
+      String clientNumber, String clientName);
 
   @Query(value = QueryConstants.SEARCH_NUMBER_NAME_ACRONYM)
-	Flux<SearchNumberScoreProjection> searchNumberByNameAcronymNumber(
+  Flux<SearchNumberScoreProjection> searchNumberByNameAcronymNumber(
       String clientName,
       String acronym,
       String clientNumber,
@@ -44,6 +45,5 @@ public interface ForestClientRepository extends ReactiveCrudRepository<ForestCli
       List<String> clientNumbers,
       String clientName,
       long offset,
-      int size
-  );
+      int size);
 }

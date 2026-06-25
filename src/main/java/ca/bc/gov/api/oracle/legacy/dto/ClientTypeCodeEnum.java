@@ -2,6 +2,7 @@ package ca.bc.gov.api.oracle.legacy.dto;
 
 import lombok.Getter;
 
+/** Enumerates supported client type codes. */
 @Getter
 public enum ClientTypeCodeEnum {
   A("Association"),
