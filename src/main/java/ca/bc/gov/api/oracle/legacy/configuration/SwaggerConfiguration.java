@@ -27,8 +27,7 @@ public class SwaggerConfiguration {
                     .readOperations()
                     .forEach(operation ->
                         operation
-                            .getParameters()
-                            .add(new HeaderParameter()
+                            .addParametersItem(new HeaderParameter()
                                 .name("X-API-KEY")
                                 .description("API Key used for authentication")
                                 .required(true)
