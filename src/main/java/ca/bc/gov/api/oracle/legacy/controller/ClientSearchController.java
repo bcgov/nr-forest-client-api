@@ -65,7 +65,7 @@ public class ClientSearchController {
               })
       })
   public Flux<ClientPublicViewDto> searchClients(
-      @Parameter(description = "The one index page number, defaults to 0", example = "0")
+      @Parameter(description = "The zero-based page number, defaults to 0", example = "0")
       @RequestParam(value = "page", required = false, defaultValue = "0")
       Integer page,
       @Parameter(

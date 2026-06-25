@@ -97,7 +97,7 @@ public class ClientController {
   /**
    * Searches clients by client number or client name.
    *
-   * @param page              The one index page number, defaults to 0.
+   * @param page              The zero-based page number, defaults to 0.
    * @param size              The amount of data to be returned per page, defaults to 10.
    * @param clientNumberOrName The client number or name to look for.
    * @param serverResponse    The ServerHttpResponse instance.
@@ -137,7 +137,7 @@ public class ClientController {
       }
   )
   public Flux<ClientViewDto> findByClientNumberOrName(
-      @Parameter(description = "The one index page number, defaults to 0", example = "0")
+      @Parameter(description = "The zero-based page number, defaults to 0", example = "0")
       @RequestParam(value = "page", required = false, defaultValue = "0")
       Integer page,
 
@@ -162,7 +162,7 @@ public class ClientController {
   /**
    * Searches for all non-individual clients.
    *
-   * @param page          The one index page number, defaults to 0.
+   * @param page          The zero-based page number, defaults to 0.
    * @param size          The amount of data to be returned per page, defaults to 10.
    * @param sortedColumn  Column name to sort by, defaults to clientName.
    * @param serverResponse The ServerHttpResponse instance.
@@ -194,7 +194,7 @@ public class ClientController {
       }
   )
   public Flux<ClientPublicViewDto> findAllNonIndividuals(
-      @Parameter(description = "The one index page number, defaults to 0", example = "0")
+      @Parameter(description = "The zero-based page number, defaults to 0", example = "0")
       @RequestParam(value = "page", required = false, defaultValue = "0")
       Integer page,
 
@@ -219,7 +219,7 @@ public class ClientController {
   /**
    * Searches a client by its name (including first, middle, and last) and client type.
    *
-   * @param page              The one index page number, defaults to 0.
+   * @param page              The zero-based page number, defaults to 0.
    * @param size              The amount of data to be returned per page, defaults to 10.
    * @param clientName        The name of the entity or individual's last name.
    * @param clientFirstName   The client's first name.
@@ -265,7 +265,7 @@ public class ClientController {
       }
   )
   public Flux<ClientPublicViewDto> findByNames(
-      @Parameter(description = "The one index page number, defaults to 0", example = "0")
+      @Parameter(description = "The zero-based page number, defaults to 0", example = "0")
       @RequestParam(value = "page", required = false, defaultValue = "0")
       Integer page,
 
@@ -394,7 +394,7 @@ public class ClientController {
   /**
    * Lists client locations based on client number.
    *
-   * @param page             The one index page number, defaults to 0.
+   * @param page             The zero-based page number, defaults to 0.
    * @param size             The amount of data to be returned per page, defaults to 10.
    * @param clientNumber     ID of the client to filter by.
    * @param serverResponse   The ServerHttpResponse instance.
@@ -426,7 +426,7 @@ public class ClientController {
       }
   )
   public Flux<ClientLocationDto> listClientLocations(
-      @Parameter(description = "The one index page number, defaults to 0", example = "0")
+      @Parameter(description = "The zero-based page number, defaults to 0", example = "0")
       @RequestParam(value = "page", required = false, defaultValue = "0")
       Integer page,
 
