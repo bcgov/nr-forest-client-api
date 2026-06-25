@@ -24,6 +24,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
+/** Handles uncaught reactive web errors and renders JSON error responses. */
 @RestControllerAdvice
 @ControllerAdvice
 @Slf4j
@@ -31,6 +32,14 @@ import reactor.core.publisher.Mono;
 @Order(-2)
 public class GlobalErrorController extends AbstractErrorWebExceptionHandler {
 
+  /**
+   * Creates the global error controller.
+   *
+   * @param errorAttributes the reactive error attributes
+   * @param webProperties the web configuration properties
+   * @param applicationContext the Spring application context
+   * @param configurer the codec configurer used to write responses
+   */
   public GlobalErrorController(
       ErrorAttributes errorAttributes,
       WebProperties webProperties,
@@ -48,7 +57,6 @@ public class GlobalErrorController extends AbstractErrorWebExceptionHandler {
 
   private Mono<ServerResponse> renderErrorResponse(
       ServerRequest request, ErrorAttributes errorAttributes) {
-
     Throwable exception = errorAttributes.getError(request).fillInStackTrace();
     String errorMessage = exception.getMessage();
     HttpStatusCode errorStatus = HttpStatus.INTERNAL_SERVER_ERROR;

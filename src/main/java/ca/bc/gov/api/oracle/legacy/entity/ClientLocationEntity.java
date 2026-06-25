@@ -11,6 +11,7 @@ import lombok.With;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+/** Persistence model for client locations. */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,7 +22,7 @@ public class ClientLocationEntity {
 
   @Column("CLIENT_NUMBER")
   private String clientNumber;
-  
+
   @Column("CLIENT_LOCN_CODE")
   private String locationCode;
 
@@ -71,7 +72,7 @@ public class ClientLocationEntity {
   private String expired;
 
   @Column("RETURNED_MAIL_DATE")
-  LocalDateTime returnedMailDate;
+  private LocalDateTime returnedMailDate;
 
   @Column("TRUST_LOCATION_IND")
   private String trusted;

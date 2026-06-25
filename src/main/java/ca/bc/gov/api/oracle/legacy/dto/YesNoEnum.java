@@ -3,6 +3,7 @@ package ca.bc.gov.api.oracle.legacy.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+/** Represents a yes-or-no flag stored as {@code Y} or {@code N}. */
 public enum YesNoEnum {
   YES("Y"),
   NO("N");
@@ -18,11 +19,17 @@ public enum YesNoEnum {
     return this.value;
   }
 
+  /**
+   * Creates an enum value from the serialized representation.
+   *
+   * @param value the serialized value
+   * @return the matching enum constant
+   */
   @JsonCreator
   public static YesNoEnum fromValue(String value) {
-    for (YesNoEnum c : values()) {
-      if (c.value().equalsIgnoreCase(value)) {
-        return c;
+    for (YesNoEnum candidate : values()) {
+      if (candidate.value().equalsIgnoreCase(value)) {
+        return candidate;
       }
     }
     throw new IllegalArgumentException(value);

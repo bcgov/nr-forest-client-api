@@ -22,23 +22,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
-/**
- * This is the main controller for the Client Search API. It is a REST controller that handles
- * requests to the /api/clients/search endpoint. It uses the ClientSearchService to perform
- * operations related to client search. It is annotated with @RestController, indicating that it is
- * a controller where every method returns a domain object instead of a view. It is also annotated
- * with @Slf4j, which provides a logger for the class to log information. The @Tag annotation
- * provides additional metadata for the API documentation. The @RequestMapping annotation maps
- * requests to the /api/clients/search endpoint to this controller. The @RequiredArgsConstructor
- * annotation generates a constructor with 1 parameter for each field that requires special
- * handling.
- */
+/** Handles client search endpoints. */
 @RestController
 @Slf4j
-@Tag(
-    name = "Client Search API",
-    description = "Deals with search on client data"
-)
+@Tag(name = "Client Search API", description = "Deals with search on client data")
 @RequestMapping(value = "/api/clients/search", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class ClientSearchController {
@@ -46,20 +33,14 @@ public class ClientSearchController {
   private final ClientSearchService clientSearchService;
 
   /**
-   * This is a GET mapping for the searchClients endpoint. It searches for clients based on the
-   * provided client IDs, page number, and page size. It first logs the IDs of the clients to be
-   * searched. Then, it calls the searchClientByQuery method of the clientSearchService to retrieve
-   * the clients. The searchClientByQuery method takes in a search criteria created by the
-   * searchById method of the clientSearchService, the page number, and the page size. It logs the
-   * client number of each retrieved client. It also sets the X_TOTAL_COUNT header of the server
-   * response to the count of the retrieved clients. Finally, it returns a Flux stream of
-   * ClientPublicViewDto objects.
+   * Searches for clients based on client ids and an optional name filter.
    *
-   * @param page           The one index page number, defaults to 0.
-   * @param size           The amount of data to be returned per page, defaults to 10.
-   * @param id             The IDs of the clients to be searched.
-   * @param serverResponse The server response to which the X_TOTAL_COUNT header is to be set.
-   * @return A Flux stream of ClientPublicViewDto objects.
+   * @param page the zero-based page number, defaults to 0
+   * @param size the number of results per page, defaults to 10
+   * @param id the client ids to search for
+   * @param name the optional name filter
+   * @param serverResponse the HTTP response used to set the total-count header
+   * @return a stream of matching clients
    */
   @GetMapping
   @Operation(
@@ -75,63 +56,52 @@ public class ClientSearchController {
                   array = @ArraySchema(
                       schema = @Schema(
                           name = "ClientView",
-                          implementation = ClientPublicViewDto.class
-                      )
-                  )
+                          implementation = ClientPublicViewDto.class))
               ),
               headers = {
                   @Header(
                       name = ApplicationConstants.X_TOTAL_COUNT,
-                      description = "Total number of records found"
-                  )
-              }
-          )
-      }
-  )
+                      description = "Total number of records found")
+              })
+      })
   public Flux<ClientPublicViewDto> searchClients(
       @Parameter(description = "The one index page number, defaults to 0", example = "0")
       @RequestParam(value = "page", required = false, defaultValue = "0")
       Integer page,
-
-      @Parameter(description = "The amount of data to be returned per page, defaults to 10",
+      @Parameter(
+          description = "The amount of data to be returned per page, defaults to 10",
           example = "10")
       @RequestParam(value = "size", required = false, defaultValue = "10")
       Integer size,
-
       @Parameter(description = "Id of the client you're searching", example = "00000001")
       @RequestParam(value = "id")
       List<String> id,
-
       @Parameter(description = "Name of the client you want to filter by", example = "BOND")
       @RequestParam(value = "name", required = false)
       String name,
-
-      ServerHttpResponse serverResponse
-  ) {
+      ServerHttpResponse serverResponse) {
     log.info("Searching for clients with ids {}", id);
-    return
-        clientSearchService
-            .searchByIdsAndName(id, name,page,size)
+    return clientSearchService
+        .searchByIdsAndName(id, name, page, size)
         .doOnNext(client -> log.info("Found client with id {}", client.getClientNumber()))
-        .doOnNext(dto -> serverResponse.getHeaders()
-            .putIfAbsent(ApplicationConstants.X_TOTAL_COUNT, List.of(dto.getCount().toString())));
+        .doOnNext(dto ->
+            serverResponse
+                .getHeaders()
+                .putIfAbsent(
+                    ApplicationConstants.X_TOTAL_COUNT,
+                    List.of(dto.getCount().toString())));
   }
 
   /**
-   * Searches for clients based on the provided parameters using a fuzzy match algorithm.
-   * The search is case-insensitive and has a threshold cutout of 0.8 for the fuzzy match.
+   * Searches for clients using fuzzy matching on name, acronym, and number values.
    *
-   * @param page the one-based page number to retrieve, defaults to 0 if not provided.
-   * @param size the number of results per page, defaults to 10 if not provided.
-   * @param name the name of the client to search for (optional).
-   * @param acronym the acronym of the client to search for (optional).
-   * @param number the unique number of the client to search for (optional).
-   * @param serverResponse the {@link ServerHttpResponse} to include response headers.
-   * @return a reactive stream of {@link ClientPublicViewDto} objects representing matching
-   *         clients.
-   *
-   * @apiNote This method provides a paginated, fuzzy search for client details. Results
-   *          include a total record count in the response headers under {@code X-Total-Count}.
+   * @param page the zero-based page number, defaults to 0
+   * @param size the number of results per page, defaults to 10
+   * @param name the optional client name filter
+   * @param acronym the optional client acronym filter
+   * @param number the optional client number filter
+   * @param serverResponse the HTTP response used to set the total-count header
+   * @return a stream of matching clients
    */
   @GetMapping("/by")
   @Operation(
@@ -150,59 +120,35 @@ public class ClientSearchController {
                   array = @ArraySchema(
                       schema = @Schema(
                           name = "ClientView",
-                          implementation = ClientPublicViewDto.class
-                      )
-                  )
+                          implementation = ClientPublicViewDto.class))
               ),
               headers = {
                   @Header(
                       name = ApplicationConstants.X_TOTAL_COUNT,
-                      description = "Total number of records found"
-                  )
-              }
-          )
-      }
-  )
+                      description = "Total number of records found")
+              })
+      })
   public Flux<ClientPublicViewDto> searchByAcronymNameNumber(
-      @RequestParam(value = "page", required = false, defaultValue = "0")
-                    Integer page,
-      @RequestParam(value = "size", required = false, defaultValue = "10")
-                    Integer size,
-      @RequestParam(value = "name", required = false)
-                    String name,
-      @RequestParam(value = "acronym", required = false)
-                    String acronym,
-      @RequestParam(value = "number", required = false)
-                    String number,
-      ServerHttpResponse serverResponse
-  ) {
-
+      @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+      @RequestParam(value = "size", required = false, defaultValue = "10") Integer size,
+      @RequestParam(value = "name", required = false) String name,
+      @RequestParam(value = "acronym", required = false) String acronym,
+      @RequestParam(value = "number", required = false) String number,
+      ServerHttpResponse serverResponse) {
     log.info(
         "Searching for clients with name='{}', acronym='{}', number='{}'",
         name,
         acronym,
-        number
-    );
+        number);
 
     return clientSearchService
         .searchByAcronymNameNumber(name, acronym, number, page, size)
-        .flatMapMany(
-            criteria ->
-                clientSearchService.searchClientByQuery(criteria, page, size)
-        )
-        .doOnNext(
-            client ->
-                serverResponse
-                    .getHeaders()
-                    .putIfAbsent(
-                        ApplicationConstants.X_TOTAL_COUNT,
-                        List.of(
-                            client.getCount() != null
-                                ? client.getCount().toString()
-                                : "0"
-                        )
-                    )
-        );
+        .flatMapMany(criteria -> clientSearchService.searchClientByQuery(criteria, page, size))
+        .doOnNext(client ->
+            serverResponse
+                .getHeaders()
+                .putIfAbsent(
+                    ApplicationConstants.X_TOTAL_COUNT,
+                    List.of(client.getCount() != null ? client.getCount().toString() : "0")));
   }
-
 }

@@ -10,6 +10,7 @@ import lombok.ToString;
 import lombok.With;
 import lombok.experimental.SuperBuilder;
 
+/** Extends the public client view with descriptive code labels. */
 @Data
 @Getter(AccessLevel.PROTECTED)
 @With
@@ -21,5 +22,4 @@ import lombok.experimental.SuperBuilder;
 public class ClientViewDto extends ClientPublicViewDto {
   private String clientStatusCodeDescription;
   private String clientTypeCodeDescription;
-
 }
