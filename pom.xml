@@ -41,18 +41,18 @@
     
     <testcontainers.version>2.0.5</testcontainers.version>
     <oci.revision>${project.version}</oci.revision>
-    <logback.version>1.5.37</logback.version>
+    <logback.version>1.5.38</logback.version>
     <flyway.version>10.13.0</flyway.version>
     <oracle-driver.version>23.26.2.0.0</oracle-driver.version>
-    <selenium.version>4.45.0</selenium.version>
+    <selenium.version>4.46.0</selenium.version>
     <mockito.version>5.23.0</mockito.version>
     <jooq.version>3.21.6</jooq.version>
-    <org.junit.version>6.1.1</org.junit.version>
+    <org.junit.version>6.1.2</org.junit.version>
     <junit.version>4.13.2</junit.version>
     <netty.version>4.1.132.Final</netty.version>
     <jackson.version>2.21.1</jackson.version>
     <jackson-bom.version>2.21.1</jackson-bom.version>
-    <opentelemetry-bom.version>1.63.0</opentelemetry-bom.version>
+    <opentelemetry-bom.version>1.64.0</opentelemetry-bom.version>
     
     <micrometer.version>1.17.0</micrometer.version>
     <micrometer-tracing.version>1.7.0</micrometer-tracing.version>
