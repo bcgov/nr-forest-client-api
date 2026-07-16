@@ -47,7 +47,7 @@ public class ForestClientEntity {
   @Column("CLIENT_ID_TYPE_CODE")
   private String clientIdTypeCode;
 
-  @Column("CLIENT_IDENTIFICATION ")
+  @Column("CLIENT_IDENTIFICATION")
   private String clientIdentification;
 
   @Column("REGISTRY_COMPANY_TYPE_CODE")
