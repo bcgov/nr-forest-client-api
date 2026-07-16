@@ -13,7 +13,7 @@ spring:
     username: ${ca.bc.gov.nrs.oracle.username}
     password: ${ca.bc.gov.nrs.oracle.password}
     pool:
-      enabled: true
+      enabled: false
       initialSize: 1
       minIdle: 1
       maxSize: 3
