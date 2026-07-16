@@ -27,8 +27,8 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <java.version>25</java.version>
-    <jdk.version>25</jdk.version>
+    <java.version>22</java.version>
+    <jdk.version>22</jdk.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <skip.integration.tests>true</skip.integration.tests>
