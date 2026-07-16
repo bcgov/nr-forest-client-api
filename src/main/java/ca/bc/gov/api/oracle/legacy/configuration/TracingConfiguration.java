@@ -11,6 +11,7 @@ import io.micrometer.tracing.annotation.NewSpanParser;
 import io.micrometer.tracing.annotation.SpanAspect;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -38,6 +39,7 @@ public class TracingConfiguration {
    * @return the configured span aspect
    */
   @Bean
+  @ConditionalOnProperty(name = "management.tracing.enabled", havingValue = "true", matchIfMissing = true)
   SpanAspect spanAspect(MethodInvocationProcessor methodInvocationProcessor) {
     return new SpanAspect(methodInvocationProcessor);
   }
@@ -51,6 +53,7 @@ public class TracingConfiguration {
    * @return the configured method invocation processor
    */
   @Bean
+  @ConditionalOnProperty(name = "management.tracing.enabled", havingValue = "true", matchIfMissing = true)
   MethodInvocationProcessor methodInvocationProcessor(
       NewSpanParser newSpanParser,
       Tracer tracer,
@@ -68,6 +71,7 @@ public class TracingConfiguration {
    * @return the default new span parser
    */
   @Bean
+  @ConditionalOnProperty(name = "management.tracing.enabled", havingValue = "true", matchIfMissing = true)
   NewSpanParser newSpanParser() {
     return new DefaultNewSpanParser();
   }

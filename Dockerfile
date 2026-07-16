@@ -1,5 +1,5 @@
 ### Builder
-FROM ghcr.io/graalvm/native-image-community:25 AS build
+FROM ghcr.io/graalvm/native-image:ol9-java17-22.3.3@sha256:4aeee052a80237fa8b32c074d2b7b7adc92271fc4bda724f0b1c2ea0f2f884cb AS build
 
 # App version
 ARG APP_VERSION=0.0.1
@@ -23,7 +23,7 @@ RUN ./mvnw -Pnative native:compile
 
 
 ### Deployer
-FROM gcr.io/distroless/java-base:nonroot AS deploy
+FROM gcr.io/distroless/java-base:nonroot@sha256:7ee338bbfa9a36fb94715928dcae2043b8ba5689eaa1b6585104a21b400ebb43 AS deploy
 ARG PORT=3001
 
 # Copy
