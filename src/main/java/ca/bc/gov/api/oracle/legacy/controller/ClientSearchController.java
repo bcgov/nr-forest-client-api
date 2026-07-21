@@ -84,12 +84,17 @@ public class ClientSearchController {
     return clientSearchService
         .searchByIdsAndName(id, name, page, size)
         .doOnNext(client -> log.info("Found client with id {}", client.getClientNumber()))
-        .doOnNext(dto ->
+        .switchOnFirst((signal, flux) -> {
+          if (signal.hasValue()) {
+            ClientPublicViewDto first = signal.get();
             serverResponse
                 .getHeaders()
                 .putIfAbsent(
                     ApplicationConstants.X_TOTAL_COUNT,
-                    List.of(dto.getCount().toString())));
+                    List.of(first.getCount() != null ? first.getCount().toString() : "0"));
+          }
+          return flux;
+        });
   }
 
   /**
@@ -144,11 +149,16 @@ public class ClientSearchController {
     return clientSearchService
         .searchByAcronymNameNumber(name, acronym, number, page, size)
         .flatMapMany(criteria -> clientSearchService.searchClientByQuery(criteria, page, size))
-        .doOnNext(client ->
+        .switchOnFirst((signal, flux) -> {
+          if (signal.hasValue()) {
+            ClientPublicViewDto first = signal.get();
             serverResponse
                 .getHeaders()
                 .putIfAbsent(
                     ApplicationConstants.X_TOTAL_COUNT,
-                    List.of(client.getCount() != null ? client.getCount().toString() : "0")));
+                    List.of(first.getCount() != null ? first.getCount().toString() : "0"));
+          }
+          return flux;
+        });
   }
 }

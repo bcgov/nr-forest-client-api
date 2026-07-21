@@ -28,20 +28,6 @@ spring:
       maxIdleTime: 45000
       maxCreateConnectionTime: 90000
       poolName: ForestClientApiPool
-  http:
-    encoding:
-      charset: UTF-8
-      enabled: true
-      force: true
-  sleuth:
-    propagation-keys:
-      - X-TRACE-ID
-    baggage-keys:
-      - X-TRACE-ID
-    log:
-      slf4j:
-        whitelisted-mdc-keys:
-          - X-TRACE-ID
 
 management:
   enable-native-support: true
@@ -58,7 +44,7 @@ management:
         prometheus: metrics
       base-path: /
       exposure:
-        include: health,info,metrics,otlp,tracing,httptrace,prometheus
+        include: health,info,metrics,otlp,tracing,httpexchanges,prometheus
   httpexchanges:
     recording:
       include: principal,request-headers,response-headers,cookie-headers,time-taken,authorization-header,remote-address,session-id
@@ -122,15 +108,6 @@ spring:
   config:
     activate:
       on-profile: container
-  sleuth:
-    propagation-keys:
-      - X-TRACE-ID
-    baggage-keys:
-      - X-TRACE-ID
-    log:
-      slf4j:
-        whitelisted-mdc-keys:
-          - X-TRACE-ID
 
 logging:
   pattern:

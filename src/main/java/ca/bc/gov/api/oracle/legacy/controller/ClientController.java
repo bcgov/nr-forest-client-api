@@ -155,8 +155,15 @@ public class ClientController {
   ) {
     return clientService
         .findByClientNumberOrName(page, size, clientNumberOrName)
-        .doOnNext(dto -> serverResponse.getHeaders()
-            .putIfAbsent(ApplicationConstants.X_TOTAL_COUNT, List.of(dto.getCount().toString())));
+        .switchOnFirst((signal, flux) -> {
+          if (signal.hasValue()) {
+            ClientViewDto first = signal.get();
+            serverResponse.getHeaders()
+                .putIfAbsent(ApplicationConstants.X_TOTAL_COUNT,
+                    List.of(first.getCount().toString()));
+          }
+          return flux;
+        });
   }
 
   /**
@@ -212,8 +219,15 @@ public class ClientController {
   ) {
     return clientService
         .findAllNonIndividualClients(page, size, sortedColumn)
-        .doOnNext(dto -> serverResponse.getHeaders()
-            .putIfAbsent(ApplicationConstants.X_TOTAL_COUNT, List.of(dto.getCount().toString())));
+        .switchOnFirst((signal, flux) -> {
+          if (signal.hasValue()) {
+            ClientPublicViewDto first = signal.get();
+            serverResponse.getHeaders()
+                .putIfAbsent(ApplicationConstants.X_TOTAL_COUNT,
+                    List.of(first.getCount().toString()));
+          }
+          return flux;
+        });
   }
 
   /**
@@ -322,8 +336,15 @@ public class ClientController {
             page,
             size
         )
-        .doOnNext(dto -> serverResponse.getHeaders()
-            .putIfAbsent(ApplicationConstants.X_TOTAL_COUNT, List.of(dto.getCount().toString())));
+        .switchOnFirst((signal, flux) -> {
+          if (signal.hasValue()) {
+            ClientPublicViewDto first = signal.get();
+            serverResponse.getHeaders()
+                .putIfAbsent(ApplicationConstants.X_TOTAL_COUNT,
+                    List.of(first.getCount().toString()));
+          }
+          return flux;
+        });
   }
 
   /**
@@ -387,8 +408,15 @@ public class ClientController {
   ) {
     return clientService
         .searchByAcronym(acronym)
-        .doOnNext(dto -> serverResponse.getHeaders()
-            .put(ApplicationConstants.X_TOTAL_COUNT, List.of(dto.getCount().toString())));
+        .switchOnFirst((signal, flux) -> {
+          if (signal.hasValue()) {
+            ClientPublicViewDto first = signal.get();
+            serverResponse.getHeaders()
+                .putIfAbsent(ApplicationConstants.X_TOTAL_COUNT,
+                    List.of(first.getCount().toString()));
+          }
+          return flux;
+        });
   }
 
   /**

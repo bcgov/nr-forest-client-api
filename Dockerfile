@@ -1,5 +1,11 @@
 ### Builder
-FROM ghcr.io/graalvm/native-image:ol9-java17-22.3.3@sha256:4aeee052a80237fa8b32c074d2b7b7adc92271fc4bda724f0b1c2ea0f2f884cb AS build
+FROM ghcr.io/graalvm/native-image-community:25 AS build
+
+# RELAX SECURITY: enable legacy TLS versions/algorithms (e.g. TLS 1.0/1.1, SHA1, DH/RSA keys < 2048)
+# so the native image can complete a handshake with the legacy Oracle DB's old cert.
+# GraalVM native-image bakes the JDK security providers into the binary at build time, so this
+# must be patched here (pre-compile) rather than via a runtime java.security override.
+RUN sed -i '/^jdk.tls.disabledAlgorithms=/,/[^\\]$/c\jdk.tls.disabledAlgorithms=SSLv3' "$JAVA_HOME/conf/security/java.security"
 
 # App version
 ARG APP_VERSION=0.0.1
