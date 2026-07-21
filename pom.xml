@@ -44,12 +44,12 @@
     <oci.revision>${project.version}</oci.revision>
     <flyway.version>12.4.0</flyway.version>
     <oracle-driver.version>23.26.2.0.0</oracle-driver.version>
-    <selenium.version>4.43.0</selenium.version>
+    <selenium.version>4.46.0</selenium.version>
     <mockito.version>5.23.0</mockito.version>
     <jooq.version>3.21.6</jooq.version>
     <org.junit.version>6.1.2</org.junit.version>
     <junit.version>4.13.2</junit.version>
-    <opentelemetry-bom.version>1.62.0</opentelemetry-bom.version>
+    <opentelemetry-bom.version>1.64.0</opentelemetry-bom.version>
     
     <micrometer.version>1.17.0</micrometer.version>
     <micrometer-tracing.version>1.7.0</micrometer-tracing.version>
@@ -112,7 +112,7 @@
     <dependency>
       <groupId>org.springdoc</groupId>
       <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
-      <version>3.0.2</version>
+      <version>3.0.3</version>
     </dependency>
 
     <dependency>
