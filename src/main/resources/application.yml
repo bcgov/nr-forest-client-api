@@ -62,10 +62,10 @@ management:
           - X-TRACE-ID
     sampling:
       probability: 0.75
-  zipkin:
+  otlp:
     metrics:
       export:
-        enabled: true
+        enabled: false
 info:
   app:
     name: ${spring.application.name}
