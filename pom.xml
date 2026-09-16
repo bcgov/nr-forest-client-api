@@ -28,9 +28,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>17</java.version>
-    <jdk.version>17</jdk.version>
-    <maven.compiler.source>${java.version}</maven.compiler.source>
-    <maven.compiler.target>${java.version}</maven.compiler.target>
     <maven.compiler.proc>full</maven.compiler.proc>
     <skip.integration.tests>true</skip.integration.tests>
     <skip.unit.tests>false</skip.unit.tests>
@@ -39,19 +36,16 @@
     <jacoco.output.data>${project.build.directory}/coverage-reports</jacoco.output.data>
     <timestamp>${maven.build.timestamp}</timestamp>
     <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
-    
-    <testcontainers.version>2.0.5</testcontainers.version>
-    <oci.revision>${project.version}</oci.revision>
+
     <flyway.version>12.4.0</flyway.version>
-    <oracle-driver.version>23.26.3.0.0</oracle-driver.version>
-    <mockito.version>5.23.0</mockito.version>
-    <jooq.version>3.21.8</jooq.version>
-    <org.junit.version>6.1.3</org.junit.version>
-    <junit.version>4.13.2</junit.version>
-    <opentelemetry-bom.version>1.66.0</opentelemetry-bom.version>
-    
     <micrometer.version>1.17.1</micrometer.version>
     <micrometer-tracing.version>1.7.1</micrometer-tracing.version>
+    <mockito.version>5.23.0</mockito.version>
+    <opentelemetry-bom.version>1.66.0</opentelemetry-bom.version>
+    <oracle-driver.version>23.26.3.0.0</oracle-driver.version>
+    <org.junit.version>6.1.3</org.junit.version>
+    <springdoc.version>3.1.1</springdoc.version>
+    <testcontainers.version>2.0.5</testcontainers.version>
 
     <sonar.organization>bcgov-sonarcloud</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -64,7 +58,7 @@
       **/entity/**,
       **/repository/**,
       **/*$*Builder*,
-      **/Application*
+      **/Application*,
       **/ApplicationConstants*
     </sonar.coverage.exclusions>
     <sonar.java.checkstyle.reportPaths>target/checkstyle-result.xml</sonar.java.checkstyle.reportPaths>
@@ -90,6 +84,7 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-configuration-processor</artifactId>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -111,7 +106,7 @@
     <dependency>
       <groupId>org.springdoc</groupId>
       <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
-      <version>3.1.1</version>
+      <version>${springdoc.version}</version>
     </dependency>
 
     <dependency>
@@ -126,7 +121,6 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      <version>3.20.0</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
@@ -136,13 +130,6 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-params</artifactId>
-      <version>${org.junit.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -167,12 +154,7 @@
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>testcontainers-oracle-xe</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>testcontainers-r2dbc</artifactId>
+      <artifactId>testcontainers</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -219,22 +201,9 @@
         <scope>import</scope>
       </dependency>
       <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>${junit.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-bom</artifactId>
         <version>${mockito.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jooq</groupId>
-        <artifactId>jooq-bom</artifactId>
-        <version>${jooq.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -276,7 +245,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>3.6.0</version>
         <executions>
           <execution>
             <id>integration-tests</id>
@@ -299,18 +267,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.6.0</version>
         <configuration>
           <argLine>@{argLine}</argLine>
           <skipTests>${skip.unit.tests}</skipTests>
           <excludes>
             <exclude>**/*IntegrationTest.java</exclude>
           </excludes>
-          <properties>
-            <configurationParameters>
-              cucumber.junit-platform.naming-strategy=long
-            </configurationParameters>
-          </properties>
         </configuration>
       </plugin>
 
@@ -327,7 +289,7 @@
             <exclude>**/entity/**</exclude>
             <exclude>**/repository/**</exclude>
             <exclude>**/*$*Builder*</exclude>
-            <exclude>**/BootApplication*</exclude>
+            <exclude>**/Application*</exclude>
           </excludes>
         </configuration>
         <executions>
@@ -427,7 +389,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.12.0</version>
         <configuration>
           <source>${java.version}</source>
           <doctitle>Javadoc Documentation for ${project.name} ${project.version}</doctitle>
@@ -448,8 +409,8 @@
         </configuration>
         <executions>
           <execution>
-            <id>validate</id>
-            <phase>validate</phase>
+            <id>verify</id>
+            <phase>verify</phase>
             <goals>
               <goal>check</goal>
             </goals>
@@ -460,10 +421,9 @@
       <plugin>
         <groupId>org.cyclonedx</groupId>
         <artifactId>cyclonedx-maven-plugin</artifactId>
-        <version>2.9.3</version>
         <executions>
           <execution>
-            <phase>validate</phase>
+            <phase>package</phase>
             <goals>
               <goal>makeAggregateBom</goal>
             </goals>
@@ -482,13 +442,8 @@
 
   <profiles>
     <profile>
-      <id>dev</id>
-    </profile>
-
-    <profile>
       <id>all-tests</id>
       <properties>
-        <build.profile.id>all-tests</build.profile.id>
         <skip.integration.tests>false</skip.integration.tests>
         <skip.unit.tests>false</skip.unit.tests>
         <jacoco.skip>false</jacoco.skip>
@@ -498,7 +453,6 @@
     <profile>
       <id>integration-test</id>
       <properties>
-        <build.profile.id>integration-test</build.profile.id>
         <skip.integration.tests>false</skip.integration.tests>
         <skip.unit.tests>true</skip.unit.tests>
       </properties>
@@ -524,7 +478,6 @@
     <profile>
       <id>native</id>
       <properties>
-        <build.profile.id>native</build.profile.id>
         <skip.integration.tests>true</skip.integration.tests>
         <skip.unit.tests>true</skip.unit.tests>
         <checkstyle.skip>true</checkstyle.skip>
