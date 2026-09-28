@@ -7,7 +7,7 @@ jobs:
   tests-java:
     name: Backend Tests
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: bcgov/action-test-and-analyse-java@7c7309721cae054b3e837c723afa4efb4b1a256d # v1.1.0
         name: Backend Coverage

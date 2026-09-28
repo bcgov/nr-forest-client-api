@@ -23,7 +23,7 @@ jobs:
     name: Initialize
     outputs:
       pr: ${{ steps.pr.outputs.pr }}
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       # Get PR number for squash merges to main
       - id: pr
@@ -32,7 +32,7 @@ jobs:
   deploy-test:
     name: TEST Deployment
     needs: [init]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     outputs:
       tag: ${{ steps.changelog.outputs.tag }}
     permissions:
@@ -79,7 +79,7 @@ jobs:
   deploy-prod:
     name: PROD Deployment
     needs: [deploy-test, init]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     environment:
       name: prod
     steps:
