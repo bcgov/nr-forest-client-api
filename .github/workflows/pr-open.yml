@@ -13,7 +13,7 @@ concurrency:
 jobs:
   pr-validation:
     name: Pull Request Validation
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
       pull-requests: write
@@ -61,7 +61,7 @@ jobs:
 
   pr-greeting:
     name: Greeting
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       pull-requests: write
     steps:
@@ -81,7 +81,7 @@ jobs:
 
   build:
     name: Build
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     needs: [pr-validation]
     permissions:
       contents: read
@@ -99,7 +99,7 @@ jobs:
   deploy:
     name: Deploy
     needs: [build]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 15
     environment: dev
     steps:
@@ -136,7 +136,7 @@ jobs:
     name: Smoke Test
     needs: [deploy]
     environment: dev
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
       packages: write
