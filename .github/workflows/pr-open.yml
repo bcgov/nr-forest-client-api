@@ -104,7 +104,7 @@ jobs:
     environment: dev
     steps:
       - name: Deploys
-        uses: bcgov/action-deployer-openshift@bb9d143f4f03187239580c17c4b77da04cdb6e66 # v4.2.2
+        uses: bcgov/action-deployer-openshift@e2d60eb9cacceb89c3b97d8dcf0a2c460eea5eab # v4.2.3
         with:
           file: openshift.deploy.yml
           oc_namespace: ${{ secrets.OC_NAMESPACE }}
@@ -122,7 +122,7 @@ jobs:
             -p TAG=${{ github.event.number }}
 
       - name: Deploy dev route
-        uses: bcgov/action-deployer-openshift@bb9d143f4f03187239580c17c4b77da04cdb6e66 # v4.2.2
+        uses: bcgov/action-deployer-openshift@e2d60eb9cacceb89c3b97d8dcf0a2c460eea5eab # v4.2.3
         with:
           file: .github/openshift.dev.yml
           oc_namespace: ${{ secrets.OC_NAMESPACE }}
@@ -162,7 +162,7 @@ jobs:
           reporter: '{ "junit" : { "export" : "./postman/report.xml" } }'
 
       - name: Postman Smoke Test Report
-        uses: mikepenz/action-junit-report@a9170d5795813c01ab4901ffb045b52bab4ab09d # v6
+        uses: mikepenz/action-junit-report@b7b80d7ac5b1da46d6aaff9fb57ad50d8453bcb3 # v6
         if: always() # always run even if the previous step fails
         with:
           report_paths: "postman/report.xml"
