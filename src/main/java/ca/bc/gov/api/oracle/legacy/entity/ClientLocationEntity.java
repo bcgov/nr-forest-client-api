@@ -76,7 +76,4 @@ public class ClientLocationEntity {
 
   @Column("TRUST_LOCATION_IND")
   private String trusted;
-
-  @Column("CLI_LOCN_COMMENT")
-  private String comment;
 }

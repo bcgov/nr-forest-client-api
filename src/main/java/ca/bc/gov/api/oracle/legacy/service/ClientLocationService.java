@@ -64,8 +64,7 @@ public class ClientLocationService {
             YesNoEnum.fromValue(entity.getTrusted()),
             Optional.ofNullable(entity.getReturnedMailDate())
                 .map(LocalDateTime::toLocalDate)
-                .orElse(null),
-            entity.getComment()));
+                .orElse(null)));
   }
 
   /**
@@ -100,8 +99,7 @@ public class ClientLocationService {
             YesNoEnum.fromValue(entity.getTrusted()),
             Optional.ofNullable(entity.getReturnedMailDate())
                 .map(LocalDateTime::toLocalDate)
-                .orElse(null),
-            entity.getComment()))
+                .orElse(null)))
         .switchIfEmpty(Mono.error(new ClientNotFoundException("No client location found")));
   }
 }
