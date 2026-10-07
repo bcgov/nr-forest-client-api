@@ -88,10 +88,5 @@ public record ClientLocationDto(
         description = "The date when the mail was returned",
         example = "2012-05-14",
         nullable = true)
-    LocalDate returnedMailDate,
-    @Schema(
-        description = "An open field containing comments about the address",
-        example = "It is used just as a mail address, residential address",
-        nullable = true)
-    String comment) {
+    LocalDate returnedMailDate) {
 }
