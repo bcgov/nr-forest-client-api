@@ -13,23 +13,29 @@ public class QueryConstants {
         (
           CASE WHEN CLIENT_ACRONYM = :acronym THEN 800 ELSE 0 END +
           CASE WHEN CLIENT_NUMBER = :clientNumber THEN 1000 ELSE 0 END +
-          UTL_MATCH.JARO_WINKLER_SIMILARITY(
+          COALESCE(
+            UTL_MATCH.JARO_WINKLER_SIMILARITY(
+              TRIM(
+                COALESCE(LEGAL_FIRST_NAME || ' ', '')
+                  || COALESCE(LEGAL_MIDDLE_NAME || ' ', '')
+                  || COALESCE(CLIENT_NAME, '')
+              ),
+              :clientName),
+            0
+          )
+        ) AS score
+      FROM THE.FOREST_CLIENT
+      WHERE
+        (
+          :clientName IS NOT NULL
+          AND UTL_MATCH.JARO_WINKLER_SIMILARITY(
             TRIM(
               COALESCE(LEGAL_FIRST_NAME || ' ', '')
                 || COALESCE(LEGAL_MIDDLE_NAME || ' ', '')
                 || COALESCE(CLIENT_NAME, '')
             ),
-            :clientName)
-        ) AS score
-      FROM THE.FOREST_CLIENT
-      WHERE
-        UTL_MATCH.JARO_WINKLER_SIMILARITY(
-          TRIM(
-            COALESCE(LEGAL_FIRST_NAME || ' ', '')
-              || COALESCE(LEGAL_MIDDLE_NAME || ' ', '')
-              || COALESCE(CLIENT_NAME, '')
-          ),
-          :clientName) >= 80
+            :clientName) >= 80
+        )
         OR CLIENT_ACRONYM = :acronym
         OR CLIENT_NUMBER = :clientNumber
       ORDER BY score DESC

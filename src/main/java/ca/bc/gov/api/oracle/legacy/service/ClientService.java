@@ -92,11 +92,10 @@ public class ClientService {
                 .map(ClientMapper::mapEntityToClientViewDto)
                 .doOnNext(dto ->
                     dto.setClientTypeCodeDescription(
-                        ClientTypeCodeEnum.valueOf(dto.getClientTypeCode()).getDescription()))
+                        ClientTypeCodeEnum.getSafeDescription(dto.getClientTypeCode())))
                 .doOnNext(dto ->
                     dto.setClientStatusCodeDescription(
-                        ClientStatusCodeEnum.valueOf(dto.getClientStatusCode())
-                            .getDescription()))
+                        ClientStatusCodeEnum.getSafeDescription(dto.getClientStatusCode())))
                 .doOnNext(dto -> dto.setCount(count)));
   }
 

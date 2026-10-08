@@ -148,7 +148,7 @@ public class ClientSearchController {
 
     return clientSearchService
         .searchByAcronymNameNumber(name, acronym, number, page, size)
-        .flatMapMany(criteria -> clientSearchService.searchClientByQuery(criteria, page, size))
+        .flatMapMany(criteria -> clientSearchService.searchClientByQuery(criteria, 0, size))
         .switchOnFirst((signal, flux) -> {
           if (signal.hasValue()) {
             ClientPublicViewDto first = signal.get();

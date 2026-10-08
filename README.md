@@ -25,7 +25,7 @@ On the settings screen, add the checks as the following image:
 ## Configuring IntelliJ Run Configuration
 
 To set your profile on IntelliJ, just run the
-[application main class](src/main/java/ca/bc/gov/app/BootApplication.java)
+[application main class](src/main/java/ca/bc/gov/api/oracle/legacy/Application.java)
 and edit the configuration as the following image.
 
 [![intellij run configuration](docs/intellij-run-config.png)](docs/intellij-run-config.png)
@@ -43,7 +43,7 @@ import the xml file and keep **GoogleStyle** selected as the following image:
 ## Configuring Eclipse Run Configuration
 
 To set your profile on Eclipse, just run the
-[application main class](src/main/java/ca/bc/gov/app/LegacyApplication.java)
+[application main class](src/main/java/ca/bc/gov/api/oracle/legacy/Application.java)
 and edit the configuration as the following images.
 
 [![eclipse run configuration main](docs/eclipse-run-config1.png)](docs/eclipse-run-config1.png)

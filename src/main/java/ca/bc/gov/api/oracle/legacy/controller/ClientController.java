@@ -160,7 +160,7 @@ public class ClientController {
             ClientViewDto first = signal.get();
             serverResponse.getHeaders()
                 .putIfAbsent(ApplicationConstants.X_TOTAL_COUNT,
-                    List.of(first.getCount().toString()));
+                    List.of(first.getCount() != null ? first.getCount().toString() : "0"));
           }
           return flux;
         });
@@ -224,7 +224,7 @@ public class ClientController {
             ClientPublicViewDto first = signal.get();
             serverResponse.getHeaders()
                 .putIfAbsent(ApplicationConstants.X_TOTAL_COUNT,
-                    List.of(first.getCount().toString()));
+                    List.of(first.getCount() != null ? first.getCount().toString() : "0"));
           }
           return flux;
         });
@@ -341,7 +341,7 @@ public class ClientController {
             ClientPublicViewDto first = signal.get();
             serverResponse.getHeaders()
                 .putIfAbsent(ApplicationConstants.X_TOTAL_COUNT,
-                    List.of(first.getCount().toString()));
+                    List.of(first.getCount() != null ? first.getCount().toString() : "0"));
           }
           return flux;
         });
@@ -413,7 +413,7 @@ public class ClientController {
             ClientPublicViewDto first = signal.get();
             serverResponse.getHeaders()
                 .putIfAbsent(ApplicationConstants.X_TOTAL_COUNT,
-                    List.of(first.getCount().toString()));
+                    List.of(first.getCount() != null ? first.getCount().toString() : "0"));
           }
           return flux;
         });
