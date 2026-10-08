@@ -16,8 +16,7 @@ public enum ClientTypeCodeEnum {
   R("First Nation Group"),
   S("Society"),
   T("First Nation Tribal Council"),
-  U("Unregistered Company"),
-  Z("Sole Proprietorship");
+  U("Unregistered Company");
 
   private final String description;
 

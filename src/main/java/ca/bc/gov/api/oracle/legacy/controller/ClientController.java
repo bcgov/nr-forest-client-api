@@ -320,8 +320,7 @@ public class ClientController {
           R (First Nation Group),<br>
           S (Society),<br>
           T (First Nation Tribal Council),<br>
-          U (Unregistered Company),<br>
-          Z (Sole Proprietorship)""",
+          U (Unregistered Company)""",
           example = "I")
       @RequestParam(value = "clientTypeCodes", required = false)
       List<String> clientTypeCodes,

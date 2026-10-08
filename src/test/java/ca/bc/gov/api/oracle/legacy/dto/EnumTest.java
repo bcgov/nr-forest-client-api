@@ -27,8 +27,7 @@ class EnumTest {
       "R, First Nation Group",
       "S, Society",
       "T, First Nation Tribal Council",
-      "U, Unregistered Company",
-      "Z, Sole Proprietorship"
+      "U, Unregistered Company"
   })
   @DisplayName("Should resolve known ClientTypeCodeEnum")
   void shouldResolveClientTypeCodeEnum(String code, String expectedDescription) {
@@ -43,8 +42,10 @@ class EnumTest {
   void shouldHandleUnknownOrNullClientTypeCode() {
     assertNull(ClientTypeCodeEnum.fromCode(null));
     assertNull(ClientTypeCodeEnum.fromCode("UNKNOWN"));
+    assertNull(ClientTypeCodeEnum.fromCode("Z"));
     assertEquals("", ClientTypeCodeEnum.getSafeDescription(null));
     assertEquals("UNKNOWN", ClientTypeCodeEnum.getSafeDescription("UNKNOWN"));
+    assertEquals("Z", ClientTypeCodeEnum.getSafeDescription("Z"));
   }
 
   @ParameterizedTest
