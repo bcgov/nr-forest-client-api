@@ -121,7 +121,8 @@ class ClientSearchServiceTest {
         .count(1L)
         .build();
 
-    when(forestClientRepository.searchByIdsAndName(eq(List.of("00000001")), eq("WESTERN"), eq(0L), eq(10)))
+    when(forestClientRepository.searchByIdsAndName(
+        eq(List.of("00000001")), eq("WESTERN"), eq(0L), eq(10)))
         .thenReturn(Flux.just(countEntity));
 
     StepVerifier.create(service.searchByIdsAndName(List.of("00000001"), "western", 0, 10))

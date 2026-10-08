@@ -91,7 +91,8 @@ class ClientServiceTest {
         .clientTypeCode("C")
         .build();
 
-    when(forestClientRepository.countByClientNumberContainingOrClientNameContaining("PACIFIC", "PACIFIC"))
+    when(forestClientRepository
+        .countByClientNumberContainingOrClientNameContaining("PACIFIC", "PACIFIC"))
         .thenReturn(Mono.just(1L));
     when(forestClientRepository.findByClientNumberContainingOrClientNameContaining(
         eq("PACIFIC"), eq("PACIFIC"), any(Pageable.class)))
@@ -119,7 +120,8 @@ class ClientServiceTest {
 
     when(forestClientRepository.countByClientTypeCodeNot(ApplicationConstants.INDIVIDUAL))
         .thenReturn(Mono.just(5L));
-    when(forestClientRepository.findByClientTypeCodeNot(eq(ApplicationConstants.INDIVIDUAL), any(Pageable.class)))
+    when(forestClientRepository.findByClientTypeCodeNot(
+        eq(ApplicationConstants.INDIVIDUAL), any(Pageable.class)))
         .thenReturn(Flux.just(entity));
 
     StepVerifier.create(service.findAllNonIndividualClients(0, 10, "clientName"))
