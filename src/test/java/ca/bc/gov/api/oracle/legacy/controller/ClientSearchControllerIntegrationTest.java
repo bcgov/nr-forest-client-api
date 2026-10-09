@@ -36,7 +36,8 @@ class ClientSearchControllerIntegrationTest extends AbstractTestContainerIntegra
   @ParameterizedTest
   @MethodSource("searchByNameAcronymNumber")
   @DisplayName("Search clients by name, acronym, or number")
-  void shouldSearchByNameAcronymOrNumber(Integer returnSize, String name, String acronym, String number) {
+  void shouldSearchByNameAcronymOrNumber(
+      Integer returnSize, String name, String acronym, String number) {
     webTestClient
         .get()
         .uri(uriBuilder -> uriBuilder

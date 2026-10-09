@@ -160,7 +160,7 @@ public class ClientController {
             ClientViewDto first = signal.get();
             serverResponse.getHeaders()
                 .putIfAbsent(ApplicationConstants.X_TOTAL_COUNT,
-                    List.of(first.getCount().toString()));
+                    List.of(first.getCount() != null ? first.getCount().toString() : "0"));
           }
           return flux;
         });
@@ -224,7 +224,7 @@ public class ClientController {
             ClientPublicViewDto first = signal.get();
             serverResponse.getHeaders()
                 .putIfAbsent(ApplicationConstants.X_TOTAL_COUNT,
-                    List.of(first.getCount().toString()));
+                    List.of(first.getCount() != null ? first.getCount().toString() : "0"));
           }
           return flux;
         });
@@ -320,8 +320,7 @@ public class ClientController {
           R (First Nation Group),<br>
           S (Society),<br>
           T (First Nation Tribal Council),<br>
-          U (Unregistered Company),<br>
-          Z (Sole Proprietorship)""",
+          U (Unregistered Company)""",
           example = "I")
       @RequestParam(value = "clientTypeCodes", required = false)
       List<String> clientTypeCodes,
@@ -341,7 +340,7 @@ public class ClientController {
             ClientPublicViewDto first = signal.get();
             serverResponse.getHeaders()
                 .putIfAbsent(ApplicationConstants.X_TOTAL_COUNT,
-                    List.of(first.getCount().toString()));
+                    List.of(first.getCount() != null ? first.getCount().toString() : "0"));
           }
           return flux;
         });
@@ -413,7 +412,7 @@ public class ClientController {
             ClientPublicViewDto first = signal.get();
             serverResponse.getHeaders()
                 .putIfAbsent(ApplicationConstants.X_TOTAL_COUNT,
-                    List.of(first.getCount().toString()));
+                    List.of(first.getCount() != null ? first.getCount().toString() : "0"));
           }
           return flux;
         });
