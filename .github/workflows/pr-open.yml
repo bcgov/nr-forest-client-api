@@ -18,7 +18,7 @@ jobs:
       commands: ${{ steps.oc.outputs.commands }}
     steps:
       - id: oc
-        uses: bcgov/actions-openshift/oc-runner@vX.Y.Z
+        uses: bcgov/actions-openshift/oc-runner@v0.4.0
         with:
           oc_namespace: ${{ vars.oc_namespace }}
           oc_server: ${{ vars.oc_server }}
