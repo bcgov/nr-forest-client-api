@@ -11,162 +11,22 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  pr-validation:
-    name: Pull Request Validation
-    runs-on: ubuntu-26.04
-    permissions:
-      contents: read
-      pull-requests: write
+  command:
+    runs-on: ubuntu-latest
     outputs:
-      semver: ${{ steps.changelog.outputs.tag }}
+      triggered: ${{ steps.oc.outputs.triggered }}
+      commands: ${{ steps.oc.outputs.commands }}
     steps:
-      - uses: actions/checkout@v7
-
-      - name: Pull request size and stability labels
-        uses: actions/labeler@v7
-        continue-on-error: true
+      - id: oc
+        uses: bcgov/actions-openshift/oc-runner@vX.Y.Z
         with:
-          repo-token: "${{ secrets.GITHUB_TOKEN }}"
-
-      - name: Conventional Label
-        uses: bcoe/conventional-release-labels@886f696738527c7be444262c327c89436dfb95a8 # v1
-        continue-on-error: true
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          ignored_types: '["chore","pr"]'
-          type_labels: '{"feat": "feature", "fix": "fix", "bug": "fix", "doc": "documentation", "ci": "ci", "chore": "chore", "breaking": "breaking", "BREAKING CHANGE": "breaking"}'
-
-      - name: Conventional Changelog Update
-        continue-on-error: true
-        uses: TriPSs/conventional-changelog-action@ee43def3241429afddab215ba89090cbf64fb45c # v6
-        id: changelog
-        with:
-          github-token: ${{ github.token }}
-          output-file: "CHANGELOG.md"
-          skip-version-file: "true"
-          skip-commit: "true"
-          git-push: "false"
-          git-branch: refs/heads/${{ github.head_ref }}
-
-      - name: Comment PR
-        continue-on-error: true
-        uses: thollander/actions-comment-pull-request@24bffb9b452ba05a4f3f77933840a6a841d1b32b # v3
-        if: steps.changelog.outputs.skipped == 'false'
-        with:
-          message: |
-            # Current changelog
-            ${{ steps.changelog.outputs.clean_changelog }}
-          comment-tag: "# Current changelog"
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
-  pr-greeting:
-    name: Greeting
-    runs-on: ubuntu-26.04
-    permissions:
-      pull-requests: write
-    steps:
-      - name: Greeting
-        uses: bcgov/action-pr-description-add@d79a5c3b49d3b3b3215495afac3ae599cef191bb # v2.0.1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          add_markdown: |
-            ---
-            Thanks for the PR!
-
-            Any successful deployments (not always required) will be available below.
-            [API](https://${{ github.event.repository.name }}-${{ github.event.number }}-api.${{ env.DOMAIN }}/) available
-
-            Once merged, code will be promoted and handed off to following workflow run.
-            [Main Merge Workflow](https://github.com/${{ github.repository }}/actions/workflows/merge-main.yml)
-
-  build:
-    name: Build
-    runs-on: ubuntu-26.04
-    needs: [pr-validation]
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - uses: bcgov/action-builder-ghcr@cb2629351c87dd1c2130073e4ebb7233a9653a63 # v4.4.1
-        with:
-          package: api
-          tag_fallback: test
-          build_context: ./
-          build_file: Dockerfile
-          build_args: |
-            APP_VERSION=${{ github.event.number }}
-
-  deploy:
-    name: Deploy
-    needs: [build]
-    runs-on: ubuntu-26.04
-    timeout-minutes: 15
-    environment: dev
-    steps:
-      - name: Deploys
-        uses: bcgov/action-deployer-openshift@e2d60eb9cacceb89c3b97d8dcf0a2c460eea5eab # v4.2.3
-        with:
-          file: openshift.deploy.yml
-          oc_namespace: ${{ secrets.OC_NAMESPACE }}
-          oc_server: ${{ secrets.OC_SERVER }}
+          oc_namespace: ${{ vars.oc_namespace }}
+          oc_server: ${{ vars.oc_server }}
           oc_token: ${{ secrets.OC_TOKEN }}
-          overwrite: true
-          oc_version: "4.13"
-          parameters: -p ORACLEDB_USER=${{ secrets.ORACLEDB_USERNAME }}
-            -p ORACLEDB_PASSWORD=${{ secrets.ORACLEDB_PASSWORD }}
-            -p ORACLEDB_DATABASE=${{ secrets.ORACLEDB_DATABASE }}
-            -p ORACLEDB_HOST=${{ secrets.ORACLEDB_HOST }}
-            -p ORACLEDB_SERVICENAME=${{ secrets.ORACLEDB_SERVICENAME }}
-            -p ORACLEDB_SECRET=${{ secrets.ORACLEDB_SECRET }}
-            -p ZONE=${{ github.event.number }}
-            -p TAG=${{ github.event.number }}
-
-      - name: Deploy dev route
-        uses: bcgov/action-deployer-openshift@e2d60eb9cacceb89c3b97d8dcf0a2c460eea5eab # v4.2.3
-        with:
-          file: .github/openshift.dev.yml
-          oc_namespace: ${{ secrets.OC_NAMESPACE }}
-          oc_server: ${{ secrets.OC_SERVER }}
-          oc_token: ${{ secrets.OC_TOKEN }}
-          oc_version: "4.13"
-          overwrite: true
-          parameters: -p ZONE=${{ github.event.number }}
-
-  postman:
-    name: Smoke Test
-    needs: [deploy]
-    environment: dev
-    runs-on: ubuntu-26.04
-    permissions:
-      contents: read
-      packages: write
-      checks: write
-      pull-requests: write
-    steps:
-      - uses: actions/checkout@v7
-      - name: API Health check
-        uses: matt-ball/newman-action@master
-        with:
-          collection: postman/FCA.postman_collection.json
-          envVar: '[{"key":"URL_FCA","value":"https://${{ github.event.repository.name }}-${{ github.event.number }}-api.${{ env.DOMAIN }}"}]'
-          reporters: '["cli"]'
-          folder: '["general"]'
-
-      - name: Postman Smoke Test
-        uses: matt-ball/newman-action@master
-        with:
-          collection: postman/FCA.postman_collection.json
-          envVar: '[{"key":"URL_FCA","value":"https://${{ github.event.repository.name }}-${{ github.event.number }}-api.${{ env.DOMAIN }}"}]'
-          iterationData: postman/FCA_postman_tests_dev.json
-          reporters: '["cli", "junit"]'
-          reporter: '{ "junit" : { "export" : "./postman/report.xml" } }'
-
-      - name: Postman Smoke Test Report
-        uses: mikepenz/action-junit-report@b7b80d7ac5b1da46d6aaff9fb57ad50d8453bcb3 # v6
-        if: always() # always run even if the previous step fails
-        with:
-          report_paths: "postman/report.xml"
-          commit: ${{ github.event.pull_request.head.sha }}
-          summary: Postman Tests
-          detailed_summary: true
-          job_name: Postman Smoke Test Report
+          commands: |
+            oc create secret generic gwa-acct-id \
+            --from-literal=api_key=${{ secrets.GWA_ACCT_ID }} \
+            --dry-run=client -o yaml | oc apply -f -
+            oc create secret generic gwa-acct-secret \
+            --from-literal=api_key=${{ secrets.GWA_ACCT_SECRET }} \
+            --dry-run=client -o yaml | oc apply -f -
