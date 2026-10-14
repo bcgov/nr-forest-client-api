@@ -13,6 +13,7 @@ concurrency:
 jobs:
   command:
     runs-on: ubuntu-latest
+    environment: dev
     outputs:
       triggered: ${{ steps.oc.outputs.triggered }}
       commands: ${{ steps.oc.outputs.commands }}
