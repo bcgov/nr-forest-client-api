@@ -20,8 +20,8 @@ jobs:
       - id: oc
         uses: bcgov/actions-openshift/oc-runner@v0.4.0
         with:
-          oc_namespace: ${{ vars.oc_namespace }}
-          oc_server: ${{ vars.oc_server }}
+          oc_namespace: ${{ secrets.oc_namespace }}
+          oc_server: ${{ secrets.oc_server }}
           oc_token: ${{ secrets.OC_TOKEN }}
           commands: |
             oc create secret generic gwa-acct-id \
